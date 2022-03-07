@@ -8,5 +8,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
         name: Git Checkout
+      - name: Java installieren
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
       - name: Run Gradle
         run: ./chicken_of_propra/gradlew -p ./chicken_of_propra check
