@@ -1,0 +1,15 @@
+name: Build and Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./chicken_of_propra/application
+    steps:
+      - uses: actions/checkout@v1
+        name: Git Checkout
+      - name: Run Gradle
+        run: ./gradlew check
+        working-directory: ${{env.working_directory}}
