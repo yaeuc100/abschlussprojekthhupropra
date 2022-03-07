@@ -1,0 +1,2 @@
+rootProject.name = 'chicken_of_propra'
+include 'domain' , 'application' , 'database' , 'web' , 'spring'
