@@ -5,10 +5,11 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    env:
+      working-directory: ./application
     steps:
       - uses: actions/checkout@v1
         name: Git Checkout
       - name: Run Gradle
         run: ./gradlew check
-        working-directory: ./application
+        working-directory: ${{env.working_directory}}
