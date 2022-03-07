@@ -9,4 +9,4 @@ jobs:
       - uses: actions/checkout@v1
         name: Git Checkout
       - name: Run Gradle
-        run: ./chicken_of_propra/gradlew check
+        run: ./chicken_of_propra/gradlew -p ./chicken_of_propra check
