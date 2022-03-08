@@ -31,8 +31,8 @@ public class StudentRepositoryMockTests {
         service.urlaubAnlegen(1L,urlaubDto);
         verify(urlaubRepository).save(urlaub);
         verify(studentRepository).save(student);
-
     }
+
 
 
 }
