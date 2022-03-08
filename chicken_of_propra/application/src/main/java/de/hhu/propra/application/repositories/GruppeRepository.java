@@ -1,6 +1,7 @@
 package de.hhu.propra.application.repositories;
 
 import de.hhu.propra.domain.aggregates.gruppe.Gruppe;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
