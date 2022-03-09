@@ -5,6 +5,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
-public record Anwesenheit(Long id, LocalDate datum, LocalTime startzeit, LocalTime endzeit) {
+record Anwesenheit(LocalDate datum, LocalTime startzeit, LocalTime endzeit) {
 
 }
