@@ -15,7 +15,7 @@ import java.time.LocalTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-public class StudentRepositoryMockTests {
+public class StudentServiceMockTests {
 
 
     @Test
