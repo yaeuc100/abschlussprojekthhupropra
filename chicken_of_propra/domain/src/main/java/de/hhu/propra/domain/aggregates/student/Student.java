@@ -3,6 +3,7 @@ package de.hhu.propra.domain.aggregates.student;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.stereotypes.AggregateRoot;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
@@ -20,7 +21,7 @@ public class Student {
     private Set<Anwesenheit> anwesenheiten = new HashSet<>();
     private Set<KlausurReferenz> klausuren = new HashSet<>();
 
-    public Student(Long id, String handle, int resturlaub) {
+    public Student(Long id, String handle) {
         this.id = id;
         this.handle = handle;
         this.resturlaub = 240;
@@ -39,6 +40,7 @@ public class Student {
     }
 
     public void addUrlaub(LocalDate datum , LocalTime start , LocalTime ende) {
+        resturlaub -= Duration.between(start, ende).toMinutes();
         urlaube.add(new Urlaub(datum,start,ende));
     }
 
@@ -48,9 +50,6 @@ public class Student {
                 && u.endzeit().equals(ende));
     }
 
-    public Set<Anwesenheit> getAnwesenheiten() {
-        return anwesenheiten;
-    }
 
     public void addAnwesenheit(LocalDate datum , LocalTime start , LocalTime ende) {
         anwesenheiten.add(new Anwesenheit(datum,start,ende));
@@ -71,7 +70,11 @@ public class Student {
         return urlaube.stream().collect(Collectors.toList());
     }
 
-
+    public List<Long> getKlausuren(){
+        return klausuren.stream()
+                .map(k -> k.id())
+                .collect(Collectors.toList());
+    }
 
     public void addKlausur (Klausur klausur){
         klausuren.add(new KlausurReferenz(klausur.id()));

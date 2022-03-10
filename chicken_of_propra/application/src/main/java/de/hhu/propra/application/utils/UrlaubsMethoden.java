@@ -28,8 +28,9 @@ public class UrlaubsMethoden {
         return (minuten == 240 || (minuten <= 150 && minuten >= 15));
     }
 
-    public boolean zweiUrlaubeAnEinemTag(UrlaubDto ersterUrlaub, UrlaubDto zweiterUrlaub, LocalTime startZeit) {
+    public boolean zweiUrlaubeAnEinemTag(UrlaubDto ersterUrlaub, UrlaubDto zweiterUrlaub) {
         boolean valide = true;
+        LocalTime startZeit = LocalTime.of(8,30);
         if (ersterUrlaub.startzeit().isAfter(zweiterUrlaub.startzeit())) {
             UrlaubDto hilf = ersterUrlaub;
             ersterUrlaub = zweiterUrlaub;

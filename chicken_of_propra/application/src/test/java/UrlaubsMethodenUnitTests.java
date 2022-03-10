@@ -43,7 +43,7 @@ public class UrlaubsMethodenUnitTests {
         UrlaubDto zweiterUrlaub = new UrlaubDto(LocalDate.now()
                 , LocalTime.of(9,30)
                 , LocalTime.of(12,30));
-        boolean ergebnis = urlaubsMethoden.zweiUrlaubeAnEinemTag(ersterUrlaub,zweiterUrlaub, LocalTime.of(8,30));
+        boolean ergebnis = urlaubsMethoden.zweiUrlaubeAnEinemTag(ersterUrlaub,zweiterUrlaub);
         assertThat(ergebnis).isEqualTo(false);
     }
 
@@ -56,7 +56,7 @@ public class UrlaubsMethodenUnitTests {
         UrlaubDto zweiterUrlaub = new UrlaubDto(LocalDate.now()
                 , LocalTime.of(11,30)
                 , LocalTime.of(12,30));
-        boolean ergebnis = urlaubsMethoden.zweiUrlaubeAnEinemTag(ersterUrlaub,zweiterUrlaub, LocalTime.of(8,30));
+        boolean ergebnis = urlaubsMethoden.zweiUrlaubeAnEinemTag(ersterUrlaub,zweiterUrlaub);
         assertThat(ergebnis).isEqualTo(false);
     }
 
@@ -69,7 +69,7 @@ public class UrlaubsMethodenUnitTests {
         UrlaubDto zweiterUrlaub = new UrlaubDto(LocalDate.now()
                 , LocalTime.of(11,30)
                 , LocalTime.of(13,30));
-        boolean ergebnis = urlaubsMethoden.zweiUrlaubeAnEinemTag(ersterUrlaub,zweiterUrlaub, LocalTime.of(8,30));
+        boolean ergebnis = urlaubsMethoden.zweiUrlaubeAnEinemTag(ersterUrlaub,zweiterUrlaub);
         assertThat(ergebnis).isEqualTo(false);
     }
 

@@ -9,6 +9,8 @@ import de.hhu.propra.application.utils.UrlaubsMethoden;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Student;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,15 +34,29 @@ public class StudentService {
                 .map(u-> new UrlaubDto(u.datum(),u.startzeit(),u.endzeit()))
                 .collect(Collectors.toList());
         if (urlaubsMethoden.urlaubIsValide(urlaubDto) && urlaube.size() < 2) {
-            if(urlaube.size() == 1) {
-                urlaubsMethoden.zweiUrlaubeAnEinemTag(urlaubDto,urlaube.get(0),)
+            if((urlaube.size() == 1) && (urlaubsMethoden.zweiUrlaubeAnEinemTag(urlaubDto,urlaube.get(0)))){
+                fuegeUrlaubHinzu(student, urlaubDto);
             }
-            //TODO :: CHANGE DATA
-            if (!student.urlaubExistiert(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit())) {
-                student.addUrlaub(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit());
-                studentRepository.save(student);
+            else if(!student.urlaubExistiert(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit())) {
+                fuegeUrlaubHinzu(student, urlaubDto);
             }
         }
+    }
+    //TODO: Notification for not enough holidays
+    private void fuegeUrlaubHinzu( Student student, UrlaubDto urlaubDto) {
+        if (genugUrlaub(student, urlaubDto)) {
+            student.addUrlaub(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit());
+            studentRepository.save(student);
+        }
+    }
+/*
+    private boolean hatKlausur(Student student, LocalDate datum){
+        List<Klausur> klausurListe = student.getKlausuren();
+    }
+*/
+    private boolean genugUrlaub(Student student, UrlaubDto urlaubDto){
+        Duration duration = Duration.between(urlaubDto.startzeit(), urlaubDto.endzeit());
+        return (duration.toMinutes() <= student.getResturlaub());
     }
 
     public synchronized void klausurErstellen(KlausurDto klausurDto){

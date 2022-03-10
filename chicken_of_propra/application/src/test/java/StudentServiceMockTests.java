@@ -24,7 +24,7 @@ public class StudentRepositoryMockTests {
         //TODO :: CHANGE THIS
         //arrange
         UrlaubDto urlaubDto = new UrlaubDto(LocalDate.now(), LocalTime.now(),LocalTime.now());
-        Student student = new Student(1L,"x",240);
+        Student student = new Student(1L,"x");
         StudentRepository studentRepository = mock(StudentRepository.class);
         KlausurRepository klausurRepository = mock(KlausurRepository.class);
         when(studentRepository.studentMitId(1L)).thenReturn(student);
@@ -41,7 +41,7 @@ public class StudentRepositoryMockTests {
     void test2(){
         //arrange
         UrlaubDto urlaubDto = new UrlaubDto(LocalDate.now(), LocalTime.now(),LocalTime.now());
-        Student student = new Student(1L,"x",240);
+        Student student = new Student(1L,"x");
         StudentRepository studentRepository = mock(StudentRepository.class);
         KlausurRepository klausurRepository = mock(KlausurRepository.class);
         when(studentRepository.studentMitId(1L)).thenReturn(student);
@@ -76,7 +76,7 @@ public class StudentRepositoryMockTests {
     @DisplayName("Student für Klausur angemeldet")
     void test4(){
 
-        Student student = new Student(1L,"x",240);
+        Student student = new Student(1L,"x");
         Klausur klausur = new Klausur(1L,"BS",LocalDateTime.now(),120,217480,false);
 
         StudentRepository studentRepository = mock(StudentRepository.class);
@@ -96,7 +96,7 @@ public class StudentRepositoryMockTests {
 
         UrlaubDto urlaubDto = new UrlaubDto(LocalDate.now(), LocalTime.now(),LocalTime.now());
         UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(10,10,10),LocalTime.of(10,10),LocalTime.of(20,20));
-        Student student = new Student(1L,"x",240);
+        Student student = new Student(1L,"x");
         StudentRepository studentRepository = mock(StudentRepository.class);
         KlausurRepository klausurRepository = mock(KlausurRepository.class);
         when(studentRepository.studentMitId(1L)).thenReturn(student);
