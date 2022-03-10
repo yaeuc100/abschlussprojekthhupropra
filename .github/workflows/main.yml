@@ -17,7 +17,8 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
       - name: Make gradlew executable
-        run: chmod +x ./gradlew
+        run: chmod +x gradlew
+        working-directory: chicken_of_propra
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
