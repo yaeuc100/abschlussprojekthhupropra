@@ -52,7 +52,9 @@ public class UrlaubsMethoden {
     }
 
 
-
+    public boolean urlaubIsValide(UrlaubDto urlaub){
+        return vielfachesVon15(urlaub) && dauerIstValide(urlaub) && urlaubNurVorDemTagDesUrlaubs(urlaub);
+    }
 
 
 }

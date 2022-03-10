@@ -32,7 +32,7 @@ public class StudentRepositoryMockTests {
         //act
         service.urlaubAnlegen(1L,urlaubDto);
         //assert
-        assertThat(student.getUrlaubsListe()).hasSize(1);
+        assertThat(student.getUrlaube()).hasSize(1);
         verify(studentRepository).save(student);
     }
 
@@ -50,7 +50,7 @@ public class StudentRepositoryMockTests {
         service.urlaubAnlegen(1L,urlaubDto);
         service.urlaubAnlegen(1L,urlaubDto);
         //assert
-        assertThat(student.getUrlaubsListe()).hasSize(1);
+        assertThat(student.getUrlaube()).hasSize(1);
     }
 
     @Test
@@ -106,7 +106,7 @@ public class StudentRepositoryMockTests {
         service.urlaubStornieren(1L,urlaubDto);
 
         verify(studentRepository).save(student);
-        assertThat(student.getUrlaubsListe()).hasSize(1);
+        assertThat(student.getUrlaube()).hasSize(1);
     }
 
 }
