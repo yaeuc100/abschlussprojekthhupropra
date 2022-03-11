@@ -5,7 +5,7 @@ import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.application.repositories.StudentRepository;
 import de.hhu.propra.application.stereotypes.ApplicationService;
-import de.hhu.propra.application.utils.UrlaubsValidierungsMethoden;
+import de.hhu.propra.application.utils.UrlaubValidierung;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Student;
 
@@ -17,23 +17,25 @@ import java.util.List;
 public class StudentService {
     private final StudentRepository studentRepository;
     private final KlausurRepository klausurRepository;
-    private UrlaubsValidierungsMethoden urlaubsMethoden = new UrlaubsValidierungsMethoden();
+    private UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
 
     public StudentService(StudentRepository studentRepository, KlausurRepository klausurRepository) {
         this.studentRepository = studentRepository;
         this.klausurRepository = klausurRepository;
     }
-
+    //TODO: klausurAnmelden : -Urlaub anpassen
+    //TODO: urlaubAnmelden : -pruefen, ob Klausur an dem Tag
     public boolean urlaubAnlegen(Long studentId, UrlaubDto urlaubDto) {
         boolean erfolg = false;
         Student student = studentRepository.studentMitId(studentId);
-        //TODO :: VERIFY INPUT // VERIFY KLAUSUR
+        //TODO : VERIFY KLAUSUR
         List<UrlaubDto> urlaube = student.getUrlaube().stream()
                 .filter(u -> u.datum().equals(urlaubDto.datum()))
                 .map(u -> new UrlaubDto(u.datum(), u.startzeit(), u.endzeit()))
                 .toList();
-        if (urlaubsMethoden.urlaubIsValide(urlaubDto) && urlaube.size() < 2) {
-            if((urlaube.size() == 1) && (urlaubsMethoden.zweiUrlaubeAnEinemTag(urlaubDto,urlaube.get(0)))){
+
+        if (urlaubValidierung.urlaubIsValide(urlaubDto) && urlaube.size() < 2) {
+            if((urlaube.size() == 1) && (urlaubValidierung.zweiUrlaubeAnEinemTag(urlaubDto,urlaube.get(0)))){
                 erfolg = fuegeUrlaubHinzu(student, urlaubDto);
             }
             else if(!student.urlaubExistiert(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit())) {
@@ -69,7 +71,6 @@ public class StudentService {
                 klausurDto.lsf(),
                 klausurDto.online());
 
-        //TODO :: no duplicates(online/offline)
         if(!klausurRepository.alleKlausuren().contains(klausur)) {
             klausurRepository.save(klausur);
             return true;
@@ -89,7 +90,7 @@ public class StudentService {
         boolean ergebnis = false;
         Student student = studentRepository.studentMitId(studentId);
 
-        if(urlaubsMethoden.urlaubNurVorDemTagDesUrlaubs(urlaubDto)) {
+        if(urlaubValidierung.urlaubNurVorDemTagDesUrlaubs(urlaubDto)) {
             ergebnis = student.urlaubStornieren(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit());
             studentRepository.save(student);
         }

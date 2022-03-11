@@ -1,3 +1,6 @@
+package de.hhu.propra.application.services;
+
+import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.application.repositories.StudentRepository;
@@ -13,6 +16,9 @@ import org.mockito.Mockito;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -331,8 +337,58 @@ public class StudentServiceTests {
     @Test
     @DisplayName("Neue Klausur wird erstellt")
     void test18(){
+        //arrange
+        KlausurDto klausurDto = new KlausurDto("Betriebssysteme", LocalDateTime.now(), 90, 217480, true);
+        when(klausurRepository.alleKlausuren()).thenReturn(Collections.emptyList());
 
+        //act
+        boolean ergebnis = studentService.klausurErstellen(klausurDto);
+
+        //assert
+        assertThat(ergebnis).isTrue();
     }
 
+    @Test
+    @DisplayName("Keine Klausur Duplikate")
+    void test19(){
+        //arrange
+        KlausurDto klausurDto = new KlausurDto("Betriebssysteme", LocalDateTime.now(), 90, 217480, true);
+        List<Klausur> klausurListe = new ArrayList<>();
+        klausurListe.add(new Klausur(null,
+                klausurDto.name(),
+                klausurDto.datum(),
+                klausurDto.dauer(),
+                klausurDto.lsf(),
+                klausurDto.online()));
+        when(klausurRepository.alleKlausuren()).thenReturn(klausurListe);
+
+        //act
+        boolean ergebnis = studentService.klausurErstellen(klausurDto);
+
+        //assert
+        assertThat(ergebnis).isFalse();
+    }
+
+    @Test
+    @DisplayName("Zwei Klausuren koennen hinzugefuegt werden")
+    void test20(){
+        //arrange
+        KlausurDto klausurDto1 = new KlausurDto("Betriebssysteme", LocalDateTime.now(), 90, 217480, true);
+        KlausurDto klausurDto2 = new KlausurDto("Betriebssysteme", LocalDateTime.now(), 90, 217480, false);
+        List<Klausur> klausurListe = new ArrayList<>();
+        klausurListe.add(new Klausur(null,
+                klausurDto1.name(),
+                klausurDto1.datum(),
+                klausurDto1.dauer(),
+                klausurDto1.lsf(),
+                klausurDto1.online()));
+        when(klausurRepository.alleKlausuren()).thenReturn(klausurListe);
+
+        //act
+        boolean ergebnis = studentService.klausurErstellen(klausurDto2);
+
+        //assert
+        assertThat(ergebnis).isTrue();
+    }
 
 }

@@ -13,7 +13,7 @@ import java.time.LocalTime;
 //     max 2 und falls 2 gibt dann mit 90 min abstand zwischen dauer der 2. und 1. urlaub
 //     urlaub bis 00.00 uhr anmelden
 
-public class UrlaubsValidierungsMethoden {
+public class UrlaubValidierung {
 
 
     public boolean vielfachesVon15(UrlaubDto urlaubDto) {
