@@ -27,17 +27,6 @@ public class Student {
         this.resturlaub = 240;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setHandle(String handle) {
-        this.handle = handle;
-    }
-
-    public void setResturlaub(int resturlaub) {
-        this.resturlaub = resturlaub;
-    }
 
     public void addUrlaub(LocalDate datum , LocalTime start , LocalTime ende) {
         resturlaub -= Duration.between(start, ende).toMinutes();
@@ -45,9 +34,12 @@ public class Student {
     }
 
     public void urlaubStornieren(LocalDate datum , LocalTime start , LocalTime ende){
-        urlaube.removeIf(u -> u.datum().equals(datum)
-                && u.startzeit().equals(start)
-                && u.endzeit().equals(ende));
+        if(urlaubExistiert(datum, start, ende)) {
+            resturlaub += Duration.between(start, ende).toMinutes();
+            urlaube.removeIf(u -> u.datum().equals(datum)
+                    && u.startzeit().equals(start)
+                    && u.endzeit().equals(ende));
+        }
     }
 
 

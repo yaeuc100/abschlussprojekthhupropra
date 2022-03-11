@@ -5,49 +5,51 @@ import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.application.repositories.StudentRepository;
 import de.hhu.propra.application.stereotypes.ApplicationService;
-import de.hhu.propra.application.utils.UrlaubsMethoden;
+import de.hhu.propra.application.utils.UrlaubsValidierungsMethoden;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Student;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @ApplicationService
 public class StudentService {
     private final StudentRepository studentRepository;
     private final KlausurRepository klausurRepository;
-    private UrlaubsMethoden urlaubsMethoden = new UrlaubsMethoden();
+    private UrlaubsValidierungsMethoden urlaubsMethoden = new UrlaubsValidierungsMethoden();
 
     public StudentService(StudentRepository studentRepository, KlausurRepository klausurRepository) {
         this.studentRepository = studentRepository;
         this.klausurRepository = klausurRepository;
     }
 
-    public void urlaubAnlegen(Long studentId, UrlaubDto urlaubDto) {
+    public boolean urlaubAnlegen(Long studentId, UrlaubDto urlaubDto) {
+        boolean erfolg = false;
         Student student = studentRepository.studentMitId(studentId);
         //TODO :: VERIFY INPUT // VERIFY KLAUSUR
         List<UrlaubDto> urlaube = student.getUrlaube().stream()
                 .filter(u -> u.datum().equals(urlaubDto.datum()))
-                .map(u-> new UrlaubDto(u.datum(),u.startzeit(),u.endzeit()))
-                .collect(Collectors.toList());
+                .map(u -> new UrlaubDto(u.datum(), u.startzeit(), u.endzeit()))
+                .toList();
         if (urlaubsMethoden.urlaubIsValide(urlaubDto) && urlaube.size() < 2) {
             if((urlaube.size() == 1) && (urlaubsMethoden.zweiUrlaubeAnEinemTag(urlaubDto,urlaube.get(0)))){
-                fuegeUrlaubHinzu(student, urlaubDto);
+                erfolg = fuegeUrlaubHinzu(student, urlaubDto);
             }
             else if(!student.urlaubExistiert(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit())) {
-                fuegeUrlaubHinzu(student, urlaubDto);
+                erfolg = fuegeUrlaubHinzu(student, urlaubDto);
             }
         }
+        return erfolg;
     }
-    //TODO: Notification for not enough holidays
-    private void fuegeUrlaubHinzu( Student student, UrlaubDto urlaubDto) {
+    //TODO: Notification for not enough holidays in weblayer
+    private boolean fuegeUrlaubHinzu( Student student, UrlaubDto urlaubDto) {
         if (genugUrlaub(student, urlaubDto)) {
             student.addUrlaub(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit());
             studentRepository.save(student);
+            return true;
         }
+        return false;
     }
 /*
     private boolean hatKlausur(Student student, LocalDate datum){

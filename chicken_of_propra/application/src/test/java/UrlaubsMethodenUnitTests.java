@@ -1,5 +1,5 @@
 import de.hhu.propra.application.dto.UrlaubDto;
-import de.hhu.propra.application.utils.UrlaubsMethoden;
+import de.hhu.propra.application.utils.UrlaubsValidierungsMethoden;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UrlaubsMethodenUnitTests {
 
 
-    private UrlaubsMethoden urlaubsMethoden = new UrlaubsMethoden();
+    private UrlaubsValidierungsMethoden urlaubsMethoden = new UrlaubsValidierungsMethoden();
 
     @Test
     @DisplayName("Die Minuten der start/end-Zeit sind Vielfaches von 15")
