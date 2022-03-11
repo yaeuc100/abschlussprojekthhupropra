@@ -33,13 +33,15 @@ public class Student {
         urlaube.add(new Urlaub(datum,start,ende));
     }
 
-    public void urlaubStornieren(LocalDate datum , LocalTime start , LocalTime ende){
+    public boolean urlaubStornieren(LocalDate datum , LocalTime start , LocalTime ende){
         if(urlaubExistiert(datum, start, ende)) {
             resturlaub += Duration.between(start, ende).toMinutes();
             urlaube.removeIf(u -> u.datum().equals(datum)
                     && u.startzeit().equals(start)
                     && u.endzeit().equals(ende));
+            return true;
         }
+        return false;
     }
 
 

@@ -61,15 +61,20 @@ public class StudentService {
         return (duration.toMinutes() <= student.getResturlaub());
     }
 
-    public synchronized void klausurErstellen(KlausurDto klausurDto){
+    public synchronized boolean klausurErstellen(KlausurDto klausurDto){
         Klausur klausur = new Klausur(null,
                 klausurDto.name(),
                 klausurDto.datum(),
                 klausurDto.dauer(),
                 klausurDto.lsf(),
                 klausurDto.online());
+
         //TODO :: no duplicates(online/offline)
-        klausurRepository.save(klausur);
+        if(!klausurRepository.alleKlausuren().contains(klausur)) {
+            klausurRepository.save(klausur);
+            return true;
+        }
+        return false;
     }
 
 
@@ -80,12 +85,15 @@ public class StudentService {
         studentRepository.save(student);
     }
 
-    public void urlaubStornieren(Long studentId, UrlaubDto urlaubDto){
+    public boolean urlaubStornieren(Long studentId, UrlaubDto urlaubDto){
+        boolean ergebnis = false;
         Student student = studentRepository.studentMitId(studentId);
+
         if(urlaubsMethoden.urlaubNurVorDemTagDesUrlaubs(urlaubDto)) {
-            student.urlaubStornieren(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit());
+            ergebnis = student.urlaubStornieren(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit());
             studentRepository.save(student);
         }
+        return ergebnis;
     }
 
 }

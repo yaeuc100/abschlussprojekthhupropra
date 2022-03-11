@@ -4,6 +4,7 @@ import de.hhu.propra.application.repositories.StudentRepository;
 import de.hhu.propra.application.services.StudentService;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Student;
+import de.hhu.propra.domain.aggregates.student.Urlaub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -177,10 +178,11 @@ public class StudentServiceTests {
 
         //act
         studentService.urlaubAnlegen(student.getId(), urlaubDto1);
-        studentService.urlaubAnlegen(student.getId(), urlaubDto2);
+        boolean ergebnis = studentService.urlaubAnlegen(student.getId(), urlaubDto2);
 
         //assert
         assertThat(student.getUrlaube()).hasSize(2);
+        assertThat(ergebnis).isTrue();
     }
 
     @Test
@@ -196,10 +198,11 @@ public class StudentServiceTests {
         //act
         studentService.urlaubAnlegen(student.getId(), urlaubDto1);
         studentService.urlaubAnlegen(student.getId(), urlaubDto2);
-        studentService.urlaubAnlegen(student.getId(), urlaubDto3);
+        boolean ergebnis = studentService.urlaubAnlegen(student.getId(), urlaubDto3);
 
         //assert
         assertThat(student.getUrlaube()).hasSize(3);
+        assertThat(ergebnis).isTrue();
     }
 
     @Test
@@ -215,42 +218,121 @@ public class StudentServiceTests {
         //act
         studentService.urlaubAnlegen(student.getId(), urlaubDto1);
         studentService.urlaubAnlegen(student.getId(), urlaubDto2);
-        studentService.urlaubAnlegen(student.getId(), urlaubDto3);
+        boolean ergebnis = studentService.urlaubAnlegen(student.getId(), urlaubDto3);
 
         //assert
         assertThat(student.getUrlaube()).hasSize(2);
+        assertThat(ergebnis).isFalse();
     }
 
-    /*
-
-
     @Test
-    @DisplayName("Student für Klausur angemeldet")
+    @DisplayName("nach einer Stornierung wird den Resturlaub angepasst")
     void test12(){
         //arrange
+        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000,1,1), LocalTime.of(8,30),LocalTime.of(10,30));
+        UrlaubDto urlaubDto2 = new UrlaubDto(LocalDate.of(3000,1,1), LocalTime.of(12,00),LocalTime.of(12,30));
         Student student = new Student(1L,"x");
-        Klausur klausur = new Klausur(1L,"BS",LocalDateTime.now(),120,217480,false);
+        when(studentRepository.studentMitId(1L)).thenReturn(student);
+
         //act
+        studentService.urlaubAnlegen(student.getId(), urlaubDto1);
+        studentService.urlaubAnlegen(student.getId(), urlaubDto2);
+        studentService.urlaubStornieren(student.getId(),urlaubDto2);
 
         //assert
-
-
-
-
+        assertThat(student.getResturlaub()).isEqualTo(120);
     }
 
     @Test
-    @DisplayName("Stornierung erfolgeich")
+    @DisplayName("Es werden zwei gueltige Urlaube an einem Tag hinzugefuegt und einer davon storniert")
     void test13(){
-        //Arrange
-        UrlaubDto urlaubDto = new UrlaubDto(LocalDate.of(2030,10,10),LocalTime.of(10,10),LocalTime.of(20,20));
+        //arrange
+        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000,1,1), LocalTime.of(8,30),LocalTime.of(10,30));
+        UrlaubDto urlaubDto2 = new UrlaubDto(LocalDate.of(3000,1,1), LocalTime.of(12,00),LocalTime.of(12,30));
         Student student = new Student(1L,"x");
+        when(studentRepository.studentMitId(1L)).thenReturn(student);
+
+        //act
+        studentService.urlaubAnlegen(student.getId(), urlaubDto1);
+        studentService.urlaubAnlegen(student.getId(), urlaubDto2);
+        boolean ergebnis = studentService.urlaubStornieren(student.getId(),urlaubDto2);
+
+        //assert
+        assertThat(student.getUrlaube()).hasSize(1);
+        assertThat(ergebnis).isTrue();
+    }
 
 
-        //Act
+    @Test
+    @DisplayName("Urlaub wird bei Stornierungantrag am selben Tag nicht storniert")
+    void test14(){
+        //arrange
+        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.now(), LocalTime.of(8,30),LocalTime.of(10,30));
+        Student student = new Student(1L,"x");
+        when(studentRepository.studentMitId(1L)).thenReturn(student);
 
-        //Assert
+        //act
+        student.addUrlaub(urlaubDto1.datum(),urlaubDto1.startzeit(),urlaubDto1.endzeit());
+        boolean ergebnis = studentService.urlaubStornieren(student.getId(),urlaubDto1);
+
+        //assert
+        assertThat(student.getUrlaube()).hasSize(1);
+        assertThat(ergebnis).isFalse();
+    }
+
+    @Test
+    @DisplayName("Wenn ein Urlaub nicht existiert wird false beim Stornieren zurück geliefert")
+    void test15(){
+        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000,1,1), LocalTime.of(8,30),LocalTime.of(10,30));
+        Student student = new Student(1L,"x");
+        when(studentRepository.studentMitId(1L)).thenReturn(student);
+
+        //act
+        boolean ergebnis = studentService.urlaubStornieren(student.getId(),urlaubDto1);
+
+        //assert
+        assertThat(ergebnis).isFalse();
+    }
+
+    @Test
+    @DisplayName("Nach einer Stornierung wird die save Methode aufgerufen")
+    void test16(){
+        //arrange
+        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000,1,1), LocalTime.of(8,30),LocalTime.of(10,30));
+        UrlaubDto urlaubDto2 = new UrlaubDto(LocalDate.of(3000,1,1), LocalTime.of(12,00),LocalTime.of(12,30));
+        Student student = new Student(1L,"x");
+        when(studentRepository.studentMitId(1L)).thenReturn(student);
+
+        //act
+        student.addUrlaub(urlaubDto1.datum(),urlaubDto1.startzeit(),urlaubDto1.endzeit());
+        student.addUrlaub(urlaubDto2.datum(),urlaubDto2.startzeit(),urlaubDto2.endzeit());
+        studentService.urlaubStornieren(student.getId(),urlaubDto2);
+
+        //assert
+        verify(studentRepository, Mockito.times(1)).save(student);
+    }
+
+    @Test
+    @DisplayName("Urlaub wird bei Stornierungantrag am selben Tag nicht storniert und nicht gespeichert")
+    void test17(){
+        //arrange
+        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.now(), LocalTime.of(8,30),LocalTime.of(10,30));
+        Student student = new Student(1L,"x");
+        when(studentRepository.studentMitId(1L)).thenReturn(student);
+
+        //act
+        student.addUrlaub(urlaubDto1.datum(),urlaubDto1.startzeit(),urlaubDto1.endzeit());
+        studentService.urlaubStornieren(student.getId(),urlaubDto1);
+
+        //assert
+        verify(studentRepository, Mockito.times(0)).save(student);
+    }
+
+    @Test
+    @DisplayName("Neue Klausur wird erstellt")
+    void test18(){
 
     }
-*/
+
+
 }
