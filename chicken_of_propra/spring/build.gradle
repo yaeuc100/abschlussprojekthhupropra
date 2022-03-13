@@ -23,7 +23,3 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
-
-bootJar {
-    mainClass = 'de.hhu.propra.spring.Application'
-}
