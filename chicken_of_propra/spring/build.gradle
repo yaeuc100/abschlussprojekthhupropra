@@ -13,9 +13,9 @@ repositories {
 }
 
 dependencies {
-    implementation project (':application')
-    implementation project (':web')
-    implementation project (':database')
+    implementation project(':application')
+    implementation project(':web')
+    implementation project(':database')
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -24,7 +24,6 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-bootJar{
+bootJar {
     mainClass = 'de.hhu.propra.spring.Application'
 }
-
