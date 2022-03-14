@@ -5,12 +5,17 @@ import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.application.repositories.StudentRepository;
 import de.hhu.propra.application.stereotypes.ApplicationService;
+import de.hhu.propra.application.utils.UrlaubKlausurValidierung;
 import de.hhu.propra.application.utils.UrlaubValidierung;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Student;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @ApplicationService
@@ -18,6 +23,8 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final KlausurRepository klausurRepository;
     private UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
+    private UrlaubKlausurValidierung urlaubKlausurValidierung = new UrlaubKlausurValidierung();
+
 
     public StudentService(StudentRepository studentRepository, KlausurRepository klausurRepository) {
         this.studentRepository = studentRepository;
@@ -28,7 +35,23 @@ public class StudentService {
     public boolean urlaubAnlegen(Long studentId, UrlaubDto urlaubDto) {
         boolean erfolg = false;
         Student student = studentRepository.studentMitId(studentId);
+        List<Klausur> klausurListe = student.getKlausuren().stream()
+                .map(klausurRepository::klausurMitId)
+                .collect(Collectors.toList());
+
+
         //TODO : VERIFY KLAUSUR
+        klausurListe = studentHatKlausur(klausurListe, urlaubDto.datum());
+        if (!klausurListe.isEmpty()){
+            List<UrlaubDto> urlaubDtos = new ArrayList<>();
+            urlaubDtos.add(urlaubDto);
+
+           for(Klausur klausur : klausurListe){
+               for(UrlaubDto urlaubDto1 : urlaubDtos ){
+                   List<UrlaubDto> neueUrlaubDtos = new ArrayList<>(urlaubKlausurValidierung.urlaubKlausurValidierung(urlaubDto1, Collections.emptyList()));
+               }
+           }
+        }
         List<UrlaubDto> urlaube = student.getUrlaube().stream()
                 .filter(u -> u.datum().equals(urlaubDto.datum()))
                 .map(u -> new UrlaubDto(u.datum(), u.startzeit(), u.endzeit()))
@@ -95,6 +118,13 @@ public class StudentService {
             studentRepository.save(student);
         }
         return ergebnis;
+    }
+
+    private List<Klausur> studentHatKlausur(List<Klausur> klausuren, LocalDate datum){
+        return klausuren.stream()
+                .filter(k -> k.datum().toLocalDate().equals(datum))
+                .toList();
+
     }
 
 }

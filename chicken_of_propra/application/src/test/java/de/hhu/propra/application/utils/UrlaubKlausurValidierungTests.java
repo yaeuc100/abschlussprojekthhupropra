@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -331,10 +332,193 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(14,00));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.urlaubKlausurValidierung(urlaubDto,klausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.urlaubKlausurValidierung(urlaubDto,List.of(klausur));
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2));
     }
 
+    @Test
+    @DisplayName("An einem Tag gibt es zwei Klausuren")
+    void test17(){
+        //arrange
+        UrlaubDto urlaubDto = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(14,0));
+        Klausur klausur = new Klausur(1L,
+                "mündliche Prüfung Ana 2",
+                LocalDateTime.of(2022,2,22,10,0),
+                60,
+                12345,
+                true);
+        Klausur zweiteKlausur = new Klausur(1L,
+                "mündliche Prüfung Ana 3",
+                LocalDateTime.of(2022,2,22,11,30),
+                60,
+                123234,
+                true);
+        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(9,30));
+        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+                LocalTime.of(11,0),
+                LocalTime.of(14,00));
+        UrlaubDto reduzierterUrlaub3 = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(9,30));
+        UrlaubDto reduzierterUrlaub4 = new UrlaubDto(datum,
+                LocalTime.of(11,0),
+                LocalTime.of(14,00));
+
+
+        //act
+        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.urlaubKlausurValidierung(urlaubDto,List.of(klausur, zweiteKlausur));
+
+        //assert
+       // assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2));
+        assertThat(ergebnis).hasSize(4);
+    }
+    @Test
+    @DisplayName("Urlaubsüberschneidung wird festgestellt")
+    void test18(){
+        //arrange
+        UrlaubDto urlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(12,30));
+        UrlaubDto urlaub2 = new UrlaubDto(datum,
+                LocalTime.of(9,0),
+                LocalTime.of(14,00));
+
+
+
+        //act
+        boolean ergebnis = urlaubKlausurValidierung.pruefeUrlaubUeberschneidung(urlaub, urlaub2);
+
+        //assert
+        assertThat(ergebnis).isTrue();
+    }
+
+    @Test
+    @DisplayName("Urlaubszeit wird richtig zusammengefasst")
+    void test19(){
+        //arrange
+        UrlaubDto urlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(12,30));
+        UrlaubDto urlaub2 = new UrlaubDto(datum,
+                LocalTime.of(9,0),
+                LocalTime.of(14,00));
+        UrlaubDto zusammengefassterUrlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(14,00));
+
+
+        //act
+        UrlaubDto ergebnis = urlaubKlausurValidierung.fasseZeitZusammen(urlaub, urlaub2);
+
+        //assert
+        assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
+    }
+    //TODO andere Fälle
+    @Test
+    @DisplayName("5 Urlaubsblöcke werden richtig zu 3 Urlaubsblöcken zusammengefasst")
+    void test20(){
+        //arrange
+        List<UrlaubDto> urlaube = new ArrayList<>();
+        urlaube.add( new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(9,30)));
+        urlaube.add(new UrlaubDto(datum,
+                LocalTime.of(9,0),
+                LocalTime.of(9,45)));
+        urlaube.add( new UrlaubDto(datum,
+                LocalTime.of(8,30),
+                LocalTime.of(9,15)));
+        urlaube.add( new UrlaubDto(datum,
+                LocalTime.of(10,0),
+                LocalTime.of(11,30)));
+        urlaube.add( new UrlaubDto(datum,
+                LocalTime.of(12,0),
+                LocalTime.of(13,30)));
+
+
+        List<UrlaubDto> zusammengefassterUrlaub = new ArrayList<>();
+        zusammengefassterUrlaub.add(new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(9,45)));
+        zusammengefassterUrlaub.add(new UrlaubDto(datum,
+                LocalTime.of(10,0),
+                LocalTime.of(11,30)));
+        zusammengefassterUrlaub.add( new UrlaubDto(datum,
+                LocalTime.of(12,0),
+                LocalTime.of(13,30)));
+
+
+        //act
+        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.urlaubeZusammenfuegen(urlaube);
+
+        //assert
+        assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
+    }
+    @Test
+    @DisplayName("4 Urlaubsblöcke werden richtig zu 2 zusammengefasst")
+    void test21() {
+        //arrange
+        List<UrlaubDto> urlaube = new ArrayList<>();
+        urlaube.add(new UrlaubDto(datum,
+                LocalTime.of(8, 0),
+                LocalTime.of(9, 30)));
+        urlaube.add(new UrlaubDto(datum,
+                LocalTime.of(9, 0),
+                LocalTime.of(9, 45)));
+        urlaube.add(new UrlaubDto(datum,
+                LocalTime.of(10, 30),
+                LocalTime.of(12, 15)));
+        urlaube.add(new UrlaubDto(datum,
+                LocalTime.of(12, 0),
+                LocalTime.of(13, 30)));
+
+
+        List<UrlaubDto> zusammengefassterUrlaub = new ArrayList<>();
+        zusammengefassterUrlaub.add(new UrlaubDto(datum,
+                LocalTime.of(8, 0),
+                LocalTime.of(9, 45)));
+        zusammengefassterUrlaub.add(new UrlaubDto(datum,
+                LocalTime.of(10, 30),
+                LocalTime.of(13, 30)));
+
+
+        //act
+        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.urlaubeZusammenfuegen(urlaube);
+
+        //assert
+        assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
+
+    }
+    @Test
+    @DisplayName("2 Urlaubsblöcke liegen genau übereinander- werden richtig zusammengefasst")
+    void test22() {
+        //arrange
+        List<UrlaubDto> urlaube = new ArrayList<>();
+        urlaube.add(new UrlaubDto(datum,
+                LocalTime.of(8, 0),
+                LocalTime.of(9, 30)));
+        urlaube.add(new UrlaubDto(datum,
+                LocalTime.of(8, 0),
+                LocalTime.of(9, 30)));
+
+        List<UrlaubDto> zusammengefassterUrlaub = new ArrayList<>();
+        zusammengefassterUrlaub.add(new UrlaubDto(datum,
+                LocalTime.of(8, 0),
+                LocalTime.of(9, 30)));
+
+
+
+        //act
+        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.urlaubeZusammenfuegen(urlaube);
+
+        //assert
+        assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
+
+    }
 }

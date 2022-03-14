@@ -52,9 +52,20 @@ public class UrlaubValidierung {
         return urlaub.datum().isAfter(LocalDate.now());
     }
 
+    // TODO: Auch Klausur
+    public boolean startzeitVorEndzeit(UrlaubDto urlaub){
+        return urlaub.startzeit().isBefore(urlaub.endzeit());
+    }
+
+    public boolean datumLiegtInPraktikumszeit(UrlaubDto urlaub){
+        LocalDate start = LocalDate.of(2022, 3, 6); //ein tag vorher
+        LocalDate ende = LocalDate.of(2022,3,26);
+        return urlaub.datum().isAfter(start) && ende.isAfter(urlaub.datum());
+    }
 
     public boolean urlaubIstValide(UrlaubDto urlaub){
-        return vielfachesVon15(urlaub) && dauerIstValide(urlaub) && urlaubNurVorDemTagDesUrlaubs(urlaub);
+        return vielfachesVon15(urlaub) && dauerIstValide(urlaub)
+                && urlaubNurVorDemTagDesUrlaubs(urlaub) && startzeitVorEndzeit(urlaub) && datumLiegtInPraktikumszeit(urlaub);
     }
 
 
