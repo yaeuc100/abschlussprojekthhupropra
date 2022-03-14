@@ -5,6 +5,7 @@ import de.hhu.propra.application.dto.UrlaubDto;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 //     vielfaches von 15 min
 //     startzeit mod 15 min
@@ -52,6 +53,36 @@ public class UrlaubValidierung {
         return urlaub.datum().isAfter(LocalDate.now());
     }
 
+    boolean pruefeUrlaubUeberschneidung(UrlaubDto erstesUrlaubsDto, UrlaubDto zweitesUrlaubsDto){
+        return erstesUrlaubsDto.endzeit().isAfter(zweitesUrlaubsDto.startzeit()) &&
+                zweitesUrlaubsDto.endzeit().isAfter(erstesUrlaubsDto.startzeit());
+    }
+    public List<UrlaubDto> urlaubeZusammenfuegen(List<UrlaubDto> urlaube){
+        for(int i = 0; i < urlaube.size(); i++){
+            for(int j = i + 1; j < urlaube.size(); j++){
+                if(pruefeUrlaubUeberschneidung(urlaube.get(i), urlaube.get(j))){
+                    urlaube.set(j, fasseZeitZusammen(urlaube.get(i), urlaube.get(j)));
+                    urlaube.remove(i);
+                    i--;
+                    break;
+                }
+            }
+        }
+        return urlaube;
+    }
+
+    UrlaubDto fasseZeitZusammen (UrlaubDto erstesUrlaubDto, UrlaubDto zweitesUrlaubDto){
+        LocalTime startzeit = erstesUrlaubDto.startzeit();
+        LocalTime endzeit = erstesUrlaubDto.endzeit();
+        if(zweitesUrlaubDto.startzeit().isBefore(startzeit)){
+            startzeit = zweitesUrlaubDto.startzeit();
+        }
+        if(zweitesUrlaubDto.endzeit().isAfter(endzeit)){
+            endzeit = zweitesUrlaubDto.endzeit();
+        }
+        return new UrlaubDto(erstesUrlaubDto.datum(),startzeit, endzeit);
+
+    }
     // TODO: Auch Klausur
     public boolean startzeitVorEndzeit(UrlaubDto urlaub){
         return urlaub.startzeit().isBefore(urlaub.endzeit());

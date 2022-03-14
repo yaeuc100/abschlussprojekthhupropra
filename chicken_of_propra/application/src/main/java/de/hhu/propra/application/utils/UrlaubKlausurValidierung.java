@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class UrlaubKlausurValidierung {
-
+    UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
 
 
     public UrlaubDto freieZeitDurchKlausur(Klausur klausur){
@@ -53,42 +53,15 @@ public class UrlaubKlausurValidierung {
     public List<UrlaubDto> urlaubKlausurValidierung(UrlaubDto urlaub, List<Klausur> klausur){
         List<UrlaubDto> urlaubDtos = new ArrayList<>();
         for(Klausur klausuren : klausur){
-            for(UrlaubDto urlaubDto : reduziereUrlaubDurchKlausur(urlaub, freieZeitDurchKlausur(klausuren))){
-                urlaubDtos.add(urlaubDto);
-            }
+            urlaubDtos.addAll(reduziereUrlaubDurchKlausur(urlaub, freieZeitDurchKlausur(klausuren)));
         }
+        urlaubDtos = urlaubValidierung.urlaubeZusammenfuegen(urlaubDtos);
         return urlaubDtos;
     }
-    public List<UrlaubDto> urlaubeZusammenfuegen(List<UrlaubDto> urlaube){
-        for(int i = 0; i < urlaube.size(); i++){
-            for(int j = i + 1; j < urlaube.size(); j++){
-                if(pruefeUrlaubUeberschneidung(urlaube.get(i), urlaube.get(j))){
-                    urlaube.set(j, fasseZeitZusammen(urlaube.get(i), urlaube.get(j)));
-                    urlaube.remove(i);
-                    i--;
-                    break;
-                }
-            }
-        }
-        return urlaube;
-    }
 
-     boolean pruefeUrlaubUeberschneidung(UrlaubDto erstesUrlaubsDto, UrlaubDto zweitesUrlaubsDto){
-        return erstesUrlaubsDto.endzeit().isAfter(zweitesUrlaubsDto.startzeit()) &&
-                zweitesUrlaubsDto.endzeit().isAfter(erstesUrlaubsDto.startzeit());
-    }
 
-     UrlaubDto fasseZeitZusammen (UrlaubDto erstesUrlaubDto, UrlaubDto zweitesUrlaubDto){
-        LocalTime startzeit = erstesUrlaubDto.startzeit();
-        LocalTime endzeit = erstesUrlaubDto.endzeit();
-        if(zweitesUrlaubDto.startzeit().isBefore(startzeit)){
-            startzeit = zweitesUrlaubDto.startzeit();
-        }
-        if(zweitesUrlaubDto.endzeit().isAfter(endzeit)){
-            endzeit = zweitesUrlaubDto.endzeit();
-        }
-        return new UrlaubDto(erstesUrlaubDto.datum(),startzeit, endzeit);
 
-    }
+
+
 
 }

@@ -39,23 +39,17 @@ public class StudentService {
                 .map(klausurRepository::klausurMitId)
                 .collect(Collectors.toList());
 
+        List<UrlaubDto> urlaube = findeUrlaubeAmSelbenTag(student, urlaubDto);
 
         //TODO : VERIFY KLAUSUR
+
         klausurListe = studentHatKlausur(klausurListe, urlaubDto.datum());
         if (!klausurListe.isEmpty()){
-            List<UrlaubDto> urlaubDtos = new ArrayList<>();
-            urlaubDtos.add(urlaubDto);
 
-           for(Klausur klausur : klausurListe){
-               for(UrlaubDto urlaubDto1 : urlaubDtos ){
-                   List<UrlaubDto> neueUrlaubDtos = new ArrayList<>(urlaubKlausurValidierung.urlaubKlausurValidierung(urlaubDto1, Collections.emptyList()));
-               }
-           }
+            List<UrlaubDto> urlaubDtos = new ArrayList<>();
+            urlaubDtos = urlaubKlausurValidierung.urlaubKlausurValidierung(urlaubDto, klausurListe);
+
         }
-        List<UrlaubDto> urlaube = student.getUrlaube().stream()
-                .filter(u -> u.datum().equals(urlaubDto.datum()))
-                .map(u -> new UrlaubDto(u.datum(), u.startzeit(), u.endzeit()))
-                .toList();
 
         if (urlaubValidierung.urlaubIstValide(urlaubDto) && urlaube.size() < 2) {
             if((urlaube.size() == 1) && (urlaubValidierung.zweiUrlaubeAnEinemTag(urlaubDto,urlaube.get(0)))){
@@ -67,6 +61,13 @@ public class StudentService {
         }
         return erfolg;
     }
+    public List<UrlaubDto> findeUrlaubeAmSelbenTag(Student student, UrlaubDto urlaubDto){
+        return student.getUrlaube().stream()
+                .filter(u -> u.datum().equals(urlaubDto.datum()))
+                .map(u -> new UrlaubDto(u.datum(), u.startzeit(), u.endzeit()))
+                .toList();
+    }
+
     //TODO: Notification for not enough holidays in weblayer
     private boolean fuegeUrlaubHinzu( Student student, UrlaubDto urlaubDto) {
         if (genugUrlaub(student, urlaubDto)) {
