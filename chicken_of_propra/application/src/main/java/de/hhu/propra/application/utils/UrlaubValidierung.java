@@ -53,7 +53,7 @@ public class UrlaubValidierung {
     }
 
 
-    public boolean urlaubIsValide(UrlaubDto urlaub){
+    public boolean urlaubIstValide(UrlaubDto urlaub){
         return vielfachesVon15(urlaub) && dauerIstValide(urlaub) && urlaubNurVorDemTagDesUrlaubs(urlaub);
     }
 
