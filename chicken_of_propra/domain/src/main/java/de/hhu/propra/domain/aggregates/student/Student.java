@@ -6,6 +6,7 @@ import de.hhu.propra.domain.stereotypes.AggregateRoot;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,7 +62,7 @@ public class Student {
     }
 
     public List<Urlaub> getUrlaube() {
-        return urlaube.stream().collect(Collectors.toList());
+        return new ArrayList<>(urlaube);
     }
 
     public List<Long> getKlausuren(){

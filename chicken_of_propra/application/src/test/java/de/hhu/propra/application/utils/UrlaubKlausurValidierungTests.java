@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UrlaubKlausurValidierungTests {
 
     UrlaubKlausurValidierung urlaubKlausurValidierung = new UrlaubKlausurValidierung();
+    UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
     LocalDate datum = LocalDate.of(2022,2,22);
 
 
@@ -392,7 +393,7 @@ public class UrlaubKlausurValidierungTests {
 
 
         //act
-        boolean ergebnis = urlaubKlausurValidierung.pruefeUrlaubUeberschneidung(urlaub, urlaub2);
+        boolean ergebnis = urlaubValidierung.pruefeUrlaubUeberschneidung(urlaub, urlaub2);
 
         //assert
         assertThat(ergebnis).isTrue();
@@ -414,7 +415,7 @@ public class UrlaubKlausurValidierungTests {
 
 
         //act
-        UrlaubDto ergebnis = urlaubKlausurValidierung.fasseZeitZusammen(urlaub, urlaub2);
+        UrlaubDto ergebnis = urlaubValidierung.fasseZeitZusammen(urlaub, urlaub2);
 
         //assert
         assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
@@ -455,7 +456,7 @@ public class UrlaubKlausurValidierungTests {
 
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.urlaubeZusammenfuegen(urlaube);
+        List<UrlaubDto> ergebnis = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
 
         //assert
         assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
@@ -489,7 +490,7 @@ public class UrlaubKlausurValidierungTests {
 
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.urlaubeZusammenfuegen(urlaube);
+        List<UrlaubDto> ergebnis = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
 
         //assert
         assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
@@ -515,7 +516,7 @@ public class UrlaubKlausurValidierungTests {
 
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.urlaubeZusammenfuegen(urlaube);
+        List<UrlaubDto> ergebnis = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
 
         //assert
         assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
