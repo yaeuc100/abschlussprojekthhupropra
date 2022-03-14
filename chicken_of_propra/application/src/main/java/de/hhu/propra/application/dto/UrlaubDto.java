@@ -5,6 +5,16 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 public record UrlaubDto(LocalDate datum, LocalTime startzeit, LocalTime endzeit) {
+
+    @Override
+    public String toString() {
+        return "UrlaubDto{" +
+                "datum=" + datum +
+                ", startzeit=" + startzeit +
+                ", endzeit=" + endzeit +
+                '}';
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
