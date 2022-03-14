@@ -34,7 +34,7 @@ public class StudentService {
                 .map(u -> new UrlaubDto(u.datum(), u.startzeit(), u.endzeit()))
                 .toList();
 
-        if (urlaubValidierung.urlaubIsValide(urlaubDto) && urlaube.size() < 2) {
+        if (urlaubValidierung.urlaubIstValide(urlaubDto) && urlaube.size() < 2) {
             if((urlaube.size() == 1) && (urlaubValidierung.zweiUrlaubeAnEinemTag(urlaubDto,urlaube.get(0)))){
                 erfolg = fuegeUrlaubHinzu(student, urlaubDto);
             }

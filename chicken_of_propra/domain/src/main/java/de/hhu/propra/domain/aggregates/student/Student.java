@@ -66,7 +66,7 @@ public class Student {
 
     public List<Long> getKlausuren(){
         return klausuren.stream()
-                .map(k -> k.id())
+                .map(KlausurReferenz::id)
                 .collect(Collectors.toList());
     }
 
