@@ -4,6 +4,7 @@ import de.hhu.propra.database.dao.KlausurDao;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.database.entities.KlausurEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -12,7 +13,8 @@ import java.util.List;
 @Repository
 public class KlausurRepositoryImpl implements KlausurRepository {
 
-    private final KlausurDao klausurDao;
+    @Autowired
+    private KlausurDao klausurDao;
 
     public KlausurRepositoryImpl(KlausurDao klausurDao) {
         this.klausurDao = klausurDao;
