@@ -339,7 +339,7 @@ public class UrlaubKlausurValidierungTests {
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2));
     }
 
-    @Test
+   /*  @Test
     @DisplayName("An einem Tag gibt es zwei Klausuren")
     void test17(){
         //arrange
@@ -378,7 +378,7 @@ public class UrlaubKlausurValidierungTests {
         //assert
        // assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2));
         assertThat(ergebnis).hasSize(4);
-    }
+    } */
     @Test
     @DisplayName("Urlaubsüberschneidung wird festgestellt")
     void test18(){

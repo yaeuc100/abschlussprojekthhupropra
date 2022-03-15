@@ -1,5 +1,5 @@
 package de.hhu.propra.domain.aggregates.student;
 
-record KlausurReferenz (Long id){
+public record KlausurReferenz (Long id){
 
 }

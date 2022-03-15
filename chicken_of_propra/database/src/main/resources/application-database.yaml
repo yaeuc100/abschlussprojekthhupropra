@@ -1,0 +1,11 @@
+spring:
+  flyway:
+    schemas: chicken
+    create-schemas: true
+    url: jdbc:mariadb://localhost:3322/
+    user: 'DATABASE_USER = ${DATABASE_USER}'
+    password: 'DATABASE_PASSWORD = ${DATABASE_PASSWORD}'
+  datasource:
+    url: jdbc:mariadb://localhost:3322/chicken
+      user: 'DATABASE_USER = ${DATABASE_USER}'
+      password: 'DATABASE_PASSWORD = ${DATABASE_PASSWORD}'

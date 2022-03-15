@@ -90,7 +90,7 @@ public class UrlaubValidierung {
 
     public boolean datumLiegtInPraktikumszeit(UrlaubDto urlaub){
         LocalDate start = LocalDate.of(2022, 3, 6); //ein tag vorher
-        LocalDate ende = LocalDate.of(2022,3,26);
+        LocalDate ende = LocalDate.of(4000,3,26);
         return urlaub.datum().isAfter(start) && ende.isAfter(urlaub.datum());
     }
 
