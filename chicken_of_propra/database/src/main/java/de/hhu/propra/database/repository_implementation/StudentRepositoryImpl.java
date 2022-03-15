@@ -1,4 +1,4 @@
-package repository_implementation;
+package de.hhu.propra.database.repository_implementation;
 
 import de.hhu.propra.application.repositories.StudentRepository;
 import de.hhu.propra.domain.aggregates.student.Student;

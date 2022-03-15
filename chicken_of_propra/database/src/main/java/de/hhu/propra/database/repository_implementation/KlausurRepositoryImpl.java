@@ -1,10 +1,9 @@
-package repository_implementation;
+package de.hhu.propra.database.repository_implementation;
 
-import dao.KlausurDao;
+import de.hhu.propra.database.dao.KlausurDao;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
-import entities.KlausurEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import de.hhu.propra.database.entities.KlausurEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

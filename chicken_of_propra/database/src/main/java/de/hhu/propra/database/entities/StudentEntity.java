@@ -1,7 +1,6 @@
-package entities;
+package de.hhu.propra.database.entities;
 
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
-import de.hhu.propra.domain.aggregates.student.Anwesenheit;
 import de.hhu.propra.domain.aggregates.student.KlausurReferenz;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
 import org.springframework.data.annotation.Id;

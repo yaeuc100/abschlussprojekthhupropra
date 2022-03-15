@@ -1,0 +1,6 @@
+spring:
+
+  datasource:
+    url: jdbc:mariadb://localhost:3322/chicken
+    username: 'DATABASE_USER = ${DATABASE_USER}'
+    password: 'DATABASE_PASSWORD = ${DATABASE_PASSWORD}'

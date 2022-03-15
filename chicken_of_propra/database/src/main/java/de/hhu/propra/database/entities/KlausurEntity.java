@@ -1,4 +1,4 @@
-package entities;
+package de.hhu.propra.database.entities;
 
 import org.springframework.data.annotation.Id;
 

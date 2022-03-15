@@ -1,4 +1,4 @@
-package value_objects;
+package de.hhu.propra.database.value_objects;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
