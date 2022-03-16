@@ -31,11 +31,20 @@ public class StudentService {
         this.klausurRepository = klausurRepository;
     }
 
+    // TODO: Fehler, falls Id nicht vorhanden
+    public Student studentMitId(Long studentId){
+        return studentRepository.studentMitId(studentId);
+    }
+
+    public List<String> urlaubFehler(Long studentId ){
+        return new ArrayList<>();
+    }
+
     //TODO: klausurAnmelden : -Urlaub anpassen
     //TODO: urlaubAnmelden : -pruefen, ob Klausur an dem Tag
-    public boolean urlaubAnlegen(Long studentId, UrlaubDto urlaubDto) {
+    public boolean urlaubAnlegen(String studentHandle, UrlaubDto urlaubDto) {
         boolean erfolg = false;
-        Student student = studentRepository.studentMitId(studentId);
+        Student student = studentRepository.studentMitHandle(studentHandle);
         List<Klausur> klausurListe = student.getKlausuren().stream()
                 .map(klausurRepository::klausurMitId)
                 .collect(Collectors.toList());

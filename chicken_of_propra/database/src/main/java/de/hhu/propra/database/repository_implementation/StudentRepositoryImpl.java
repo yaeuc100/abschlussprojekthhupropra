@@ -6,8 +6,9 @@ import de.hhu.propra.database.entities.StudentEntity;
 import de.hhu.propra.domain.aggregates.student.KlausurReferenz;
 import de.hhu.propra.domain.aggregates.student.Student;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
+import org.springframework.jdbc.core.DataClassRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.security.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,14 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     private final StudentDao studentDao;
 
-    public StudentRepositoryImpl(StudentDao studentDao) {
+    private final JdbcTemplate db;
+
+    public StudentRepositoryImpl(StudentDao studentDao, JdbcTemplate db) {
         this.studentDao = studentDao;
+        this.db = db;
     }
+
+
 
 
     @Override
@@ -27,6 +33,19 @@ public class StudentRepositoryImpl implements StudentRepository {
             student = buildStudent(studentDao.findById(id).get());
         }
         return student;
+    }
+
+    @Override
+    public Student studentMitHandle(String handle) {
+        String SQL = """
+                SELECT * 
+                FROM student_entity
+                WHERE handle = ?;""";
+        List<StudentEntity> entities = db.query(SQL, new DataClassRowMapper<>(StudentEntity.class), handle);
+        if(entities.isEmpty()){
+            return null;
+        }
+        return studentMitId(entities.get(0).getId());
     }
 
     @Override

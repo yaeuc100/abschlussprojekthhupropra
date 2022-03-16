@@ -1,6 +1,5 @@
 package de.hhu.propra.database.repository_implementation;
 
-import de.hhu.propra.application.repositories.StudentRepository;
 import de.hhu.propra.database.dao.StudentDao;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.KlausurReferenz;
@@ -10,17 +9,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJdbcTest
@@ -30,13 +27,16 @@ public class StudentRepositoryImplTests {
     @Autowired
     StudentDao studentDao;
 
+    @Autowired
+    JdbcTemplate db;
+
     @Test
     @DisplayName("Richtiger Student wird raus gelesen")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
     void test1(){
         //arrange
-        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao);
+        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
         Student olli = new Student(1L,"olli");
         olli.setResturlaub(0);
 
@@ -53,7 +53,7 @@ public class StudentRepositoryImplTests {
             "classpath:db/migration/loadtest.sql"})
     void test2(){
         //arrange
-        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao);
+        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
         Urlaub urlaub1 = new Urlaub(LocalDate.of(2021,1,1),
                 LocalTime.of(8,30),
                 LocalTime.of(10,30));
@@ -80,7 +80,7 @@ public class StudentRepositoryImplTests {
             "classpath:db/migration/loadtest.sql"})
     void test3(){
         //arrange
-        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao);
+        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
         Urlaub urlaub1 = new Urlaub(LocalDate.of(2021,1,1),
                 LocalTime.of(8,30),
                 LocalTime.of(10,30));
@@ -108,7 +108,7 @@ public class StudentRepositoryImplTests {
             "classpath:db/migration/loadtest.sql"})
     void test4(){
         //arrange
-        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao);
+        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
 
         //act
         List<Student> studenten = studentRepository.alleStudenten();
@@ -124,7 +124,7 @@ public class StudentRepositoryImplTests {
             "classpath:db/migration/loadtest.sql"})
     void test5(){
         //arrange
-        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao);
+        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
         Urlaub urlaub1 = new Urlaub(LocalDate.of(2021,1,1),
                 LocalTime.of(1,30),
                 LocalTime.of(2,30));
@@ -156,7 +156,7 @@ public class StudentRepositoryImplTests {
             "classpath:db/migration/loadtest.sql"})
     void test6(){
         //arrange
-        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao);
+        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
 
         Klausur klausur = new Klausur(1L,
                 "Rechnernetze",
@@ -181,7 +181,7 @@ public class StudentRepositoryImplTests {
             "classpath:db/migration/loadtest.sql"})
     void test7(){
         //arrange
-        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao);
+        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
         Urlaub urlaub1 = new Urlaub(LocalDate.of(2021,1,1),
                 LocalTime.of(8,30),
                 LocalTime.of(10,30));
@@ -205,5 +205,34 @@ public class StudentRepositoryImplTests {
         assertThat(olliAusDb.getUrlaube()).contains(urlaub1,urlaub2);
     }
 
+    @Test
+    @DisplayName("Richtiger Student wird mit Handle raus gelesen und hat klausuren und Urlaube ")
+    @Sql({"classpath:db/migration/V1__init.sql",
+            "classpath:db/migration/loadtest.sql"})
+    void test8(){
+        //arrange
+        StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
+        Urlaub urlaub1 = new Urlaub(LocalDate.of(2021,1,1),
+                LocalTime.of(8,30),
+                LocalTime.of(10,30));
+        Urlaub urlaub2 = new Urlaub(LocalDate.of(2021,1,1),
+                LocalTime.of(10,30),
+                LocalTime.of(12,30));
+
+        Student olli = new Student(1L,"olli");
+        olli.setResturlaub(0);
+        olli.addKlausurRef(new KlausurReferenz(2L));
+        olli.addKlausurRef(new KlausurReferenz(3L));
+        olli.addUrlaub(urlaub1.datum(),urlaub1.startzeit(),urlaub1.endzeit());
+        olli.addUrlaub(urlaub2.datum(),urlaub2.startzeit(),urlaub2.endzeit());
+
+        //act
+        Student olliAusDb = studentRepository.studentMitHandle("olli");
+
+        //assert
+        assertThat(olliAusDb).isEqualTo(olli);
+        assertThat(olliAusDb.getKlausuren()).contains(2L,3L);
+        assertThat(olliAusDb.getUrlaube()).contains(urlaub1,urlaub2);
+    }
 
 }

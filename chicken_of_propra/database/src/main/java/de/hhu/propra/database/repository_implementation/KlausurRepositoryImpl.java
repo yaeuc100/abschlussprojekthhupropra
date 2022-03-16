@@ -1,9 +1,12 @@
 package de.hhu.propra.database.repository_implementation;
 
+import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.database.dao.KlausurDao;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.database.entities.KlausurEntity;
+import org.springframework.jdbc.core.DataClassRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -14,8 +17,11 @@ public class KlausurRepositoryImpl implements KlausurRepository {
 
     private final KlausurDao klausurDao;
 
-    public KlausurRepositoryImpl(KlausurDao klausurDao) {
-            this.klausurDao = klausurDao;
+    private final JdbcTemplate db;
+
+    public KlausurRepositoryImpl(KlausurDao klausurDao, JdbcTemplate db) {
+        this.klausurDao = klausurDao;
+        this.db = db;
     }
 
     @Override
@@ -35,6 +41,30 @@ public class KlausurRepositoryImpl implements KlausurRepository {
         }
         return klausuren;
     }
+
+    @Override
+    public Klausur klausurMitDaten(KlausurDto klausurDto) {
+        String SQL = """
+                SELECT * 
+                FROM klausur_entity
+                WHERE name = ? AND
+                      datum = ? AND
+                      dauer = ? AND
+                      lsf = ? AND 
+                      online = ?;""";
+        List <KlausurEntity> entities = db.query(SQL,
+                new DataClassRowMapper<>(KlausurEntity.class),
+                klausurDto.name(),
+                klausurDto.datum(),
+                klausurDto.dauer(),
+                klausurDto.lsf(),
+                klausurDto.online());
+        if(entities.isEmpty()){
+            return null;
+        }
+        return build(entities.get(0));
+    }
+
 
     @Override
     public void save(Klausur klausur) {

@@ -1,11 +1,13 @@
 package de.hhu.propra.database.repository_implementation;
 
+import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.database.dao.KlausurDao;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -21,13 +23,16 @@ public class KlausurRepositoryImplTests {
   @Autowired
   KlausurDao klausurDao;
 
+  @Autowired
+  JdbcTemplate db;
+
   @Test
   @DisplayName("Richtige Klausur wird raus gelesen")
   @Sql({"classpath:db/migration/V1__init.sql",
           "classpath:db/migration/loadtest.sql"})
   void test1(){
     //arrange
-    KlausurRepositoryImpl klausurRepository = new KlausurRepositoryImpl(klausurDao);
+    KlausurRepositoryImpl klausurRepository = new KlausurRepositoryImpl(klausurDao, db);
     Klausur klausur = new Klausur(1L,
             "Rechnernetze",
              LocalDateTime.of(2020,01,01,10,00),
@@ -47,7 +52,7 @@ public class KlausurRepositoryImplTests {
           "classpath:db/migration/loadtest.sql"})
   void test2(){
     //arrange
-    KlausurRepositoryImpl klausurRepository = new KlausurRepositoryImpl(klausurDao);
+    KlausurRepositoryImpl klausurRepository = new KlausurRepositoryImpl(klausurDao, db);
 
     //act
     List<Klausur> list = klausurRepository.alleKlausuren();
@@ -63,7 +68,7 @@ public class KlausurRepositoryImplTests {
           "classpath:db/migration/loadtest.sql"})
   void test3(){
     //arrange
-    KlausurRepositoryImpl klausurRepository = new KlausurRepositoryImpl(klausurDao);
+    KlausurRepositoryImpl klausurRepository = new KlausurRepositoryImpl(klausurDao, db);
     Klausur klausur = new Klausur(null,
             "Rechnernetze",
             LocalDateTime.of(2020,01,01,10,00),
@@ -79,6 +84,28 @@ public class KlausurRepositoryImplTests {
     //assert
     assertThat(klausurRepository.alleKlausuren()).hasSize(4);
     assertThat(klausurRepository.klausurMitId(4L)).isEqualTo(erwartet);
+  }
+
+  @Test
+  @DisplayName("Klausur wird mit Daten geholt")
+  @Sql({"classpath:db/migration/V1__init.sql",
+          "classpath:db/migration/loadtest.sql"})
+  void test4(){
+    //arrange
+    KlausurRepositoryImpl klausurRepository = new KlausurRepositoryImpl(klausurDao, db);
+    KlausurDto klausur = new KlausurDto("Rechnernetze",
+            LocalDateTime.of(2020,01,01,10,00),
+            60,123456,true);
+    Klausur erwartet = new Klausur(1L,
+            "Rechnernetze",
+            LocalDateTime.of(2020,01,01,10,00),
+            60,123456,true);
+
+    //act
+    Klausur klausurAusDb = klausurRepository.klausurMitDaten(klausur);
+
+    //assert
+    assertThat(klausurAusDb).isEqualTo(erwartet);
   }
 
 }
