@@ -30,6 +30,7 @@ public class StudentService {
         this.studentRepository = studentRepository;
         this.klausurRepository = klausurRepository;
     }
+
     //TODO: klausurAnmelden : -Urlaub anpassen
     //TODO: urlaubAnmelden : -pruefen, ob Klausur an dem Tag
     public boolean urlaubAnlegen(Long studentId, UrlaubDto urlaubDto) {
@@ -44,7 +45,7 @@ public class StudentService {
         //TODO : VERIFY KLAUSUR
 
         klausurListe = studentHatKlausur(klausurListe, urlaubDto.datum());
-        if (!klausurListe.isEmpty()){
+        if (!klausurListe.isEmpty()) {
 
             List<UrlaubDto> urlaubDtos = new ArrayList<>();
             urlaubDtos = urlaubKlausurValidierung.urlaubKlausurValidierung(urlaubDto, klausurListe);
@@ -52,16 +53,16 @@ public class StudentService {
         }
 
         if (urlaubValidierung.urlaubIstValide(urlaubDto) && urlaube.size() < 2) {
-            if((urlaube.size() == 1) && (urlaubValidierung.zweiUrlaubeAnEinemTag(urlaubDto,urlaube.get(0)))){
+            if ((urlaube.size() == 1) && (urlaubValidierung.zweiUrlaubeAnEinemTag(urlaubDto, urlaube.get(0)))) {
                 erfolg = fuegeUrlaubHinzu(student, urlaubDto);
-            }
-            else if(!student.urlaubExistiert(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit())) {
+            } else if (!student.urlaubExistiert(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit())) {
                 erfolg = fuegeUrlaubHinzu(student, urlaubDto);
             }
         }
         return erfolg;
     }
-    public List<UrlaubDto> findeUrlaubeAmSelbenTag(Student student, UrlaubDto urlaubDto){
+
+    public List<UrlaubDto> findeUrlaubeAmSelbenTag(Student student, UrlaubDto urlaubDto) {
         return student.getUrlaube().stream()
                 .filter(u -> u.datum().equals(urlaubDto.datum()))
                 .map(u -> new UrlaubDto(u.datum(), u.startzeit(), u.endzeit()))
@@ -69,7 +70,7 @@ public class StudentService {
     }
 
     //TODO: Notification for not enough holidays in weblayer
-    private boolean fuegeUrlaubHinzu( Student student, UrlaubDto urlaubDto) {
+    private boolean fuegeUrlaubHinzu(Student student, UrlaubDto urlaubDto) {
         if (genugUrlaub(student, urlaubDto)) {
             student.addUrlaub(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit());
             studentRepository.save(student);
@@ -77,17 +78,18 @@ public class StudentService {
         }
         return false;
     }
-/*
-    private boolean hatKlausur(Student student, LocalDate datum){
-        List<Klausur> klausurListe = student.getKlausuren();
-    }
-*/
-    private boolean genugUrlaub(Student student, UrlaubDto urlaubDto){
+
+    /*
+        private boolean hatKlausur(Student student, LocalDate datum){
+            List<Klausur> klausurListe = student.getKlausuren();
+        }
+    */
+    private boolean genugUrlaub(Student student, UrlaubDto urlaubDto) {
         Duration duration = Duration.between(urlaubDto.startzeit(), urlaubDto.endzeit());
         return (duration.toMinutes() <= student.getResturlaub());
     }
 
-    public synchronized boolean klausurErstellen(KlausurDto klausurDto){
+    public synchronized boolean klausurErstellen(KlausurDto klausurDto) {
         Klausur klausur = new Klausur(null,
                 klausurDto.name(),
                 klausurDto.datum(),
@@ -95,7 +97,7 @@ public class StudentService {
                 klausurDto.lsf(),
                 klausurDto.online());
 
-        if(!klausurRepository.alleKlausuren().contains(klausur)) {
+        if (!klausurRepository.alleKlausuren().contains(klausur)) {
             klausurRepository.save(klausur);
             return true;
         }
@@ -103,25 +105,25 @@ public class StudentService {
     }
 
 
-    public synchronized void klausurAnmelden(Long studentId, Long klausurId){
+    public synchronized void klausurAnmelden(Long studentId, Long klausurId) {
         Student student = studentRepository.studentMitId(studentId);
         Klausur klausurAusDb = klausurRepository.klausurMitId(klausurId);
         student.addKlausur(klausurAusDb);
         studentRepository.save(student);
     }
 
-    public boolean urlaubStornieren(Long studentId, UrlaubDto urlaubDto){
+    public boolean urlaubStornieren(Long studentId, UrlaubDto urlaubDto) {
         boolean ergebnis = false;
         Student student = studentRepository.studentMitId(studentId);
 
-        if(urlaubValidierung.urlaubNurVorDemTagDesUrlaubs(urlaubDto)) {
+        if (urlaubValidierung.urlaubNurVorDemTagDesUrlaubs(urlaubDto)) {
             ergebnis = student.urlaubStornieren(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit());
             studentRepository.save(student);
         }
         return ergebnis;
     }
 
-    private List<Klausur> studentHatKlausur(List<Klausur> klausuren, LocalDate datum){
+    private List<Klausur> studentHatKlausur(List<Klausur> klausuren, LocalDate datum) {
         return klausuren.stream()
                 .filter(k -> k.datum().toLocalDate().equals(datum))
                 .toList();

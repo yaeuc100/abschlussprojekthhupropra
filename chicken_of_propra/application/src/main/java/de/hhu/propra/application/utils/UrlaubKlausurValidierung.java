@@ -13,8 +13,8 @@ public class UrlaubKlausurValidierung {
     UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
 
 
-    public UrlaubDto freieZeitDurchKlausur(Klausur klausur){
-        if(klausur.online()){
+    public UrlaubDto freieZeitDurchKlausur(Klausur klausur) {
+        if (klausur.online()) {
             return new UrlaubDto(klausur.datum().toLocalDate(),
                     klausur.datum().toLocalTime().minusMinutes(30),
                     klausur.datum().toLocalTime().plusMinutes(klausur.dauer()));
@@ -26,7 +26,7 @@ public class UrlaubKlausurValidierung {
 
     }
 
-    public List<UrlaubDto> reduziereUrlaubDurchKlausur(UrlaubDto urlaub, UrlaubDto freieZeitDurchKlausur){
+    public List<UrlaubDto> reduziereUrlaubDurchKlausur(UrlaubDto urlaub, UrlaubDto freieZeitDurchKlausur) {
         // xmax1 >= xmin2 and xmax2 >= xmin1
         List<UrlaubDto> urlaubDtos = new ArrayList<>();
         LocalTime urlaubsStart = urlaub.startzeit();                  // xmin1
@@ -35,13 +35,13 @@ public class UrlaubKlausurValidierung {
         LocalTime klausurEnde = freieZeitDurchKlausur.endzeit();      // xmax2
 
         //schaut ob Überschneidung
-        if(urlaubsEnde.isAfter(klausurStart) && klausurEnde.isAfter(urlaubsStart)){
+        if (urlaubsEnde.isAfter(klausurStart) && klausurEnde.isAfter(urlaubsStart)) {
             // Gibt es einen Urlaubsblock vor der Klausur?
-            if(klausurStart.isAfter(urlaubsStart)) {
+            if (klausurStart.isAfter(urlaubsStart)) {
                 urlaubDtos.add(new UrlaubDto(urlaub.datum(), urlaubsStart, klausurStart));
             }
             // Gibt es einen Urlaubsblock nach der Klausur?
-            if(urlaubsEnde.isAfter(klausurEnde)) {
+            if (urlaubsEnde.isAfter(klausurEnde)) {
                 urlaubDtos.add(new UrlaubDto(urlaub.datum(), klausurEnde, urlaubsEnde));
             }
             return urlaubDtos;
@@ -50,18 +50,14 @@ public class UrlaubKlausurValidierung {
         return urlaubDtos;
     }
 
-    public List<UrlaubDto> urlaubKlausurValidierung(UrlaubDto urlaub, List<Klausur> klausur){
+    public List<UrlaubDto> urlaubKlausurValidierung(UrlaubDto urlaub, List<Klausur> klausur) {
         List<UrlaubDto> urlaubDtos = new ArrayList<>();
-        for(Klausur klausuren : klausur){
+        for (Klausur klausuren : klausur) {
             urlaubDtos.addAll(reduziereUrlaubDurchKlausur(urlaub, freieZeitDurchKlausur(klausuren)));
         }
         urlaubDtos = urlaubValidierung.urlaubeZusammenfuegen(urlaubDtos);
         return urlaubDtos;
     }
-
-
-
-
 
 
 }

@@ -1,5 +1,4 @@
--- Das Klausur Aggregat
-CREATE TABLE klausur_entity
+CREATE TABLE IF NOT EXISTS klausur_entity
 (
     id     int auto_increment primary key,
     name   VARCHAR(400),
@@ -9,32 +8,26 @@ CREATE TABLE klausur_entity
     online boolean
 );
 
--- Das Student Aggregat;
-CREATE TABLE student_entity
+CREATE TABLE IF NOT EXISTS student_entity
 (
     id         int auto_increment primary key,
     handle     VARCHAR(400),
     resturlaub int
 );
 
-CREATE TABLE urlaub_value
+CREATE TABLE IF NOT EXISTS urlaub
 (
-    id int,
+    id int auto_increment,
     datum DATE,
     startzeit TIME,
     endzeit TIME,
     student_entity int,
-    PRIMARY KEY (student_entity, id),
-    FOREIGN KEY (student_entity) references student_entity(id)
+    PRIMARY KEY (student_entity, id)
 );
 
-CREATE TABLE klausur_referenz
+CREATE TABLE IF NOT EXISTS klausur_referenz
 (
     id int,
-    klausur_entity int,
-    PRIMARY KEY (klausur_entity, id),
-    FOREIGN KEY (klausur_entity) references klausur_entity(id)
-
+    student_entity int,
+    PRIMARY KEY (id, student_entity)
 );
-
-

@@ -6,10 +6,7 @@ import de.hhu.propra.domain.stereotypes.AggregateRoot;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AggregateRoot
@@ -74,9 +71,29 @@ public class Student {
     public void addKlausur (Klausur klausur){
         klausuren.add(new KlausurReferenz(klausur.id()));
     }
+    public void addKlausurRef(KlausurReferenz referenz){
+        klausuren.add(referenz);
+    }
 
     public boolean urlaubExistiert(LocalDate datum , LocalTime start , LocalTime ende){
         Urlaub urlaub = new Urlaub(datum,start,ende);
         return urlaube.contains(urlaub);
+    }
+
+    public void setResturlaub(int resturlaub) {
+        this.resturlaub = resturlaub;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return id.equals(student.id) && handle.equals(student.handle);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, handle);
     }
 }

@@ -4,7 +4,6 @@ import de.hhu.propra.database.dao.KlausurDao;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.database.entities.KlausurEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -13,11 +12,10 @@ import java.util.List;
 @Repository
 public class KlausurRepositoryImpl implements KlausurRepository {
 
-    @Autowired
-    private KlausurDao klausurDao;
+    private final KlausurDao klausurDao;
 
     public KlausurRepositoryImpl(KlausurDao klausurDao) {
-        this.klausurDao = klausurDao;
+            this.klausurDao = klausurDao;
     }
 
     @Override
@@ -50,7 +48,11 @@ public class KlausurRepositoryImpl implements KlausurRepository {
 
 
     private Klausur build(KlausurEntity klausur){
-        return new Klausur(klausur.id()
-                ,klausur.name(),klausur.datum(),klausur.dauer(),klausur.lsf(),klausur.online());
+        return new Klausur(klausur.id(),
+                klausur.name(),
+                klausur.datum(),
+                klausur.dauer(),
+                klausur.lsf(),
+                klausur.online());
     }
 }
