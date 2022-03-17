@@ -17,12 +17,11 @@ CREATE TABLE IF NOT EXISTS student_entity
 
 CREATE TABLE IF NOT EXISTS urlaub
 (
-    id int auto_increment,
+    id int auto_increment primary key ,
     datum DATE,
     startzeit TIME,
     endzeit TIME,
-    student_entity int,
-    PRIMARY KEY (student_entity, id)
+    student_entity int
 );
 
 CREATE TABLE IF NOT EXISTS klausur_referenz

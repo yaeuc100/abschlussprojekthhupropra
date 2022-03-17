@@ -89,7 +89,7 @@ public class StudentRepositoryImplTests {
                 LocalTime.of(12,30));
 
         Student olli = new Student(1L,"olli");
-        olli.setResturlaub(0);
+       // olli.setResturlaub(0);
         olli.addUrlaub(urlaub1.datum(),urlaub1.startzeit(),urlaub1.endzeit());
 
         //act

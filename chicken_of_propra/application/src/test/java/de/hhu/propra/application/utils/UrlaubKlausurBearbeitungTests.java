@@ -14,9 +14,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UrlaubKlausurValidierungTests {
+public class UrlaubKlausurBearbeitungTests {
 
-    UrlaubKlausurValidierung urlaubKlausurValidierung = new UrlaubKlausurValidierung();
+    UrlaubKlausurBearbeitung urlaubKlausurBearbeitung = new UrlaubKlausurBearbeitung();
     UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
     LocalDate datum = LocalDate.of(2022,2,22);
 
@@ -37,7 +37,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(11,0));
 
         //act
-        UrlaubDto ergebnis = urlaubKlausurValidierung.freieZeitDurchKlausur(klausur);
+        UrlaubDto ergebnis = urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(urlaubDto);
@@ -58,7 +58,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(13,0));
 
         //act
-        UrlaubDto ergebnis = urlaubKlausurValidierung.freieZeitDurchKlausur(klausur);
+        UrlaubDto ergebnis = urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(urlaubDto);
@@ -77,7 +77,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(14,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(Collections.emptyList());
@@ -95,7 +95,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(14,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(Collections.emptyList());
@@ -113,7 +113,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(13,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(Collections.emptyList());
@@ -131,7 +131,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(14,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(urlaubDto));
@@ -149,7 +149,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(9,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(urlaubDto));
@@ -169,7 +169,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(8,0),
                 LocalTime.of(9,0));
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub));
@@ -189,7 +189,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(8,0),
                 LocalTime.of(9,0));
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub));
@@ -209,7 +209,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(11,30),
                 LocalTime.of(12,0));
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub));
@@ -229,7 +229,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(11,30),
                 LocalTime.of(12,0));
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub));
@@ -252,7 +252,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(12,30),
                 LocalTime.of(13,0));
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaubVorKlausur,reduzierterUrlaubNachKlausur));
@@ -270,7 +270,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(13,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(Collections.emptyList());
@@ -288,7 +288,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(14,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(urlaubDto));
@@ -306,7 +306,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(13,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(urlaubDto));
@@ -333,7 +333,7 @@ public class UrlaubKlausurValidierungTests {
                 LocalTime.of(14,00));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.urlaubKlausurValidierung(urlaubDto,List.of(klausur));
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(urlaubDto,List.of(klausur));
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2));

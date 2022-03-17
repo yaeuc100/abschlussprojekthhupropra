@@ -5,7 +5,7 @@ import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.application.repositories.StudentRepository;
 import de.hhu.propra.application.stereotypes.ApplicationService;
-import de.hhu.propra.application.utils.UrlaubKlausurValidierung;
+import de.hhu.propra.application.utils.UrlaubKlausurBearbeitung;
 import de.hhu.propra.application.utils.UrlaubValidierung;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Student;
@@ -13,8 +13,8 @@ import de.hhu.propra.domain.aggregates.student.Student;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 public class StudentService {
     private final StudentRepository studentRepository;
     private final KlausurRepository klausurRepository;
-    private UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
-    private UrlaubKlausurValidierung urlaubKlausurValidierung = new UrlaubKlausurValidierung();
+
+    private UrlaubKlausurBearbeitung urlaubKlausurBearbeitung = new UrlaubKlausurBearbeitung();
 
 
     public StudentService(StudentRepository studentRepository, KlausurRepository klausurRepository) {
@@ -32,18 +32,18 @@ public class StudentService {
     }
 
     // TODO: Fehler, falls Id nicht vorhanden
-    public Student studentMitId(Long studentId){
+    public Student studentMitId(Long studentId) {
         return studentRepository.studentMitId(studentId);
     }
 
-    public List<String> urlaubFehler(Long studentId ){
+    public List<String> urlaubFehler(Long studentId) {
         return new ArrayList<>();
     }
 
     //TODO: klausurAnmelden : -Urlaub anpassen
     //TODO: urlaubAnmelden : -pruefen, ob Klausur an dem Tag
-    public boolean urlaubAnlegen(String studentHandle, UrlaubDto urlaubDto) {
-        boolean erfolg = false;
+    public Set<String> urlaubAnlegen(String studentHandle, UrlaubDto urlaubDto) {
+        UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
         Student student = studentRepository.studentMitHandle(studentHandle);
         List<Klausur> klausurListe = student.getKlausuren().stream()
                 .map(klausurRepository::klausurMitId)
@@ -57,21 +57,22 @@ public class StudentService {
         if (!klausurListe.isEmpty()) {
 
             List<UrlaubDto> urlaubDtos = new ArrayList<>();
-            urlaubDtos = urlaubKlausurValidierung.urlaubKlausurValidierung(urlaubDto, klausurListe);
+            urlaubDtos = urlaubKlausurBearbeitung.urlaubKlausurValidierung(urlaubDto, klausurListe);
 
         }
 
-        if (urlaubValidierung.urlaubIstValide(urlaubDto) && urlaube.size() < 2) {
+        if (urlaubValidierung.urlaubIstValide(urlaubDto) && urlaubValidierung.maxZweiUrlaube(urlaube)) {
             if ((urlaube.size() == 1) && (urlaubValidierung.zweiUrlaubeAnEinemTag(urlaubDto, urlaube.get(0)))) {
-                erfolg = fuegeUrlaubHinzu(student, urlaubDto);
+                 fuegeUrlaubHinzu(student, urlaubDto);
             } else if (!student.urlaubExistiert(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit())) {
-                erfolg = fuegeUrlaubHinzu(student, urlaubDto);
+                 fuegeUrlaubHinzu(student, urlaubDto);
             }
         }
-        return erfolg;
+        return urlaubValidierung.getFehlgeschlagen();
     }
 
     public List<UrlaubDto> findeUrlaubeAmSelbenTag(Student student, UrlaubDto urlaubDto) {
+        UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
         return student.getUrlaube().stream()
                 .filter(u -> u.datum().equals(urlaubDto.datum()))
                 .map(u -> new UrlaubDto(u.datum(), u.startzeit(), u.endzeit()))
@@ -121,9 +122,10 @@ public class StudentService {
         studentRepository.save(student);
     }
 
-    public boolean urlaubStornieren(Long studentId, UrlaubDto urlaubDto) {
+    public boolean urlaubStornieren(String studentHandle, UrlaubDto urlaubDto) {
+        UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
         boolean ergebnis = false;
-        Student student = studentRepository.studentMitId(studentId);
+        Student student = studentRepository.studentMitHandle(studentHandle);
 
         if (urlaubValidierung.urlaubNurVorDemTagDesUrlaubs(urlaubDto)) {
             ergebnis = student.urlaubStornieren(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit());
@@ -138,5 +140,8 @@ public class StudentService {
                 .toList();
 
     }
+
+
+
 
 }
