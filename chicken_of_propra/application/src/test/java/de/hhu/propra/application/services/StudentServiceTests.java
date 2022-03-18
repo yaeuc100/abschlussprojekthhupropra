@@ -7,6 +7,7 @@ import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.application.repositories.StudentRepository;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Student;
+import de.hhu.propra.domain.aggregates.student.Urlaub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -267,7 +268,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Nach einer Stornierung wird den Resturlaub angepasst")
+    @DisplayName("Nach einer Stornierung wird der Resturlaub angepasst")
     void test12() {
         //arrange
         UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000, 1, 1),
@@ -313,7 +314,7 @@ public class StudentServiceTests {
 
 
     @Test
-    @DisplayName("Urlaub wird bei Stornierungantrag am selben Tag nicht storniert")
+    @DisplayName("Urlaub wird bei Stornierungsantrag am selben Tag nicht storniert")
     void test14() {
         //arrange
         UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.now(),
@@ -332,7 +333,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Wenn ein Urlaub nicht existiert wird false beim Stornieren zurück geliefert")
+    @DisplayName("Wenn ein Urlaub nicht existiert, wird false beim Stornieren zurück geliefert")
     void test15() {
         UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000, 1, 1),
                 LocalTime.of(8, 30),
@@ -406,7 +407,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Keine Klausur Duplikate")
+    @DisplayName("Keine Klausur Duplikate bei der Erstellung")
     void test19() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("Betriebssysteme",
@@ -431,7 +432,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Zwei Klausuren koennen hinzugefuegt werden")
+    @DisplayName("Zwei Klausuren an einem Tag koennen hinzugefuegt werden")
     void test20() throws IOException {
         //arrange
         KlausurDto klausurDto1 = new KlausurDto("Betriebssysteme und Systemprogrammierung",
@@ -463,7 +464,7 @@ public class StudentServiceTests {
     @Test
     @DisplayName("Student beantragt Urlaub am ganzen Tag an dem er Klausur hat")
     void test21() throws IOException {
-
+        //arrange
         UrlaubDto dto = new UrlaubDto(LocalDate.of(2020,1,1),
                 LocalTime.of(8,30),
                 LocalTime.of(12,30));
@@ -477,19 +478,234 @@ public class StudentServiceTests {
         student.addKlausur(klausur);
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
         when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
-        UrlaubDto ergebnis1 = new UrlaubDto(LocalDate.of(2020,1,1),
+        Urlaub ergebnis1 = new Urlaub(LocalDate.of(2020,1,1),
                 LocalTime.of(8,30),
                 LocalTime.of(9,30));
 
-        UrlaubDto ergebnis2 = new UrlaubDto(LocalDate.of(2020,1,1),
+        Urlaub ergebnis2 = new Urlaub(LocalDate.of(2020,1,1),
                 LocalTime.of(11,00),
                 LocalTime.of(12,30));
 
-
+        //act
         studentService.urlaubAnlegen("x",dto);
-        
-        verify(studentService).fuegeUrlaubZusammen(dto,student,List.of(ergebnis1,ergebnis2));
+
+        //assert
+        assertThat(student.getUrlaube()).contains(ergebnis1,ergebnis2);
+        assertThat(student.getResturlaub()).isEqualTo(90);
 
     }
+
+    @Test
+    @DisplayName("Student beantragt Urlaub am ganzen Tag an dem er 2 Klausuren hat")
+    void test22() throws IOException {
+        //arrange
+        UrlaubDto dto = new UrlaubDto(LocalDate.of(2020,1,1),
+                LocalTime.of(8,30),
+                LocalTime.of(12,30));
+        Klausur klausur = new Klausur(1L,
+                "BS",
+                LocalDateTime.of(2020,1,1,9,30),
+                60,
+                123456,
+                true); // bis 10:30
+        Klausur klausur1 = new Klausur(2L,
+                "RN",
+                LocalDateTime.of(2020,1,1,11,30),
+                30,
+                222222,
+                true);
+        Student student = new Student(1L,"x");
+        student.addKlausur(klausur);
+        student.addKlausur(klausur1);
+        when(studentRepository.studentMitHandle("x")).thenReturn(student);
+        when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
+        when(klausurRepository.klausurMitId(2L)).thenReturn(klausur1);
+        Urlaub ergebnis1 = new Urlaub(LocalDate.of(2020,1,1),
+                LocalTime.of(8,30),
+                LocalTime.of(9,00));
+        Urlaub ergebnis2 = new Urlaub(LocalDate.of(2020,1,1),
+                LocalTime.of(10,30),
+                LocalTime.of(11,00));
+        Urlaub ergebnis3 = new Urlaub(LocalDate.of(2020,1,1),
+                LocalTime.of(12,0),
+                LocalTime.of(12,30));
+
+        //act
+        studentService.urlaubAnlegen("x",dto);
+
+        //assert
+        assertThat(student.getUrlaube()).contains(ergebnis1,ergebnis2,ergebnis3);
+        assertThat(student.getResturlaub()).isEqualTo(150);
+
+    }
+
+    @Test
+    @DisplayName("Student beantragt Urlaub und hat am Tag bereits Urlaub und eine Klausur")
+    void test23() throws IOException {
+        //arrange
+        UrlaubDto dto = new UrlaubDto(LocalDate.of(2020,1,1),
+                LocalTime.of(10,00),
+                LocalTime.of(12,30));
+        UrlaubDto dto2 = new UrlaubDto(LocalDate.of(2020,1,1),
+                LocalTime.of(8,30),
+                LocalTime.of(9,00));
+
+        Klausur klausur = new Klausur(1L,
+                "BS",
+                LocalDateTime.of(2020,1,1,9,30),
+                60,
+                123456,
+                true); // bis 10:30
+
+        Student student = new Student(1L,"x");
+        student.addKlausur(klausur);
+
+        when(studentRepository.studentMitHandle("x")).thenReturn(student);
+        when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
+        Urlaub ergebnis1 = new Urlaub(LocalDate.of(2020,1,1),
+                LocalTime.of(8,30),
+                LocalTime.of(9,00));
+        Urlaub ergebnis2 = new Urlaub(LocalDate.of(2020,1,1),
+                LocalTime.of(10,30),
+                LocalTime.of(12,30));
+
+        //act
+        studentService.urlaubAnlegen("x",dto2);
+        studentService.urlaubAnlegen("x",dto);
+
+        //assert
+        assertThat(student.getUrlaube()).contains(ergebnis1,ergebnis2);
+        assertThat(student.getResturlaub()).isEqualTo(90);
+    }
+
+    @Test
+    @DisplayName("Student meldet sich für eine Klausur an")
+    void test24() throws IOException {
+        //arrange
+        Klausur klausur = new Klausur(1L,
+                "BS",
+                LocalDateTime.of(2020,1,1,9,30),
+                60,
+                123456,
+                true); // bis 10:30
+
+        Student student = new Student(1L,"x");
+
+        when(studentRepository.studentMitHandle("x")).thenReturn(student);
+        when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
+
+        //act
+        studentService.klausurAnmelden("x",1L);
+
+        //assert
+        assertThat(student.getKlausuren()).contains(1L);
+    }
+
+    @Test
+    @DisplayName("Der Student hat an einem Tag Urlaub und will genau zu dieser Zeit eine Klausur angemeldet")
+    void test25() throws IOException {
+        //arrange
+        UrlaubDto dto = new UrlaubDto(LocalDate.of(2020,1,1),
+                LocalTime.of(8,30),
+                LocalTime.of(12,30));
+
+        Klausur klausur = new Klausur(1L,
+                "BS",
+                LocalDateTime.of(2020,1,1,9,30),
+                60,
+                123456,
+                true); // bis 10:30
+
+        Student student = new Student(1L,"x");
+        student.addUrlaub(dto.datum(),dto.startzeit(),dto.endzeit());
+        when(studentRepository.studentMitHandle("x")).thenReturn(student);
+        when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
+        Urlaub ergebnis1 = new Urlaub(LocalDate.of(2020,1,1),
+                LocalTime.of(8,30),
+                LocalTime.of(9,00));
+        Urlaub ergebnis2 = new Urlaub(LocalDate.of(2020,1,1),
+                LocalTime.of(10,30),
+                LocalTime.of(12,30));
+
+        //act
+        studentService.klausurAnmelden("x",1L);
+
+        //assert
+        assertThat(student.getUrlaube()).contains(ergebnis1,ergebnis2);
+        assertThat(student.getResturlaub()).isEqualTo(90);
+    }
+
+    @Test
+    @DisplayName("Der Student hat an einem Tag Urlaub und will genau zu dieser Zeit zwei Klausuren hintereinaden anmelden")
+    void test26() throws IOException {
+        //arrange
+        UrlaubDto dto = new UrlaubDto(LocalDate.of(2020,1,1),
+                LocalTime.of(8,30),
+                LocalTime.of(12,30));
+
+        Klausur klausur = new Klausur(1L,
+                "BS",
+                LocalDateTime.of(2020,1,1,9,30),
+                60,
+                123456,
+                true); //9:00 bis 10:30
+        Klausur klausur1 = new Klausur(2L,
+                "RN",
+                LocalDateTime.of(2020,1,1,11,30),
+                30,
+                222222,
+                true);
+
+        Student student = new Student(1L,"x");
+        student.addUrlaub(dto.datum(),dto.startzeit(),dto.endzeit());
+        when(studentRepository.studentMitHandle("x")).thenReturn(student);
+        when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
+        when(klausurRepository.klausurMitId(2L)).thenReturn(klausur1);
+        Urlaub ergebnis1 = new Urlaub(LocalDate.of(2020,1,1),
+                LocalTime.of(8,30),
+                LocalTime.of(9,00));
+        Urlaub ergebnis2 = new Urlaub(LocalDate.of(2020,1,1),
+                LocalTime.of(10,30),
+                LocalTime.of(11,00));
+        Urlaub ergebnis3 = new Urlaub(LocalDate.of(2020,1,1),
+                LocalTime.of(12,0),
+                LocalTime.of(12,30));
+
+        //act
+        studentService.klausurAnmelden("x",1L);
+        studentService.klausurAnmelden("x",2L);
+
+        //assert
+        assertThat(student.getUrlaube()).contains(ergebnis1,ergebnis2,ergebnis3);
+        assertThat(student.getResturlaub()).isEqualTo(150);
+    }
+
+    @Test
+    @DisplayName("Zwei Klausuren an einem Tag koennen hinzugefuegt werden")
+    void test27() throws IOException {
+        //arrange
+        Klausur klausur1 = new Klausur(1L,"Betriebssysteme und Systemprogrammierung",
+                LocalDateTime.now(),
+                90,
+                217480,
+                true);
+        Klausur klausur2 = new Klausur(2L,"Betriebssysteme und Systemprogrammierung",
+                LocalDateTime.now(),
+                90,
+                217481,
+                false);
+        Student student = new Student(1L,"x");
+        student.addKlausur(klausur1);
+        student.addKlausur(klausur2);
+        when(studentRepository.studentMitHandle("x")).thenReturn(student);
+
+        //act
+        studentService.klausurStornieren("x",klausur2);
+
+        //assert
+        assertThat(student.getKlausuren()).contains(1L);
+
+    }
+
 
 }

@@ -4,6 +4,7 @@ import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Student;
+import de.hhu.propra.domain.aggregates.student.Urlaub;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -31,14 +32,16 @@ public class StudentServiceHilfsMethoden {
     }
 
 
-    public List<UrlaubDto> findeUrlaubeAmSelbenTag(Student student, UrlaubDto urlaubDto) {
-        UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
+    public List<UrlaubDto> findeUrlaubeAmSelbenTag(Student student, LocalDate datum){
         return student.getUrlaube().stream()
-                .filter(u -> u.datum().equals(urlaubDto.datum()))
+                .filter(u -> u.datum().equals(datum))
                 .map(u -> new UrlaubDto(u.datum(), u.startzeit(), u.endzeit()))
                 .toList();
     }
 
-
-
+    public void storniereAlleUrlaubeAnTag(Student student, LocalDate datum){
+        for(UrlaubDto urlaub : findeUrlaubeAmSelbenTag(student, datum)){
+            student.urlaubStornieren(urlaub.datum(), urlaub.startzeit(), urlaub.endzeit());
+        }
+    }
 }

@@ -26,13 +26,13 @@ public class Student {
     }
 
 
-    public void addUrlaub(LocalDate datum , LocalTime start , LocalTime ende) {
+    public void addUrlaub(LocalDate datum, LocalTime start, LocalTime ende) {
         resturlaub -= Duration.between(start, ende).toMinutes();
-        urlaube.add(new Urlaub(datum,start,ende));
+        urlaube.add(new Urlaub(datum, start, ende));
     }
 
-    public boolean urlaubStornieren(LocalDate datum , LocalTime start , LocalTime ende){
-        if(urlaubExistiert(datum, start, ende)) {
+    public boolean urlaubStornieren(LocalDate datum, LocalTime start, LocalTime ende) {
+        if (urlaubExistiert(datum, start, ende)) {
             resturlaub += Duration.between(start, ende).toMinutes();
             urlaube.removeIf(u -> u.datum().equals(datum)
                     && u.startzeit().equals(start)
@@ -43,13 +43,14 @@ public class Student {
     }
 
 
-    public void addAnwesenheit(LocalDate datum , LocalTime start , LocalTime ende) {
-        anwesenheiten.add(new Anwesenheit(datum,start,ende));
+    public void addAnwesenheit(LocalDate datum, LocalTime start, LocalTime ende) {
+        anwesenheiten.add(new Anwesenheit(datum, start, ende));
     }
 
     public Long getId() {
         return id;
     }
+
     public String getHandle() {
         return handle;
     }
@@ -62,31 +63,34 @@ public class Student {
         return new ArrayList<>(urlaube);
     }
 
-    public List<Long> getKlausuren(){
+    public List<Long> getKlausuren() {
         return klausuren.stream()
                 .map(KlausurReferenz::id)
                 .collect(Collectors.toList());
     }
 
-    public void addKlausur (Klausur klausur){
+    public void addKlausur(Klausur klausur) {
         klausuren.add(new KlausurReferenz(klausur.id()));
     }
-    public void addKlausurRef(KlausurReferenz referenz){
+
+    public void addKlausurRef(KlausurReferenz referenz) {
         klausuren.add(referenz);
     }
 
-    public boolean urlaubExistiert(LocalDate datum , LocalTime start , LocalTime ende){
-        Urlaub urlaub = new Urlaub(datum,start,ende);
+    public boolean urlaubExistiert(LocalDate datum, LocalTime start, LocalTime ende) {
+        Urlaub urlaub = new Urlaub(datum, start, ende);
         return urlaube.contains(urlaub);
+    }
+
+    public void klausurStornieren(Klausur klausur) {
+        klausuren.removeIf(k -> k.id() == klausur.id());
     }
 
     public void setResturlaub(int resturlaub) {
         this.resturlaub = resturlaub;
     }
 
-    public void storniereUrlaubeAmTag(LocalDate date){
-        urlaube.removeIf(u -> u.datum().equals(date));
-    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
