@@ -33,17 +33,6 @@ public class StudentService {
         this.klausurRepository = klausurRepository;
     }
 
-    // TODO: Fehler, falls Id nicht vorhanden
-    public Student studentMitId(Long studentId) {
-        return studentRepository.studentMitId(studentId);
-    }
-
-    public List<String> urlaubFehler(Long studentId) {
-        return new ArrayList<>();
-    }
-
-    //TODO: klausurAnmelden : -Urlaub anpassen
-    //TODO: urlaubAnmelden : -pruefen, ob Klausur an dem Tag
 
     public Set<String> urlaubAnlegen(String studentHandle, UrlaubDto urlaubDto) {
         StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden(klausurRepository);
@@ -68,7 +57,6 @@ public class StudentService {
 
 
     //TODO: Notification for not enough holidays in weblayer
-
     public boolean fuegeUrlaubHinzu(Student student, UrlaubDto urlaubDto) {
         StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden(klausurRepository);
         if (hilfsMethoden.genugUrlaub(student, urlaubDto)) {
@@ -126,9 +114,6 @@ public class StudentService {
         studentRepository.save(student);
     }
 
-
-    //TODO : KLAUSUR
-    // public boolean
     private List<Klausur> holeAlleKlausurenMitID(Student student) {
         return student.getKlausuren().stream()
                 .map(klausurRepository::klausurMitId)
@@ -151,5 +136,4 @@ public class StudentService {
         }
         studentRepository.save(student);
     }
-
 }
