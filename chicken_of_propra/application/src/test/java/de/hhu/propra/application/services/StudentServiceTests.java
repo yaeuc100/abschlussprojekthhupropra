@@ -267,7 +267,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("nach einer Stornierung wird den Resturlaub angepasst")
+    @DisplayName("Nach einer Stornierung wird den Resturlaub angepasst")
     void test12() {
         //arrange
         UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000, 1, 1),
@@ -458,6 +458,38 @@ public class StudentServiceTests {
 
         //assert
         assertThat(ergebnis).isTrue();
+    }
+
+    @Test
+    @DisplayName("Student beantragt Urlaub am ganzen Tag an dem er Klausur hat")
+    void test21() throws IOException {
+
+        UrlaubDto dto = new UrlaubDto(LocalDate.of(2020,1,1),
+                LocalTime.of(8,30),
+                LocalTime.of(12,30));
+        Klausur klausur = new Klausur(1L,
+                "BS",
+                LocalDateTime.of(2020,1,1,10,00),
+                60,
+                123456,
+                true);
+        Student student = new Student(1L,"x");
+        student.addKlausur(klausur);
+        when(studentRepository.studentMitHandle("x")).thenReturn(student);
+        when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
+        UrlaubDto ergebnis1 = new UrlaubDto(LocalDate.of(2020,1,1),
+                LocalTime.of(8,30),
+                LocalTime.of(9,30));
+
+        UrlaubDto ergebnis2 = new UrlaubDto(LocalDate.of(2020,1,1),
+                LocalTime.of(11,00),
+                LocalTime.of(12,30));
+
+
+        studentService.urlaubAnlegen("x",dto);
+        
+        verify(studentService).fuegeUrlaubZusammen(dto,student,List.of(ergebnis1,ergebnis2));
+
     }
 
 }

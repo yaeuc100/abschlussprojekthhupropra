@@ -84,6 +84,9 @@ public class Student {
         this.resturlaub = resturlaub;
     }
 
+    public void storniereUrlaubeAmTag(LocalDate date){
+        urlaube.removeIf(u -> u.datum().equals(date));
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
