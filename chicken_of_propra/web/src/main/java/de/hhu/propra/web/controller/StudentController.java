@@ -4,11 +4,13 @@ import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.services.KlausurService;
 import de.hhu.propra.application.services.StudentService;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Controller

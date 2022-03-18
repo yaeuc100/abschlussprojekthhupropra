@@ -1,3 +1,4 @@
+
 CREATE TABLE IF NOT EXISTS klausur_entity
 (
     id     int auto_increment primary key,
