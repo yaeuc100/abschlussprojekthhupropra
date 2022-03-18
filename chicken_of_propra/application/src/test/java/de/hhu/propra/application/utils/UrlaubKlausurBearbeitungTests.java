@@ -339,46 +339,42 @@ public class UrlaubKlausurBearbeitungTests {
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2));
     }
 
-   /*  @Test
+    @Test
     @DisplayName("An einem Tag gibt es zwei Klausuren")
     void test17(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        UrlaubDto beantragterUrlaub = new UrlaubDto(datum,
                 LocalTime.of(8,0),
-                LocalTime.of(14,0));
+                LocalTime.of(14,30));
         Klausur klausur = new Klausur(1L,
                 "mündliche Prüfung Ana 2",
                 LocalDateTime.of(2022,2,22,10,0),
-                60,
+                30,
                 12345,
-                true);
+                true);   //liefert 9:30 - 10:30
         Klausur zweiteKlausur = new Klausur(1L,
                 "mündliche Prüfung Ana 3",
                 LocalDateTime.of(2022,2,22,11,30),
                 60,
                 123234,
-                true);
+                true); //liefert 11:00 - 12.30
         UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,30));
         UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
-                LocalTime.of(11,0),
-                LocalTime.of(14,00));
+                LocalTime.of(10,30),
+                LocalTime.of(11,00));
         UrlaubDto reduzierterUrlaub3 = new UrlaubDto(datum,
-                LocalTime.of(8,0),
-                LocalTime.of(9,30));
-        UrlaubDto reduzierterUrlaub4 = new UrlaubDto(datum,
-                LocalTime.of(11,0),
-                LocalTime.of(14,00));
+                LocalTime.of(12,30),
+                LocalTime.of(14,30));
 
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurValidierung.urlaubKlausurValidierung(urlaubDto,List.of(klausur, zweiteKlausur));
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,List.of(klausur, zweiteKlausur));
 
         //assert
-       // assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2));
-        assertThat(ergebnis).hasSize(4);
-    } */
+        assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2, reduzierterUrlaub3));
+    }
     @Test
     @DisplayName("Urlaubsüberschneidung wird festgestellt")
     void test18(){
@@ -513,13 +509,237 @@ public class UrlaubKlausurBearbeitungTests {
                 LocalTime.of(8, 0),
                 LocalTime.of(9, 30)));
 
-
-
         //act
         List<UrlaubDto> ergebnis = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
 
         //assert
         assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
-
     }
+
+    @Test
+    @DisplayName("Am ganzen Tag Urlaub eingetragen mit 3 Klausuren")
+    void test23(){
+        //arrange
+        UrlaubDto beantragterUrlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(14,30));
+        Klausur klausur = new Klausur(1L,
+                "mündliche Prüfung Ana 2",
+                LocalDateTime.of(2022,2,22,10,0),
+                30,
+                12345,
+                true);   //liefert 9:30 - 10:30
+        Klausur zweiteKlausur = new Klausur(1L,
+                "mündliche Prüfung Ana 3",
+                LocalDateTime.of(2022,2,22,11,30),
+                30,
+                123234,
+                true); //liefert 11:00 - 12.00
+        Klausur dritteKlausur = new Klausur(1L,
+                "mündliche Prüfung Ana 3",
+                LocalDateTime.of(2022,2,22,13,30),
+                30,
+                123234,
+                true); //liefert 13:00 - 14.00
+        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(9,30));
+        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+                LocalTime.of(10,30),
+                LocalTime.of(11,0));
+        UrlaubDto reduzierterUrlaub3 = new UrlaubDto(datum,
+                LocalTime.of(12,0),
+                LocalTime.of(13,0));
+        UrlaubDto reduzierterUrlaub4 = new UrlaubDto(datum,
+                LocalTime.of(14,0),
+                LocalTime.of(14,30));
+
+        //act
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,List.of(klausur, zweiteKlausur,dritteKlausur));
+
+        //assert
+        assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2 ,reduzierterUrlaub3,reduzierterUrlaub4));
+    }
+
+    @Test
+    @DisplayName("Man versucht Urlaub am ganzen Tag anzumelden, am Tag gibt es drei Klausuren," +
+            " davon ist eine am Ende des Tages")
+    void test24(){
+        //arrange
+        UrlaubDto beantragterUrlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(14,30));
+        Klausur klausur = new Klausur(1L,
+                "mündliche Prüfung Ana 2",
+                LocalDateTime.of(2022,2,22,10,0),
+                30,
+                12345,
+                true);   //liefert 9:30 - 10:30
+        Klausur zweiteKlausur = new Klausur(1L,
+                "mündliche Prüfung Ana 3",
+                LocalDateTime.of(2022,2,22,11,30),
+                30,
+                123234,
+                true); //liefert 11:00 - 12.00
+        Klausur dritteKlausur = new Klausur(1L,
+                "mündliche Prüfung Ana 3",
+                LocalDateTime.of(2022,2,22,13,30),
+                60,
+                123234,
+                true); //liefert 13:00 - 14.00
+        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(9,30));
+        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+                LocalTime.of(10,30),
+                LocalTime.of(11,0));
+        UrlaubDto reduzierterUrlaub3 = new UrlaubDto(datum,
+                LocalTime.of(12,0),
+                LocalTime.of(13,0));
+
+        //act
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,List.of(klausur, zweiteKlausur,dritteKlausur));
+
+        //assert
+        assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2 ,reduzierterUrlaub3));
+    }
+
+    @Test
+    @DisplayName("Man versucht Urlaub für den gesamten Tag anzumelden, am Tag gibt es zwei Klausuren, " +
+            "dabei ist eine am Anfang und eine am Ende des Tages")
+    void test25(){
+        //arrange
+        UrlaubDto beantragterUrlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(14,30));
+        Klausur klausur = new Klausur(1L,
+                "mündliche Prüfung Ana 2",
+                LocalDateTime.of(2022,2,22,8,30),
+                90,
+                12345,
+                true);   //liefert 8:00 - 10:00
+        Klausur zweiteKlausur = new Klausur(1L,
+                "mündliche Prüfung Ana 3",
+                LocalDateTime.of(2022,2,22,11,30),
+                30,
+                123234,
+                true); //liefert 11:00 - 12.00
+        Klausur dritteKlausur = new Klausur(1L,
+                "mündliche Prüfung Ana 10",
+                LocalDateTime.of(2022,2,22,13,30),
+                60,
+                123234,
+                true); //liefert 13:00 - 14.00
+        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+                LocalTime.of(10,0),
+                LocalTime.of(11,00));
+        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+                LocalTime.of(12,0),
+                LocalTime.of(13,0));
+
+        //act
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,List.of(klausur, zweiteKlausur,dritteKlausur));
+
+        //assert
+        assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2));
+    }
+
+    @Test
+    @DisplayName("Am ganzen Tag Urlaub eingetragen mit 3 Klausuren")
+    void test26(){
+        //arrange
+        UrlaubDto beantragterUrlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(9,0));
+        UrlaubDto beantragterUrlaub1 = new UrlaubDto(datum,
+                LocalTime.of(10,0),
+                LocalTime.of(13,30));
+        UrlaubDto beantragterUrlaub2 = new UrlaubDto(datum,
+                LocalTime.of(14,15),
+                LocalTime.of(14,30));
+
+        Klausur klausur = new Klausur(1L,
+                "mündliche Prüfung Ana 2",
+                LocalDateTime.of(2022,2,22,10,0),
+                30,
+                12345,
+                true);   //liefert 9:30 - 10:30
+        Klausur zweiteKlausur = new Klausur(1L,
+                "mündliche Prüfung Ana 3",
+                LocalDateTime.of(2022,2,22,11,30),
+                30,
+                123234,
+                true); //liefert 11:00 - 12.00
+        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(9,0));
+        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+                LocalTime.of(10,30),
+                LocalTime.of(11,0));
+        UrlaubDto reduzierterUrlaub3 = new UrlaubDto(datum,
+                LocalTime.of(12,0),
+                LocalTime.of(13,30));
+        UrlaubDto reduzierterUrlaub4 = new UrlaubDto(datum,
+                LocalTime.of(14,15),
+                LocalTime.of(14,30));
+
+
+        //act
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.
+                reduziereUrlaubDurchMehrereKlausuren(List.of(beantragterUrlaub,beantragterUrlaub1, beantragterUrlaub2),
+                List.of(klausur, zweiteKlausur));
+
+        //assert
+        assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2 ,reduzierterUrlaub3, reduzierterUrlaub4));
+    }
+
+    @Test
+    @DisplayName("Man möchte drei Urlaube anmelden, diese schließen passend mit zwei Klausuren ab")
+    void test27(){
+        //arrange
+        UrlaubDto beantragterUrlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(9,0));
+        UrlaubDto beantragterUrlaub1 = new UrlaubDto(datum,
+                LocalTime.of(10,0),
+                LocalTime.of(13,00));
+        UrlaubDto beantragterUrlaub2 = new UrlaubDto(datum,
+                LocalTime.of(14,15),
+                LocalTime.of(14,30));
+
+        Klausur klausur = new Klausur(1L,
+                "mündliche Prüfung Ana 2",
+                LocalDateTime.of(2022,2,22,9,30),
+                30,
+                12345,
+                true);   //liefert 9:00 - 10:00
+        Klausur zweiteKlausur = new Klausur(1L,
+                "mündliche Prüfung Ana 3",
+                LocalDateTime.of(2022,2,22,13,30),
+                45,
+                123234,
+                true); //liefert 11:00 - 12.00
+        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+                LocalTime.of(8,0),
+                LocalTime.of(9,0));
+        UrlaubDto reduzierterUrlaub1 = new UrlaubDto(datum,
+                LocalTime.of(10,0),
+                LocalTime.of(13,0));
+        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+                LocalTime.of(14,15),
+                LocalTime.of(14,30));
+
+
+        //act
+        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.
+                reduziereUrlaubDurchMehrereKlausuren(List.of(beantragterUrlaub,beantragterUrlaub1, beantragterUrlaub2),
+                        List.of(klausur, zweiteKlausur));
+
+        //assert
+        assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub1 ,reduzierterUrlaub2));
+    }
+
+    //TODO::ANDERE FÄLLE
+
+
 }

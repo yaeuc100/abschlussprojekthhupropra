@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -135,7 +136,9 @@ public class StudentServiceTests {
         UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000, 1, 1),
                 LocalTime.of(10, 30),
                 LocalTime.of(13, 30));
-        UrlaubDto urlaubDto2 = new UrlaubDto(LocalDate.of(3000, 1, 2), LocalTime.of(10, 30), LocalTime.of(12, 00));
+        UrlaubDto urlaubDto2 = new UrlaubDto(LocalDate.of(3000, 1, 2),
+                LocalTime.of(10, 30),
+                LocalTime.of(12, 0));
         Student student = new Student(1L, "x");
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
 
@@ -267,8 +270,12 @@ public class StudentServiceTests {
     @DisplayName("nach einer Stornierung wird den Resturlaub angepasst")
     void test12() {
         //arrange
-        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000, 1, 1), LocalTime.of(8, 30), LocalTime.of(10, 30));
-        UrlaubDto urlaubDto2 = new UrlaubDto(LocalDate.of(3000, 1, 1), LocalTime.of(12, 00), LocalTime.of(12, 30));
+        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000, 1, 1),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 30));
+        UrlaubDto urlaubDto2 = new UrlaubDto(LocalDate.of(3000, 1, 1),
+                LocalTime.of(12, 0),
+                LocalTime.of(12, 30));
         Student student = new Student(1L, "x");
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
 
@@ -285,8 +292,12 @@ public class StudentServiceTests {
     @DisplayName("Es werden zwei gueltige Urlaube an einem Tag hinzugefuegt und einer davon storniert")
     void test13() {
         //arrange
-        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000, 1, 1), LocalTime.of(8, 30), LocalTime.of(10, 30));
-        UrlaubDto urlaubDto2 = new UrlaubDto(LocalDate.of(3000, 1, 1), LocalTime.of(12, 00), LocalTime.of(12, 30));
+        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000, 1, 1),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 30));
+        UrlaubDto urlaubDto2 = new UrlaubDto(LocalDate.of(3000, 1, 1),
+                LocalTime.of(12, 0),
+                LocalTime.of(12, 30));
         Student student = new Student(1L, "x");
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
 
@@ -305,7 +316,9 @@ public class StudentServiceTests {
     @DisplayName("Urlaub wird bei Stornierungantrag am selben Tag nicht storniert")
     void test14() {
         //arrange
-        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.now(), LocalTime.of(8, 30), LocalTime.of(10, 30));
+        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.now(),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 30));
         Student student = new Student(1L, "x");
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
 
@@ -321,7 +334,9 @@ public class StudentServiceTests {
     @Test
     @DisplayName("Wenn ein Urlaub nicht existiert wird false beim Stornieren zurück geliefert")
     void test15() {
-        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000, 1, 1), LocalTime.of(8, 30), LocalTime.of(10, 30));
+        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000, 1, 1),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 30));
         Student student = new Student(1L, "x");
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
 
@@ -336,8 +351,12 @@ public class StudentServiceTests {
     @DisplayName("Nach einer Stornierung wird die save Methode aufgerufen")
     void test16() {
         //arrange
-        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000, 1, 1), LocalTime.of(8, 30), LocalTime.of(10, 30));
-        UrlaubDto urlaubDto2 = new UrlaubDto(LocalDate.of(3000, 1, 1), LocalTime.of(12, 00), LocalTime.of(12, 30));
+        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.of(3000, 1, 1),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 30));
+        UrlaubDto urlaubDto2 = new UrlaubDto(LocalDate.of(3000, 1, 1),
+                LocalTime.of(12, 0),
+                LocalTime.of(12, 30));
         Student student = new Student(1L, "x");
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
 
@@ -354,7 +373,9 @@ public class StudentServiceTests {
     @DisplayName("Urlaub wird bei Stornierungantrag am selben Tag nicht storniert und nicht gespeichert")
     void test17() {
         //arrange
-        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.now(), LocalTime.of(8, 30), LocalTime.of(10, 30));
+        UrlaubDto urlaubDto1 = new UrlaubDto(LocalDate.now(),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 30));
         Student student = new Student(1L, "x");
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
 
@@ -368,9 +389,13 @@ public class StudentServiceTests {
 
     @Test
     @DisplayName("Neue Klausur wird erstellt")
-    void test18() {
+    void test18() throws IOException {
         //arrange
-        KlausurDto klausurDto = new KlausurDto("Betriebssysteme", LocalDateTime.now(), 90, 217480, true);
+        KlausurDto klausurDto = new KlausurDto("Betriebssysteme und Systemprogrammierung",
+                LocalDateTime.now(),
+                90,
+                217480,
+                true);
         when(klausurRepository.alleKlausuren()).thenReturn(Collections.emptyList());
 
         //act
@@ -382,9 +407,13 @@ public class StudentServiceTests {
 
     @Test
     @DisplayName("Keine Klausur Duplikate")
-    void test19() {
+    void test19() throws IOException {
         //arrange
-        KlausurDto klausurDto = new KlausurDto("Betriebssysteme", LocalDateTime.now(), 90, 217480, true);
+        KlausurDto klausurDto = new KlausurDto("Betriebssysteme",
+                LocalDateTime.now(),
+                90,
+                217480,
+                true);
         List<Klausur> klausurListe = new ArrayList<>();
         klausurListe.add(new Klausur(null,
                 klausurDto.name(),
@@ -403,10 +432,18 @@ public class StudentServiceTests {
 
     @Test
     @DisplayName("Zwei Klausuren koennen hinzugefuegt werden")
-    void test20() {
+    void test20() throws IOException {
         //arrange
-        KlausurDto klausurDto1 = new KlausurDto("Betriebssysteme", LocalDateTime.now(), 90, 217480, true);
-        KlausurDto klausurDto2 = new KlausurDto("Betriebssysteme", LocalDateTime.now(), 90, 217480, false);
+        KlausurDto klausurDto1 = new KlausurDto("Betriebssysteme und Systemprogrammierung",
+                LocalDateTime.now(),
+                90,
+                217480,
+                true);
+        KlausurDto klausurDto2 = new KlausurDto("Betriebssysteme und Systemprogrammierung",
+                LocalDateTime.now(),
+                90,
+                217480,
+                false);
         List<Klausur> klausurListe = new ArrayList<>();
         klausurListe.add(new Klausur(null,
                 klausurDto1.name(),

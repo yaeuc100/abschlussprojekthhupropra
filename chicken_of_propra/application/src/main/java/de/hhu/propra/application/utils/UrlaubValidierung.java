@@ -17,7 +17,7 @@ import java.util.Set;
 //     entwerder 240 oder 150 max
 //     max 2 und falls 2 gibt dann mit 90 min abstand zwischen dauer der 2. und 1. urlaub
 //     urlaub bis 00.00 uhr anmelden
-
+    //TODO Praktikumsstart
 public class UrlaubValidierung {
 
     private Set<String> fehlgeschlagen = new HashSet<>();

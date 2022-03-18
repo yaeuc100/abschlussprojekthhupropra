@@ -5,11 +5,13 @@ import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.application.repositories.StudentRepository;
 import de.hhu.propra.application.stereotypes.ApplicationService;
+import de.hhu.propra.application.utils.KlausurValidierung;
 import de.hhu.propra.application.utils.UrlaubKlausurBearbeitung;
 import de.hhu.propra.application.utils.UrlaubValidierung;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Student;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -42,27 +44,22 @@ public class StudentService {
 
     //TODO: klausurAnmelden : -Urlaub anpassen
     //TODO: urlaubAnmelden : -pruefen, ob Klausur an dem Tag
+
     public Set<String> urlaubAnlegen(String studentHandle, UrlaubDto urlaubDto) {
         UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
         Student student = studentRepository.studentMitHandle(studentHandle);
-        List<Klausur> klausurListe = student.getKlausuren().stream()
-                .map(klausurRepository::klausurMitId)
-                .collect(Collectors.toList());
+        List<UrlaubDto> urlaubeAnTag = findeUrlaubeAmSelbenTag(student, urlaubDto);
+        List<Klausur> klausurenVonStudent = holeAlleKlausurenMitID(student);
+        List<Klausur> klausurenVonStudentAnTag = studentHatKlausurAnTag(klausurenVonStudent, urlaubDto.datum());
 
-        List<UrlaubDto> urlaube = findeUrlaubeAmSelbenTag(student, urlaubDto);
-
-        //TODO : VERIFY KLAUSUR
-
-        klausurListe = studentHatKlausur(klausurListe, urlaubDto.datum());
-        if (!klausurListe.isEmpty()) {
-
+        if (!klausurenVonStudentAnTag.isEmpty()) {
             List<UrlaubDto> urlaubDtos = new ArrayList<>();
-            urlaubDtos = urlaubKlausurBearbeitung.urlaubKlausurValidierung(urlaubDto, klausurListe);
+            urlaubDtos = urlaubKlausurBearbeitung.urlaubKlausurValidierung(urlaubDto, klausurenVonStudentAnTag);
 
         }
 
-        if (urlaubValidierung.urlaubIstValide(urlaubDto) && urlaubValidierung.maxZweiUrlaube(urlaube)) {
-            if ((urlaube.size() == 1) && (urlaubValidierung.zweiUrlaubeAnEinemTag(urlaubDto, urlaube.get(0)))) {
+        if (urlaubValidierung.urlaubIstValide(urlaubDto) && urlaubValidierung.maxZweiUrlaube(urlaubeAnTag)) {
+            if ((urlaubeAnTag.size() == 1) && (urlaubValidierung.zweiUrlaubeAnEinemTag(urlaubDto, urlaubeAnTag.get(0)))) {
                  fuegeUrlaubHinzu(student, urlaubDto);
             } else if (!student.urlaubExistiert(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit())) {
                  fuegeUrlaubHinzu(student, urlaubDto);
@@ -99,7 +96,8 @@ public class StudentService {
         return (duration.toMinutes() <= student.getResturlaub());
     }
 
-    public synchronized boolean klausurErstellen(KlausurDto klausurDto) {
+    public synchronized boolean klausurErstellen(KlausurDto klausurDto) throws IOException {
+        KlausurValidierung klausurValidierung = new KlausurValidierung();
         Klausur klausur = new Klausur(null,
                 klausurDto.name(),
                 klausurDto.datum(),
@@ -107,14 +105,17 @@ public class StudentService {
                 klausurDto.lsf(),
                 klausurDto.online());
 
-        if (!klausurRepository.alleKlausuren().contains(klausur)) {
-            klausurRepository.save(klausur);
-            return true;
+
+        if (!klausurValidierung.klausurLiegtInDb(klausurRepository.alleKlausuren(),klausur)) {
+            if(klausurValidierung.klausurIstValide(klausurDto)){
+                klausurRepository.save(klausur);
+                return true;
+            }
         }
         return false;
     }
 
-
+    //TODO reduziere nach klausuranmeldung den Urlaub
     public synchronized void klausurAnmelden(Long studentId, Long klausurId) {
         Student student = studentRepository.studentMitId(studentId);
         Klausur klausurAusDb = klausurRepository.klausurMitId(klausurId);
@@ -133,12 +134,19 @@ public class StudentService {
         }
         return ergebnis;
     }
+    //TODO : KLAUSUR STORNIEREN
 
-    private List<Klausur> studentHatKlausur(List<Klausur> klausuren, LocalDate datum) {
+    private List<Klausur> studentHatKlausurAnTag(List<Klausur> klausuren, LocalDate datum) {
         return klausuren.stream()
                 .filter(k -> k.datum().toLocalDate().equals(datum))
                 .toList();
 
+    }
+
+    private List<Klausur> holeAlleKlausurenMitID(Student student) {
+        return student.getKlausuren().stream()
+                .map(klausurRepository::klausurMitId)
+                .collect(Collectors.toList());
     }
 
 
