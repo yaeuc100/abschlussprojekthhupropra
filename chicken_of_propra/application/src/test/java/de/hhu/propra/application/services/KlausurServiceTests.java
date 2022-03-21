@@ -27,9 +27,9 @@ public class KlausurServiceTests {
         this.klausurService = new KlausurService(klausurRepository);
 
     }
-
+    //TODO Datum zu String
     @Test
-    @DisplayName("")
+    @DisplayName("Alle Klausuren werden korrekt zurückgegeben")
     void test1(){
         Klausur klausur = new Klausur(1L,
                 "BS",
@@ -45,23 +45,11 @@ public class KlausurServiceTests {
                 123456,
                 true);
 
-        KlausurDto klausurDto = new KlausurDto(
-                "BS",
-                klausur.datum(),
-                10,
-                123456,
-                true);
 
-        KlausurDto klausurDto1 = new KlausurDto(
-                "RN",
-                klausur1.datum(),
-                100,
-                123456,
-                true);
         when(klausurRepository.alleKlausuren()).thenReturn(List.of(klausur,klausur1));
 
-        List<KlausurDto> klausurDtos = klausurService.alleKlausuren();
+        List<Klausur> klausurDtos = klausurService.alleKlausuren();
 
-        assertThat(klausurDtos).contains(klausurDto,klausurDto1);
+        assertThat(klausurDtos).contains(klausur1,klausur);
     }
 }

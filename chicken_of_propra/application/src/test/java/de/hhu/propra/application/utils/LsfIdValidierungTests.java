@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,12 +20,13 @@ public class LsfIdValidierungTests {
     //TODO Set mit fehlermeldung testen
 
     @Test
-    @DisplayName("name passt nicht zu lsf")
+    @DisplayName("Der Name der Klausur passt nicht zur lsf")
     void test() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("aaksfjgakqio",
-                LocalDateTime.now(),
-                120,
+                LocalDate.of(2022,3,17).toString(),
+                LocalTime.of(10,30).toString(),
+                LocalTime.of(11,0).toString(),
                 222916,
                 true);
 
@@ -40,8 +43,9 @@ public class LsfIdValidierungTests {
     void test2() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("Einführung in die Computerlinguistik",
-                LocalDateTime.now(),
-                120,
+                LocalDate.of(2022,3,17).toString(),
+                LocalTime.of(10,30).toString(),
+                LocalTime.of(11,0).toString(),
                 222916,
                 true);
 
@@ -56,8 +60,9 @@ public class LsfIdValidierungTests {
     void test3() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("Einführung in die Computerlinguistik",
-                LocalDateTime.now(),
-                120,
+                LocalDate.of(2022,3,17).toString(),
+                LocalTime.of(10,30).toString(),
+                LocalTime.of(11,0).toString(),
                 222916,
                 true);
 

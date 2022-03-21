@@ -3,6 +3,7 @@ package de.hhu.propra.application.services;
 import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.application.stereotypes.ApplicationService;
+import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,15 +17,8 @@ public class KlausurService {
         this.klausurRepository = klausurRepository;
     }
 
-    public List<KlausurDto> alleKlausuren(){
-        return klausurRepository.alleKlausuren()
-                .stream()
-                .map(k -> new KlausurDto(k.name(),
-                        k.datum(),
-                        k.dauer(),
-                        k.lsf(),
-                        k.online())).
-                toList();
+    public List<Klausur> alleKlausuren(){
+        return klausurRepository.alleKlausuren();
     }
 
 

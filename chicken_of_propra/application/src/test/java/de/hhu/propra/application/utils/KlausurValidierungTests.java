@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,8 +22,9 @@ public class KlausurValidierungTests {
         //arrange
         KlausurValidierung klausurValidierung = new KlausurValidierung();
         KlausurDto klausurDto = new KlausurDto("x" ,
-                LocalDateTime.of(2022,3,17,10,0).plusYears(5000),
-                30,
+                LocalDate.of(6000,10,10).toString(),
+                LocalTime.of(10,30).toString(),
+                LocalTime.of(11,0).toString(),
                 123456,
                 true);
 
@@ -33,12 +36,14 @@ public class KlausurValidierungTests {
     }
 
     @Test
-    @DisplayName("lsf id hat falsche Länge")
+    @DisplayName("Lsf id hat die falsche Länge")
     void test2() throws IOException {
         //arrange
         KlausurValidierung klausurValidierung = new KlausurValidierung();
         KlausurDto klausurDto = new KlausurDto("x" ,
-                LocalDateTime.of(2022,3,17,10,0),                30,
+                LocalDate.of(2022,3,17).toString(),
+                LocalTime.of(10,30).toString(),
+                LocalTime.of(11,0).toString(),
                 12345,
                 true);
 
@@ -55,7 +60,9 @@ public class KlausurValidierungTests {
         //arrange
         KlausurValidierung klausurValidierung = new KlausurValidierung();
         KlausurDto klausurDto = new KlausurDto("x" ,
-                LocalDateTime.of(2022,3,17,10,0),                30,
+                LocalDate.of(2022,3,17).toString(),
+                LocalTime.of(10,30).toString(),
+                LocalTime.of(11,0).toString(),
                 222916,
                 true);
 

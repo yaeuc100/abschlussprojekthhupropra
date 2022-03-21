@@ -51,13 +51,14 @@ public class KlausurRepositoryImpl implements KlausurRepository {
                       dauer = ? AND
                       lsf = ? AND 
                       online = ?;""";
+        Klausur klausur = KlausurDto.toKlausur(klausurDto);
         List <KlausurEntity> entities = db.query(SQL,
                 new DataClassRowMapper<>(KlausurEntity.class),
-                klausurDto.name(),
-                klausurDto.datum(),
-                klausurDto.dauer(),
-                klausurDto.lsf(),
-                klausurDto.online());
+                klausur.name(),
+                klausur.datum(),
+                klausur.dauer(),
+                klausur.lsf(),
+                klausur.online());
         if(entities.isEmpty()){
             return null;
         }

@@ -1,0 +1,20 @@
+.formular {
+    background-color: #e7f1ff;
+    padding: 2rem;
+}
+
+.bg-error {
+    background-color: #ea868f;
+}
+
+.bg-blue {
+    background-color: #0057B8;
+}
+
+.bg-yellow {
+    background-color: #FFD700;
+}
+
+.studilist {
+    list-style-type: none;
+}

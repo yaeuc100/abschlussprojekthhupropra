@@ -425,8 +425,9 @@ public class StudentServiceTests {
     void test18() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("Betriebssysteme und Systemprogrammierung",
-                LocalDateTime.now(),
-                90,
+                LocalDate.now().toString(),
+                LocalTime.now().toString(),
+                LocalTime.now().plusMinutes(90).toString(),
                 217480,
                 true);
         when(klausurRepository.alleKlausuren()).thenReturn(Collections.emptyList());
@@ -465,18 +466,14 @@ public class StudentServiceTests {
     @DisplayName("Keine Klausur Duplikate bei der Erstellung")
     void test19() throws IOException {
         //arrange
-        KlausurDto klausurDto = new KlausurDto("Betriebssysteme",
-                LocalDateTime.now(),
-                90,
+        KlausurDto klausurDto = new KlausurDto("Betriebssysteme und Systemprogrammierung",
+                LocalDate.now().toString(),
+                LocalTime.now().toString(),
+                LocalTime.now().plusMinutes(90).toString(),
                 217480,
                 true);
         List<Klausur> klausurListe = new ArrayList<>();
-        klausurListe.add(new Klausur(null,
-                klausurDto.name(),
-                klausurDto.datum(),
-                klausurDto.dauer(),
-                klausurDto.lsf(),
-                klausurDto.online()));
+        klausurListe.add(KlausurDto.toKlausur(klausurDto));
         when(klausurRepository.alleKlausuren()).thenReturn(klausurListe);
 
         //act
@@ -519,22 +516,19 @@ public class StudentServiceTests {
     void test20() throws IOException {
         //arrange
         KlausurDto klausurDto1 = new KlausurDto("Einführung in die Computerlinguistik",
-                LocalDateTime.of(2022,3,22,9,30),
-                90,
+                LocalDateTime.of(2022,3,22,9,30).toLocalDate().toString(),
+                LocalDateTime.of(2022,3,22,9,30).toLocalTime().toString(),
+                LocalDateTime.of(2022,3,22,9,30).toLocalTime().plusMinutes(90).toString(),
                 222916,
                 true);     //9:30 - 11:00
         KlausurDto klausurDto2 = new KlausurDto("Betriebssysteme und Systemprogrammierung",
-                LocalDateTime.of(2022,3,22,10,0),
-                90,
+                LocalDateTime.of(2022,3,22,10,0).toLocalDate().toString(),
+                LocalDateTime.of(2022,3,22,10,0).toLocalTime().toString(),
+                LocalDateTime.of(2022,3,22,11,30).toLocalTime().plusMinutes(90).toString(),
                 217480,
                 false);    //10:00 - 11:30
         List<Klausur> klausurListe = new ArrayList<>();
-        klausurListe.add(new Klausur(null,
-                klausurDto1.name(),
-                klausurDto1.datum(),
-                klausurDto1.dauer(),
-                klausurDto1.lsf(),
-                klausurDto1.online()));
+        klausurListe.add(KlausurDto.toKlausur(klausurDto1));
         when(klausurRepository.alleKlausuren()).thenReturn(klausurListe);
 
         //act

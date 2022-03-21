@@ -2,12 +2,14 @@ package de.hhu.propra.application.utils;
 
 import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.fehler.KlausurFehler;
+import de.hhu.propra.application.fehler.UrlaubFehler;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,9 +53,10 @@ public class KlausurValidierung {
         return ergebnis;
     }
 
-    public boolean datumLiegtInPraktikumszeit(KlausurDto klausur) {
+    public boolean datumLiegtInPraktikumszeit(KlausurDto klausurDto) {
         LocalDate start = LocalDate.of(2022, 3, 6); //ein tag vorher
         LocalDate ende = LocalDate.of(4000, 3, 26);
+        Klausur klausur = KlausurDto.toKlausur(klausurDto);
         boolean ergebnis = klausur.datum().toLocalDate().isAfter(start) && ende.isAfter(klausur.datum().toLocalDate());
         if (!ergebnis) {
             fehlgeschlagen.add(KlausurFehler.KLAUSUR_IN_ZEITRAUM);
@@ -78,7 +81,15 @@ public class KlausurValidierung {
         return ergebnis;
     }
 
+    public boolean startzeitVorEndzeit(KlausurDto klausurDto) {
+        boolean ergebnis = LocalTime.parse(klausurDto.startzeit()).isBefore(LocalTime.parse(klausurDto.endzeit()));
+        if (!ergebnis){
+            fehlgeschlagen.add(UrlaubFehler.STARTZEIT_VOR_ENDZEIT);
+        }
+        return ergebnis;
+    }
+
     public boolean klausurIstValide(KlausurDto klausur) throws IOException {
-        return datumLiegtInPraktikumszeit(klausur) && lsfIDPasst(klausur);
+        return datumLiegtInPraktikumszeit(klausur) && lsfIDPasst(klausur) && startzeitVorEndzeit(klausur);
     }
 }

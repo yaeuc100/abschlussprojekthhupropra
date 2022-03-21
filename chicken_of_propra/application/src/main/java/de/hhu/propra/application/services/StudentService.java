@@ -82,12 +82,7 @@ public class StudentService {
     public synchronized Set<String> klausurErstellen(KlausurDto klausurDto) throws IOException {
         KlausurValidierung klausurValidierung = new KlausurValidierung();
 
-        Klausur klausur = new Klausur(null,
-                klausurDto.name(),
-                klausurDto.datum(),
-                klausurDto.dauer(),
-                klausurDto.lsf(),
-                klausurDto.online());
+        Klausur klausur = KlausurDto.toKlausur(klausurDto);
         List<Klausur> klausuren = klausurRepository.alleKlausuren();
 
         if (!klausurValidierung.klausurLiegtInDb(klausuren,klausur) ) {
