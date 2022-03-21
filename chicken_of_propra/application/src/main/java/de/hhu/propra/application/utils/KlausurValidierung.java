@@ -1,15 +1,13 @@
 package de.hhu.propra.application.utils;
 
 import de.hhu.propra.application.dto.KlausurDto;
-import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.fehler.KlausurFehler;
-import de.hhu.propra.application.fehler.UrlaubFehler;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
+import de.hhu.propra.domain.aggregates.student.Urlaub;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +29,28 @@ public class KlausurValidierung {
         }
         return ergebnis;
     }
+
+    public boolean keineKlausurUeberschneidung(List<Klausur> klausurDtos, Klausur klausur){
+
+        UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
+        UrlaubKlausurBearbeitung urlaubKlausurBearbeitung = new UrlaubKlausurBearbeitung();
+        Urlaub neueKlausur = urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausur);
+        boolean ergebnis = true;
+        for(Klausur k : klausurDtos){
+            System.out.println(k);
+            if(k.datum().toLocalDate().equals(klausur.datum().toLocalDate())){
+                Urlaub bereitsBestehendeKlausur = urlaubKlausurBearbeitung.freieZeitDurchKlausur(k);
+                if(urlaubValidierung.pruefeUrlaubUeberschneidung(bereitsBestehendeKlausur,neueKlausur)){
+                    ergebnis = false;
+                }
+            }
+        }
+        if(!ergebnis){
+            fehlgeschlagen.add(KlausurFehler.NEUE_KLAUSUR_SCHNEIDET_ALTE);
+        }
+        return ergebnis;
+    }
+
     public boolean datumLiegtInPraktikumszeit(KlausurDto klausur) {
         LocalDate start = LocalDate.of(2022, 3, 6); //ein tag vorher
         LocalDate ende = LocalDate.of(4000, 3, 26);

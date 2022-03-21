@@ -4,14 +4,14 @@ import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.services.KlausurService;
 import de.hhu.propra.application.services.StudentService;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
-import java.util.List;
+import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Set;
 
 @Controller
 public class StudentController {
@@ -24,10 +24,17 @@ public class StudentController {
         this.klausurService = klausurService;
     }
 
-    @GetMapping("student")
-    public String index(Model model){
-        //model.addAtribute("student", studentService.studentMitId(principal));
-        return "index";
+    @GetMapping("/student")
+    public String index(Model model , Principal principal){
+
+        String handle = principal.getName();
+        if(studentService.studentMitHandle(handle) == null){
+            studentService.createStudent(handle);
+        }
+
+        System.out.println(studentService.studentMitHandle(handle).getUrlaube());
+        model.addAttribute("student", studentService.studentMitHandle(handle));
+        return "studentSeite";
     }
 
     @GetMapping("student/klausurAnmelden")
@@ -38,6 +45,8 @@ public class StudentController {
 
     @GetMapping("student/urlaubAnmelden")
     public String urlaubAnmeldung(Model model){
+        UrlaubDto urlaub = new UrlaubDto(LocalDate.now().toString(), LocalTime.now().toString() , LocalTime.now().toString());
+        model.addAttribute("urlaub", urlaub);
         return "urlaubAnmelden";
     }
 
@@ -51,19 +60,18 @@ public class StudentController {
     public String klausurAnmelden(KlausurDto klausurDto){
         //studentService.klausurAnmelden(principal.getHandle(), klausurDto);
 
-        return "index";
+        return "studentSeite";
     }
 
     @PostMapping("student/urlaubAnmelden")
-    public String urlaubAnmelden(Model model, UrlaubDto urlaubDto){
-        /*boolean erfolgreich = studentService.urlaubAnlegen(principal, urlaubDto);
-        if(!erfolgreich){
-            List<String> urlaubsFehler = studentService.urlaubFehler(principal, urlaubDto);
-            model.addAttribute("falscherUrlaub", urlaubsFehler);
+    public String urlaubAnmelden(Model model, Principal principal, @ModelAttribute("urlaub") UrlaubDto urlaub){
+        Set<String> fehlermeldungen = studentService.urlaubAnlegen(principal.getName(), urlaub);
+        if(!fehlermeldungen.isEmpty()){
+            model.addAttribute("falscherUrlaub", fehlermeldungen);
+            System.out.println(fehlermeldungen);
             return "urlaubAnmelden";
         }
-
-         */
-        return "redi";
+        return "redirect://localhost:8080/student";
     }
+
 }

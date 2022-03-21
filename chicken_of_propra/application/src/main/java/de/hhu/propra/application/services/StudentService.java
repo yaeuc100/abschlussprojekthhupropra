@@ -11,10 +11,10 @@ import de.hhu.propra.application.utils.UrlaubKlausurBearbeitung;
 import de.hhu.propra.application.utils.UrlaubValidierung;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Student;
+import de.hhu.propra.domain.aggregates.student.Urlaub;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,75 +33,99 @@ public class StudentService {
         this.klausurRepository = klausurRepository;
     }
 
+    public Student studentMitHandle(String handle){
+        return studentRepository.studentMitHandle(handle);
+    }
+
+    public void createStudent(String handle){
+        Student student = new Student(null,handle);
+        studentRepository.save(student);
+    }
 
     public Set<String> urlaubAnlegen(String studentHandle, UrlaubDto urlaubDto) {
         StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden(klausurRepository);
+        Urlaub urlaub = UrlaubDto.toUrlaub(urlaubDto);
         UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
         Student student = studentRepository.studentMitHandle(studentHandle);
-        List<UrlaubDto> urlaubeAnTag = hilfsMethoden.findeUrlaubeAmSelbenTag(student, urlaubDto.datum());
-        List<Klausur> klausurenVonStudent = holeAlleKlausurenMitID(student);
-        List<Klausur> klausurenVonStudentAnTag = hilfsMethoden.studentHatKlausurAnTag(klausurenVonStudent, urlaubDto.datum());
+        List<Urlaub> urlaubeAnTag = hilfsMethoden.findeUrlaubeAmSelbenTag(student, urlaub.datum());
+        List<Klausur> KlausurenVonStudent = holeAlleKlausurenMitID(student);
+        List<Klausur> klausurenVonStudentAnTag = hilfsMethoden.studentHatKlausurAnTag(KlausurenVonStudent, urlaub.datum());
 
-        if (!klausurenVonStudentAnTag.isEmpty() && hilfsMethoden.genugUrlaub(student,urlaubDto)) {
-            List<UrlaubDto> urlaubDtos = urlaubKlausurBearbeitung.urlaubKlausurValidierung(urlaubDto, klausurenVonStudentAnTag);
-            urlaubDtos.addAll(urlaubeAnTag);
-            urlaubDtos = urlaubValidierung.urlaubeZusammenfuegen(urlaubDtos);
-            fuegeUrlaubeZusammen(urlaubDto.datum(), student, urlaubDtos);
+        if (!klausurenVonStudentAnTag.isEmpty() && urlaubValidierung.genugUrlaub(student,urlaub)) {
+            List<Urlaub> resultierendeUrlaube = urlaubKlausurBearbeitung.urlaubKlausurValidierung(urlaub, klausurenVonStudentAnTag);
+            resultierendeUrlaube.addAll(urlaubeAnTag);
+            resultierendeUrlaube = urlaubValidierung.urlaubeZusammenfuegen(resultierendeUrlaube);
+            fuegeUrlaubeZusammen(urlaub.datum(), student, resultierendeUrlaube);
         }
 
-        else if (urlaubValidierung.urlaubIstValide(urlaubDto) && urlaubValidierung.maxZweiUrlaube(urlaubeAnTag)) {
-            urlaubHinzufuegenOhneKlausur(urlaubDto, urlaubValidierung, student, urlaubeAnTag);
+        else if (urlaubValidierung.urlaubIstValide(urlaub) && urlaubValidierung.bisherMaxEinUrlaub(urlaubeAnTag)) {
+            urlaubValidierung.genugUrlaub(student,urlaub);
+            urlaubHinzufuegenOhneKlausur(urlaub, urlaubValidierung, student, urlaubeAnTag);
         }
         return urlaubValidierung.getFehlgeschlagen();
     }
 
 
     //TODO: Notification for not enough holidays in weblayer
-    public boolean fuegeUrlaubHinzu(Student student, UrlaubDto urlaubDto) {
+    public boolean fuegeUrlaubHinzu(Student student, Urlaub urlaub) {
         StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden(klausurRepository);
-        if (hilfsMethoden.genugUrlaub(student, urlaubDto)) {
-            student.addUrlaub(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit());
+        UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
+        if (urlaubValidierung.genugUrlaub(student, urlaub)) {
+            student.addUrlaub(urlaub.datum(), urlaub.startzeit(), urlaub.endzeit());
+            student.berechneRestUrlaub();
             studentRepository.save(student);
             return true;
         }
         return false;
     }
 
-    public synchronized boolean klausurErstellen(KlausurDto klausurDto) throws IOException {
+    public synchronized Set<String> klausurErstellen(KlausurDto klausurDto) throws IOException {
         KlausurValidierung klausurValidierung = new KlausurValidierung();
+
         Klausur klausur = new Klausur(null,
                 klausurDto.name(),
                 klausurDto.datum(),
                 klausurDto.dauer(),
                 klausurDto.lsf(),
                 klausurDto.online());
+        List<Klausur> klausuren = klausurRepository.alleKlausuren();
 
-        if (!klausurValidierung.klausurLiegtInDb(klausurRepository.alleKlausuren(),klausur)) {
+        if (!klausurValidierung.klausurLiegtInDb(klausuren,klausur) ) {
             if(klausurValidierung.klausurIstValide(klausurDto)){
                 klausurRepository.save(klausur);
-                return true;
             }
         }
-        return false;
+        return klausurValidierung.getFehlgeschlagen();
     }
 
-    public synchronized void klausurAnmelden(String studentHandle, Long klausurId) {
+    public synchronized Set<String> klausurAnmelden(String studentHandle, Long klausurId) {
         StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden(klausurRepository);
+        KlausurValidierung klausurValidierung = new KlausurValidierung();
         Student student = studentRepository.studentMitHandle(studentHandle);
         Klausur klausurAusDb = klausurRepository.klausurMitId(klausurId);
-        student.addKlausur(klausurAusDb);
-        List<UrlaubDto> urlaube = hilfsMethoden.findeUrlaubeAmSelbenTag(student, klausurAusDb.datum().toLocalDate());
-        urlaube = urlaubKlausurBearbeitung.reduziereUrlaubDurchEineKlausur(urlaube, urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausurAusDb));
-        fuegeUrlaubeZusammen(klausurAusDb.datum().toLocalDate(), student, urlaube);
+
+        List<Klausur> klausurenDerStudentAmTag =
+                hilfsMethoden.studentHatKlausurAnTag(holeAlleKlausurenMitID(student),
+                        klausurAusDb.datum().toLocalDate());
+
+        if(klausurValidierung.keineKlausurUeberschneidung(klausurenDerStudentAmTag,klausurAusDb)) {
+            student.addKlausur(klausurAusDb);
+            List<Urlaub> urlaube = hilfsMethoden.findeUrlaubeAmSelbenTag(student, klausurAusDb.datum().toLocalDate());
+            urlaube = urlaubKlausurBearbeitung.reduziereUrlaubDurchEineKlausur(urlaube, urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausurAusDb));
+            fuegeUrlaubeZusammen(klausurAusDb.datum().toLocalDate(), student, urlaube);
+        }
+        return klausurValidierung.getFehlgeschlagen();
     }
 
     public boolean urlaubStornieren(String studentHandle, UrlaubDto urlaubDto) {
         UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
+        Urlaub urlaub = UrlaubDto.toUrlaub(urlaubDto);
         boolean ergebnis = false;
         Student student = studentRepository.studentMitHandle(studentHandle);
 
-        if (urlaubValidierung.urlaubNurVorDemTagDesUrlaubs(urlaubDto)) {
-            ergebnis = student.urlaubStornieren(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit());
+        if (urlaubValidierung.urlaubNurVorDemTagDesUrlaubs(urlaub)) {
+            ergebnis = student.urlaubStornieren(urlaub.datum(), urlaub.startzeit(), urlaub.endzeit());
+            student.berechneRestUrlaub();
             studentRepository.save(student);
         }
         return ergebnis;
@@ -119,21 +143,26 @@ public class StudentService {
                 .map(klausurRepository::klausurMitId)
                 .collect(Collectors.toList());
     }
-
-    private void urlaubHinzufuegenOhneKlausur(UrlaubDto urlaubDto, UrlaubValidierung urlaubValidierung, Student student, List<UrlaubDto> urlaubeAnTag) {
-        if ((urlaubeAnTag.size() == 1) && (urlaubValidierung.zweiUrlaubeAnEinemTag(urlaubDto, urlaubeAnTag.get(0)))) {
-            fuegeUrlaubHinzu(student, urlaubDto);
-        } else if (!student.urlaubExistiert(urlaubDto.datum(), urlaubDto.startzeit(), urlaubDto.endzeit())) {
-            fuegeUrlaubHinzu(student, urlaubDto);
+    // TODO urlaubExistiert schon prüfen
+    private void urlaubHinzufuegenOhneKlausur(Urlaub urlaub, UrlaubValidierung urlaubValidierung, Student student, List<Urlaub> urlaubeAnTag) {
+        System.out.println(urlaubeAnTag.size() == 1);
+        if (urlaubeAnTag.size() == 1 && (urlaubValidierung.zweiUrlaubeAnEinemTag(urlaub, urlaubeAnTag.get(0)))) {
+            System.out.println("oops");
+            fuegeUrlaubHinzu(student, urlaub);
+        } else if (!student.urlaubExistiertSchon(urlaub.datum(), urlaub.startzeit(), urlaub.endzeit())) {
+            System.out.println("ja");
+            fuegeUrlaubHinzu(student, urlaub);
         }
+        System.out.println(urlaub);
     }
 
-    public void fuegeUrlaubeZusammen(LocalDate datum, Student student, List<UrlaubDto> urlaubDtos) {
+    public void fuegeUrlaubeZusammen(LocalDate datum, Student student, List<Urlaub> urlaube) {
         StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden(klausurRepository);
         hilfsMethoden.storniereAlleUrlaubeAnTag(student,datum);
-        for(UrlaubDto dto : urlaubDtos){
-            student.addUrlaub(dto.datum(),dto.startzeit(),dto.endzeit());
+        for(Urlaub urlaub : urlaube){
+            student.addUrlaub(urlaub.datum(),urlaub.startzeit(),urlaub.endzeit());
         }
+        student.berechneRestUrlaub();
         studentRepository.save(student);
     }
 }

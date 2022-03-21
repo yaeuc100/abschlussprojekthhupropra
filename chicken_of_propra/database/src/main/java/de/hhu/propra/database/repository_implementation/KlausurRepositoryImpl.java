@@ -16,7 +16,6 @@ import java.util.List;
 public class KlausurRepositoryImpl implements KlausurRepository {
 
     private final KlausurDao klausurDao;
-
     private final JdbcTemplate db;
 
     public KlausurRepositoryImpl(KlausurDao klausurDao, JdbcTemplate db) {

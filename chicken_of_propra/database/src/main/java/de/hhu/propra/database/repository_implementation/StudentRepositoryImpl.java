@@ -8,10 +8,13 @@ import de.hhu.propra.domain.aggregates.student.Student;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class StudentRepositoryImpl implements StudentRepository {
 
     private final StudentDao studentDao;
@@ -67,6 +70,8 @@ public class StudentRepositoryImpl implements StudentRepository {
         for (Long ref : student.getKlausuren()){
             entity.addKlausurRef(new KlausurReferenz(ref));
         }
+
+        System.out.println("saved rest : " + student.getResturlaub());
         studentDao.save(entity);
     }
 
@@ -88,6 +93,7 @@ public class StudentRepositoryImpl implements StudentRepository {
         for(KlausurReferenz ref : entity.getKlausuren()){
             student.addKlausurRef(ref);
         }
+        student.berechneRestUrlaub();
         return student;
 
     }

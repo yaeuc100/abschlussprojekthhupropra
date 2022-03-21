@@ -1,7 +1,7 @@
 package de.hhu.propra.application.utils;
 
-import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
+import de.hhu.propra.domain.aggregates.student.Urlaub;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -32,15 +32,15 @@ public class UrlaubKlausurBearbeitungTests {
                 60,
                 1L,
                 true);
-        UrlaubDto urlaubDto = new UrlaubDto(klausur.datum().toLocalDate(),
+        Urlaub urlaub = new Urlaub(klausur.datum().toLocalDate(),
                 LocalTime.of(9,30),
                 LocalTime.of(11,0));
 
         //act
-        UrlaubDto ergebnis = urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausur);
+        Urlaub ergebnis = urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausur);
 
         //assert
-        assertThat(ergebnis).isEqualTo(urlaubDto);
+        assertThat(ergebnis).isEqualTo(urlaub);
 
     }
     @Test
@@ -53,15 +53,15 @@ public class UrlaubKlausurBearbeitungTests {
                 60,
                 1L,
                 false);
-        UrlaubDto urlaubDto = new UrlaubDto(klausur.datum().toLocalDate(),
+        Urlaub urlaub = new Urlaub(klausur.datum().toLocalDate(),
                 LocalTime.of(8,0),
                 LocalTime.of(13,0));
 
         //act
-        UrlaubDto ergebnis = urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausur);
+        Urlaub ergebnis = urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausur);
 
         //assert
-        assertThat(ergebnis).isEqualTo(urlaubDto);
+        assertThat(ergebnis).isEqualTo(urlaub);
 
     }
 
@@ -69,15 +69,15 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Urlaub findet komplett innerhalb Klausur statt")
     void test3(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(13,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(14,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(Collections.emptyList());
@@ -87,15 +87,15 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Urlaub fängt zeitgleich mit Klausur an, hört aber früher auf")
     void test4(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(13,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(14,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(Collections.emptyList());
@@ -105,15 +105,15 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Urlaub startet nach der Klausur, endet aber zeitgleich")
     void test5(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(13,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(13,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(Collections.emptyList());
@@ -123,53 +123,53 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Gesamter Urlaub wird angerechnet, weil freie Zeit durch Klausur nach Urlaub liegt")
     void test6(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(10,0),
                 LocalTime.of(14,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
-        assertThat(ergebnis).isEqualTo(List.of(urlaubDto));
+        assertThat(ergebnis).isEqualTo(List.of(urlaub));
     }
 
     @Test
     @DisplayName("Gesamter Urlaub wird angerechnet, weil freie Zeit durch Klausur vor Urlaub liegt")
     void test7(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(10,0),
                 LocalTime.of(11,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(7,0),
                 LocalTime.of(9,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
-        assertThat(ergebnis).isEqualTo(List.of(urlaubDto));
+        assertThat(ergebnis).isEqualTo(List.of(urlaub));
     }
 
     @Test
     @DisplayName("Das Ende des Urlaubs überschneidet sich mit der freien Zeit durch Klausur")
     void test8(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(10,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(11,0));
-        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,0));
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub));
@@ -179,17 +179,17 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Urlaub fängt früher an, endet aber zeitgleich")
     void test9(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(10,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(10,0));
-        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,0));
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub));
@@ -199,17 +199,17 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Der Anfang des Urlaubs überschneidet sich mit der freien Zeit durch Klausur")
     void test10(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(11,0),
                 LocalTime.of(12,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(11,30));
-        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub = new Urlaub(datum,
                 LocalTime.of(11,30),
                 LocalTime.of(12,0));
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub));
@@ -219,17 +219,17 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Urlaub startet zeitgleich, endet aber später")
     void test11(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(11,0),
                 LocalTime.of(12,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(11,0),
                 LocalTime.of(11,30));
-        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub = new Urlaub(datum,
                 LocalTime.of(11,30),
                 LocalTime.of(12,0));
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub));
@@ -239,20 +239,20 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Urlaub umschließt Klausur")
     void test12(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(13,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(12,30));
-        UrlaubDto reduzierterUrlaubVorKlausur = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaubVorKlausur = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,0));
-        UrlaubDto reduzierterUrlaubNachKlausur = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaubNachKlausur = new Urlaub(datum,
                 LocalTime.of(12,30),
                 LocalTime.of(13,0));
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaubVorKlausur,reduzierterUrlaubNachKlausur));
@@ -262,15 +262,15 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Urlaub und Klausur sind exakt identisch")
     void test13(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(13,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(13,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
         assertThat(ergebnis).isEqualTo(Collections.emptyList());
@@ -280,43 +280,43 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Urlaub endet sobald Klausur beginnt")
     void test14(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(13,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(13,0),
                 LocalTime.of(14,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
-        assertThat(ergebnis).isEqualTo(List.of(urlaubDto));
+        assertThat(ergebnis).isEqualTo(List.of(urlaub));
     }
 
     @Test
     @DisplayName("Urlaub startet sobald Klausur endet")
     void test15(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(13,0),
                 LocalTime.of(14,0));
-        UrlaubDto freieZeitDurchKlausur = new UrlaubDto(datum,
+        Urlaub freieZeitDurchKlausur = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(13,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaubDto,freieZeitDurchKlausur);
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.reduziereUrlaubDurchKlausur(urlaub,freieZeitDurchKlausur);
 
         //assert
-        assertThat(ergebnis).isEqualTo(List.of(urlaubDto));
+        assertThat(ergebnis).isEqualTo(List.of(urlaub));
     }
 
     @Test
     @DisplayName("Freie Zeit durch Klausur wird richtig berechnet und von Urlaub an dem Tag abgezogen")
     void test16(){
         //arrange
-        UrlaubDto urlaubDto = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(14,0));
         Klausur klausur = new Klausur(1L,
@@ -325,15 +325,15 @@ public class UrlaubKlausurBearbeitungTests {
                 60,
                 12345,
                 true);
-        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,30));
-        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub2 = new Urlaub(datum,
                 LocalTime.of(11,0),
                 LocalTime.of(14,00));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(urlaubDto,List.of(klausur));
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(urlaub,List.of(klausur));
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2));
@@ -343,7 +343,7 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("An einem Tag gibt es zwei Klausuren")
     void test17(){
         //arrange
-        UrlaubDto beantragterUrlaub = new UrlaubDto(datum,
+        Urlaub beantragterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(14,30));
         Klausur klausur = new Klausur(1L,
@@ -358,19 +358,19 @@ public class UrlaubKlausurBearbeitungTests {
                 60,
                 123234,
                 true); //liefert 11:00 - 12.30
-        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,30));
-        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub2 = new Urlaub(datum,
                 LocalTime.of(10,30),
                 LocalTime.of(11,00));
-        UrlaubDto reduzierterUrlaub3 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub3 = new Urlaub(datum,
                 LocalTime.of(12,30),
                 LocalTime.of(14,30));
 
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,List.of(klausur, zweiteKlausur));
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,List.of(klausur, zweiteKlausur));
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2, reduzierterUrlaub3));
@@ -379,10 +379,10 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Urlaubsüberschneidung wird festgestellt")
     void test18(){
         //arrange
-        UrlaubDto urlaub = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(12,30));
-        UrlaubDto urlaub2 = new UrlaubDto(datum,
+        Urlaub urlaub2 = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(14,00));
 
@@ -399,19 +399,19 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Urlaubszeit wird richtig zusammengefasst")
     void test19(){
         //arrange
-        UrlaubDto urlaub = new UrlaubDto(datum,
+        Urlaub urlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(12,30));
-        UrlaubDto urlaub2 = new UrlaubDto(datum,
+        Urlaub urlaub2 = new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(14,00));
-        UrlaubDto zusammengefassterUrlaub = new UrlaubDto(datum,
+        Urlaub zusammengefassterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(14,00));
 
 
         //act
-        UrlaubDto ergebnis = urlaubValidierung.fasseZeitZusammen(urlaub, urlaub2);
+        Urlaub ergebnis = urlaubValidierung.fasseZeitZusammen(urlaub, urlaub2);
 
         //assert
         assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
@@ -421,38 +421,38 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("5 Urlaubsblöcke werden richtig zu 3 Urlaubsblöcken zusammengefasst")
     void test20(){
         //arrange
-        List<UrlaubDto> urlaube = new ArrayList<>();
-        urlaube.add( new UrlaubDto(datum,
+        List<Urlaub> urlaube = new ArrayList<>();
+        urlaube.add( new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,30)));
-        urlaube.add(new UrlaubDto(datum,
+        urlaube.add(new Urlaub(datum,
                 LocalTime.of(9,0),
                 LocalTime.of(9,45)));
-        urlaube.add( new UrlaubDto(datum,
+        urlaube.add( new Urlaub(datum,
                 LocalTime.of(8,30),
                 LocalTime.of(9,15)));
-        urlaube.add( new UrlaubDto(datum,
+        urlaube.add( new Urlaub(datum,
                 LocalTime.of(10,0),
                 LocalTime.of(11,30)));
-        urlaube.add( new UrlaubDto(datum,
+        urlaube.add( new Urlaub(datum,
                 LocalTime.of(12,0),
                 LocalTime.of(13,30)));
 
 
-        List<UrlaubDto> zusammengefassterUrlaub = new ArrayList<>();
-        zusammengefassterUrlaub.add(new UrlaubDto(datum,
+        List<Urlaub> zusammengefassterUrlaub = new ArrayList<>();
+        zusammengefassterUrlaub.add(new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,45)));
-        zusammengefassterUrlaub.add(new UrlaubDto(datum,
+        zusammengefassterUrlaub.add(new Urlaub(datum,
                 LocalTime.of(10,0),
                 LocalTime.of(11,30)));
-        zusammengefassterUrlaub.add( new UrlaubDto(datum,
+        zusammengefassterUrlaub.add( new Urlaub(datum,
                 LocalTime.of(12,0),
                 LocalTime.of(13,30)));
 
 
         //act
-        List<UrlaubDto> ergebnis = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
+        List<Urlaub> ergebnis = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
 
         //assert
         assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
@@ -461,32 +461,32 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("4 Urlaubsblöcke werden richtig zu 2 zusammengefasst")
     void test21() {
         //arrange
-        List<UrlaubDto> urlaube = new ArrayList<>();
-        urlaube.add(new UrlaubDto(datum,
+        List<Urlaub> urlaube = new ArrayList<>();
+        urlaube.add(new Urlaub(datum,
                 LocalTime.of(8, 0),
                 LocalTime.of(9, 30)));
-        urlaube.add(new UrlaubDto(datum,
+        urlaube.add(new Urlaub(datum,
                 LocalTime.of(9, 0),
                 LocalTime.of(9, 45)));
-        urlaube.add(new UrlaubDto(datum,
+        urlaube.add(new Urlaub(datum,
                 LocalTime.of(10, 30),
                 LocalTime.of(12, 15)));
-        urlaube.add(new UrlaubDto(datum,
+        urlaube.add(new Urlaub(datum,
                 LocalTime.of(12, 0),
                 LocalTime.of(13, 30)));
 
 
-        List<UrlaubDto> zusammengefassterUrlaub = new ArrayList<>();
-        zusammengefassterUrlaub.add(new UrlaubDto(datum,
+        List<Urlaub> zusammengefassterUrlaub = new ArrayList<>();
+        zusammengefassterUrlaub.add(new Urlaub(datum,
                 LocalTime.of(8, 0),
                 LocalTime.of(9, 45)));
-        zusammengefassterUrlaub.add(new UrlaubDto(datum,
+        zusammengefassterUrlaub.add(new Urlaub(datum,
                 LocalTime.of(10, 30),
                 LocalTime.of(13, 30)));
 
 
         //act
-        List<UrlaubDto> ergebnis = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
+        List<Urlaub> ergebnis = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
 
         //assert
         assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
@@ -496,21 +496,21 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("2 Urlaubsblöcke liegen genau übereinander- werden richtig zusammengefasst")
     void test22() {
         //arrange
-        List<UrlaubDto> urlaube = new ArrayList<>();
-        urlaube.add(new UrlaubDto(datum,
+        List<Urlaub> urlaube = new ArrayList<>();
+        urlaube.add(new Urlaub(datum,
                 LocalTime.of(8, 0),
                 LocalTime.of(9, 30)));
-        urlaube.add(new UrlaubDto(datum,
+        urlaube.add(new Urlaub(datum,
                 LocalTime.of(8, 0),
                 LocalTime.of(9, 30)));
 
-        List<UrlaubDto> zusammengefassterUrlaub = new ArrayList<>();
-        zusammengefassterUrlaub.add(new UrlaubDto(datum,
+        List<Urlaub> zusammengefassterUrlaub = new ArrayList<>();
+        zusammengefassterUrlaub.add(new Urlaub(datum,
                 LocalTime.of(8, 0),
                 LocalTime.of(9, 30)));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
+        List<Urlaub> ergebnis = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
 
         //assert
         assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
@@ -520,7 +520,7 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Am ganzen Tag Urlaub eingetragen mit 3 Klausuren")
     void test23(){
         //arrange
-        UrlaubDto beantragterUrlaub = new UrlaubDto(datum,
+        Urlaub beantragterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(14,30));
         Klausur klausur = new Klausur(1L,
@@ -541,21 +541,21 @@ public class UrlaubKlausurBearbeitungTests {
                 30,
                 123234,
                 true); //liefert 13:00 - 14.00
-        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,30));
-        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub2 = new Urlaub(datum,
                 LocalTime.of(10,30),
                 LocalTime.of(11,0));
-        UrlaubDto reduzierterUrlaub3 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub3 = new Urlaub(datum,
                 LocalTime.of(12,0),
                 LocalTime.of(13,0));
-        UrlaubDto reduzierterUrlaub4 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub4 = new Urlaub(datum,
                 LocalTime.of(14,0),
                 LocalTime.of(14,30));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,List.of(klausur, zweiteKlausur,dritteKlausur));
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,List.of(klausur, zweiteKlausur,dritteKlausur));
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2 ,reduzierterUrlaub3,reduzierterUrlaub4));
@@ -566,7 +566,7 @@ public class UrlaubKlausurBearbeitungTests {
             " davon ist eine am Ende des Tages")
     void test24(){
         //arrange
-        UrlaubDto beantragterUrlaub = new UrlaubDto(datum,
+        Urlaub beantragterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(14,30));
         Klausur klausur = new Klausur(1L,
@@ -587,18 +587,18 @@ public class UrlaubKlausurBearbeitungTests {
                 60,
                 123234,
                 true); //liefert 13:00 - 14.00
-        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,30));
-        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub2 = new Urlaub(datum,
                 LocalTime.of(10,30),
                 LocalTime.of(11,0));
-        UrlaubDto reduzierterUrlaub3 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub3 = new Urlaub(datum,
                 LocalTime.of(12,0),
                 LocalTime.of(13,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,List.of(klausur, zweiteKlausur,dritteKlausur));
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,List.of(klausur, zweiteKlausur,dritteKlausur));
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2 ,reduzierterUrlaub3));
@@ -609,7 +609,7 @@ public class UrlaubKlausurBearbeitungTests {
             "dabei ist eine am Anfang und eine am Ende des Tages")
     void test25(){
         //arrange
-        UrlaubDto beantragterUrlaub = new UrlaubDto(datum,
+        Urlaub beantragterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(14,30));
         Klausur klausur = new Klausur(1L,
@@ -630,15 +630,15 @@ public class UrlaubKlausurBearbeitungTests {
                 60,
                 123234,
                 true); //liefert 13:00 - 14.00
-        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub = new Urlaub(datum,
                 LocalTime.of(10,0),
                 LocalTime.of(11,00));
-        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub2 = new Urlaub(datum,
                 LocalTime.of(12,0),
                 LocalTime.of(13,0));
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,List.of(klausur, zweiteKlausur,dritteKlausur));
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,List.of(klausur, zweiteKlausur,dritteKlausur));
 
         //assert
         assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2));
@@ -648,13 +648,13 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Am ganzen Tag Urlaub eingetragen mit 3 Klausuren")
     void test26(){
         //arrange
-        UrlaubDto beantragterUrlaub = new UrlaubDto(datum,
+        Urlaub beantragterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,0));
-        UrlaubDto beantragterUrlaub1 = new UrlaubDto(datum,
+        Urlaub beantragterUrlaub1 = new Urlaub(datum,
                 LocalTime.of(10,0),
                 LocalTime.of(13,30));
-        UrlaubDto beantragterUrlaub2 = new UrlaubDto(datum,
+        Urlaub beantragterUrlaub2 = new Urlaub(datum,
                 LocalTime.of(14,15),
                 LocalTime.of(14,30));
 
@@ -670,22 +670,22 @@ public class UrlaubKlausurBearbeitungTests {
                 30,
                 123234,
                 true); //liefert 11:00 - 12.00
-        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,0));
-        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub2 = new Urlaub(datum,
                 LocalTime.of(10,30),
                 LocalTime.of(11,0));
-        UrlaubDto reduzierterUrlaub3 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub3 = new Urlaub(datum,
                 LocalTime.of(12,0),
                 LocalTime.of(13,30));
-        UrlaubDto reduzierterUrlaub4 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub4 = new Urlaub(datum,
                 LocalTime.of(14,15),
                 LocalTime.of(14,30));
 
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.
                 reduziereUrlaubDurchMehrereKlausuren(List.of(beantragterUrlaub,beantragterUrlaub1, beantragterUrlaub2),
                 List.of(klausur, zweiteKlausur));
 
@@ -697,13 +697,13 @@ public class UrlaubKlausurBearbeitungTests {
     @DisplayName("Man möchte drei Urlaube anmelden, diese schließen passend mit zwei Klausuren ab")
     void test27(){
         //arrange
-        UrlaubDto beantragterUrlaub = new UrlaubDto(datum,
+        Urlaub beantragterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,0));
-        UrlaubDto beantragterUrlaub1 = new UrlaubDto(datum,
+        Urlaub beantragterUrlaub1 = new Urlaub(datum,
                 LocalTime.of(10,0),
                 LocalTime.of(13,00));
-        UrlaubDto beantragterUrlaub2 = new UrlaubDto(datum,
+        Urlaub beantragterUrlaub2 = new Urlaub(datum,
                 LocalTime.of(14,15),
                 LocalTime.of(14,30));
 
@@ -719,19 +719,19 @@ public class UrlaubKlausurBearbeitungTests {
                 45,
                 123234,
                 true); //liefert 11:00 - 12.00
-        UrlaubDto reduzierterUrlaub = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub = new Urlaub(datum,
                 LocalTime.of(8,0),
                 LocalTime.of(9,0));
-        UrlaubDto reduzierterUrlaub1 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub1 = new Urlaub(datum,
                 LocalTime.of(10,0),
                 LocalTime.of(13,0));
-        UrlaubDto reduzierterUrlaub2 = new UrlaubDto(datum,
+        Urlaub reduzierterUrlaub2 = new Urlaub(datum,
                 LocalTime.of(14,15),
                 LocalTime.of(14,30));
 
 
         //act
-        List<UrlaubDto> ergebnis = urlaubKlausurBearbeitung.
+        List<Urlaub> ergebnis = urlaubKlausurBearbeitung.
                 reduziereUrlaubDurchMehrereKlausuren(List.of(beantragterUrlaub,beantragterUrlaub1, beantragterUrlaub2),
                         List.of(klausur, zweiteKlausur));
 

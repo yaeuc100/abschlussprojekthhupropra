@@ -2,6 +2,7 @@ package de.hhu.propra.web.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,13 +22,13 @@ import java.util.*;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private final List<String> tutoren;
-  private final List<String> organisatoren;
+  private final List<String> organizers;
 
   public WebSecurityConfiguration(
-      @Value("${chicken.admins}") List<String> organisatoren,
-      @Value("${chicken.organizers}") List<String> tutoren) {
+      @Value("${chicken.organizers}") List<String> organizers,
+      @Value("${chicken.tutoren}") List<String> tutoren) {
     this.tutoren = tutoren;
-    this.organisatoren = organisatoren;
+    this.organizers = organizers;
   }
 
 
@@ -66,7 +67,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         String login = attributes.get("login").toString();
 
-        if (organisatoren.contains(login)) {
+        if (organizers.contains(login)) {
           authorities.add(new SimpleGrantedAuthority("ROLE_ORGANISATOR"));
         }
         if (tutoren.contains(login)) {

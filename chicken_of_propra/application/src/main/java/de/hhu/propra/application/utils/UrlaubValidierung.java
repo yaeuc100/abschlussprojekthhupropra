@@ -1,7 +1,7 @@
 package de.hhu.propra.application.utils;
 
-import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.fehler.UrlaubFehler;
+import de.hhu.propra.domain.aggregates.student.Student;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
 
 import java.time.Duration;
@@ -14,7 +14,7 @@ import java.util.Set;
 //     vielfaches von 15 min
 //     startzeit mod 15 min
 //     endezeit mod 15 min
-//     entwerder 240 oder 150 max
+//     entweder 240 oder 150 max
 //     max 2 und falls 2 gibt dann mit 90 min abstand zwischen dauer der 2. und 1. urlaub
 //     urlaub bis 00.00 uhr anmelden
     //TODO Praktikumsstart
@@ -27,9 +27,9 @@ public class UrlaubValidierung {
         return fehlgeschlagen;
     }
 
-    public boolean vielfachesVon15(UrlaubDto urlaubDto) {
-        int startMinuten = urlaubDto.startzeit().getMinute();
-        int endMinuten = urlaubDto.endzeit().getMinute();
+    public boolean vielfachesVon15(Urlaub urlaub) {
+        int startMinuten = urlaub.startzeit().getMinute();
+        int endMinuten = urlaub.endzeit().getMinute();
         boolean ergebnis = startMinuten % 15 == 0 && endMinuten % 15 == 0;
         if (!ergebnis) {
             fehlgeschlagen.add(UrlaubFehler.VIELFACHES_VON_15);
@@ -37,21 +37,21 @@ public class UrlaubValidierung {
         return ergebnis;
     }
 
-    public boolean dauerIstValide(UrlaubDto urlaubDto) {
-        Duration diff = Duration.between(urlaubDto.startzeit(), urlaubDto.endzeit());
+    public boolean dauerIstValide(Urlaub urlaub) {
+        Duration diff = Duration.between(urlaub.startzeit(), urlaub.endzeit());
         long minuten = diff.toMinutes();
-        boolean ergebnis = (minuten == 240 || (minuten <= 150 && minuten >= 15));
+        boolean ergebnis = (minuten == 240 || minuten <= 150 );
         if (!ergebnis) {
             fehlgeschlagen.add(UrlaubFehler.DAUER_IST_VALIDE);
         }
         return ergebnis;
     }
 
-    public boolean zweiUrlaubeAnEinemTag(UrlaubDto ersterUrlaub, UrlaubDto zweiterUrlaub) {
+    public boolean zweiUrlaubeAnEinemTag(Urlaub ersterUrlaub, Urlaub zweiterUrlaub) {
         boolean valide = true;
         LocalTime startZeit = LocalTime.of(8, 30);
         if (ersterUrlaub.startzeit().isAfter(zweiterUrlaub.startzeit())) {
-            UrlaubDto hilf = ersterUrlaub;
+            Urlaub hilf = ersterUrlaub;
             ersterUrlaub = zweiterUrlaub;
             zweiterUrlaub = hilf;
         }
@@ -64,12 +64,12 @@ public class UrlaubValidierung {
             valide = false;
         }
         if (!valide){
-            fehlgeschlagen.add(UrlaubFehler.ZWEI_URLAUB_AN_TAG);
+            fehlgeschlagen.add(UrlaubFehler.ZWEI_URLAUBe_AN_TAG);
         }
         return valide;
     }
 
-    public boolean urlaubNurVorDemTagDesUrlaubs(UrlaubDto urlaub) {
+    public boolean urlaubNurVorDemTagDesUrlaubs(Urlaub urlaub) {
         boolean ergebnis = urlaub.datum().isAfter(LocalDate.now());
         if (!ergebnis){
             fehlgeschlagen.add(UrlaubFehler.ANTRAG_RECHTZEITIG);
@@ -77,12 +77,21 @@ public class UrlaubValidierung {
         return ergebnis;
     }
 
-    boolean pruefeUrlaubUeberschneidung(UrlaubDto erstesUrlaubsDto, UrlaubDto zweitesUrlaubsDto) {
+    public boolean genugUrlaub(Student student, Urlaub urlaub) {
+        Duration duration = Duration.between(urlaub.startzeit(), urlaub.endzeit());
+        boolean ergebnis = (duration.toMinutes() <= student.getResturlaub());
+        if(!ergebnis){
+            fehlgeschlagen.add(UrlaubFehler.NICHT_GENUG_URLAUB_VORHANDEN);
+        }
+        return ergebnis;
+    }
+
+    boolean pruefeUrlaubUeberschneidung(Urlaub erstesUrlaubsDto, Urlaub zweitesUrlaubsDto) {
         return erstesUrlaubsDto.endzeit().isAfter(zweitesUrlaubsDto.startzeit()) &&
                 zweitesUrlaubsDto.endzeit().isAfter(erstesUrlaubsDto.startzeit());
     }
 
-    public List<UrlaubDto> urlaubeZusammenfuegen(List<UrlaubDto> urlaube) {
+    public List<Urlaub> urlaubeZusammenfuegen(List<Urlaub> urlaube) {
         for (int i = 0; i < urlaube.size(); i++) {
             for (int j = i + 1; j < urlaube.size(); j++) {
                 if (pruefeUrlaubUeberschneidung(urlaube.get(i), urlaube.get(j))) {
@@ -96,21 +105,21 @@ public class UrlaubValidierung {
         return urlaube;
     }
 
-    UrlaubDto fasseZeitZusammen(UrlaubDto erstesUrlaubDto, UrlaubDto zweitesUrlaubDto) {
-        LocalTime startzeit = erstesUrlaubDto.startzeit();
-        LocalTime endzeit = erstesUrlaubDto.endzeit();
-        if (zweitesUrlaubDto.startzeit().isBefore(startzeit)) {
-            startzeit = zweitesUrlaubDto.startzeit();
+    Urlaub fasseZeitZusammen(Urlaub erstesUrlaub, Urlaub zweitesUrlaub) {
+        LocalTime startzeit = erstesUrlaub.startzeit();
+        LocalTime endzeit = erstesUrlaub.endzeit();
+        if (zweitesUrlaub.startzeit().isBefore(startzeit)) {
+            startzeit = zweitesUrlaub.startzeit();
         }
-        if (zweitesUrlaubDto.endzeit().isAfter(endzeit)) {
-            endzeit = zweitesUrlaubDto.endzeit();
+        if (zweitesUrlaub.endzeit().isAfter(endzeit)) {
+            endzeit = zweitesUrlaub.endzeit();
         }
-        return new UrlaubDto(erstesUrlaubDto.datum(), startzeit, endzeit);
+        return new Urlaub(erstesUrlaub.datum(), startzeit, endzeit);
 
     }
 
     // TODO: Auch Klausur
-    public boolean startzeitVorEndzeit(UrlaubDto urlaub) {
+    public boolean startzeitVorEndzeit(Urlaub urlaub) {
         boolean ergebnis = urlaub.startzeit().isBefore(urlaub.endzeit());
         if (!ergebnis){
             fehlgeschlagen.add(UrlaubFehler.STARTZEIT_VOR_ENDZEIT);
@@ -118,7 +127,7 @@ public class UrlaubValidierung {
         return ergebnis;
     }
 
-    public boolean datumLiegtInPraktikumszeit(UrlaubDto urlaub) {
+    public boolean datumLiegtInPraktikumszeit(Urlaub urlaub) {
         LocalDate start = LocalDate.of(2022, 3, 6); //ein tag vorher
         LocalDate ende = LocalDate.of(4000, 3, 26);
         boolean ergebnis = urlaub.datum().isAfter(start) && ende.isAfter(urlaub.datum());
@@ -128,12 +137,8 @@ public class UrlaubValidierung {
         return ergebnis;
     }
 
-    public boolean urlaubIstValide(UrlaubDto urlaub) {
-        return vielfachesVon15(urlaub) && dauerIstValide(urlaub)
-                && urlaubNurVorDemTagDesUrlaubs(urlaub) && startzeitVorEndzeit(urlaub) && datumLiegtInPraktikumszeit(urlaub);
-    }
 
-    public boolean maxZweiUrlaube(List<UrlaubDto> urlaube){
+    public boolean bisherMaxEinUrlaub(List<Urlaub> urlaube){
         boolean ergebnis = urlaube.size() < 2;
         if(!ergebnis){
             fehlgeschlagen.add(UrlaubFehler.MAX_ZWEI_URLAUBE);
@@ -141,5 +146,10 @@ public class UrlaubValidierung {
         return ergebnis;
     }
 
+    public boolean urlaubIstValide(Urlaub urlaub) {
+        return vielfachesVon15(urlaub) && dauerIstValide(urlaub)
+                && urlaubNurVorDemTagDesUrlaubs(urlaub) && startzeitVorEndzeit(urlaub)
+                && datumLiegtInPraktikumszeit(urlaub);
+    }
 
 }

@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LsfIdValidierungTests {
 
+    //TODO Set mit fehlermeldung testen
 
     @Test
     @DisplayName("name passt nicht zu lsf")

@@ -2,9 +2,12 @@ package de.hhu.propra.application.services;
 
 import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.repositories.KlausurRepository;
+import de.hhu.propra.application.stereotypes.ApplicationService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@ApplicationService
 public class KlausurService {
 
     private final KlausurRepository klausurRepository;

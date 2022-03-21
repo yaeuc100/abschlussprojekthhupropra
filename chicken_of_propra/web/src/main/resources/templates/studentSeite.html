@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PP2 Urlaub Übersicht</title>
+    <link rel="stylesheet" type="text/css"
+          href="/css/bootstrap.min.css">
+    <link href="/css/jquery.datetimepicker.min.css"
+          rel="stylesheet">
+    <link href="/css/site.css"
+          rel="stylesheet">
+</head>
+<body>
+<div class="container" th:object="${student}">
+    <h1>Übersicht: Freistellungen</h1>
+
+    <h2>Urlaubszeiten</h2>
+    <table id="urlaub_table" class="table mb-5">
+        <thead>
+        <tr>
+            <th>Datum</th>
+            <th>von</th>
+            <th>bis</th>
+            <th>Zeit (min)</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody th:each="urlaub : ${student.getUrlaube()}">
+        <tr>
+            <td th:text="${urlaub.datum()}"></td>
+            <td th:text="${urlaub.startzeit()}"></td>
+            <td th:text="${urlaub.endzeit()}"></td>
+            <td th:text="${urlaub.endzeit().getMinute() - urlaub.startzeit().getMinute()}"></td>
+        </tr>
+
+        </tbody>
+        <tfoot>
+        <tr>
+            <td><strong>Summe</strong></td>
+            <td></td>
+            <td></td>
+            <td><strong th:text="${student.summeUrlaubs()}"></strong></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><strong>Resturlaub</strong></td>
+            <td></td>
+            <td></td>
+            <td><strong th:text="${student.getResturlaub()}"></strong></td>
+        </tr>
+        </tfoot>
+    </table>
+    <h2 id="klausur">Klausuren</h2>
+    <p class="alert alert-warning">Sie sind für keine Klausuren
+        angemeldet.</p>
+
+
+    <div class="text-center pt-5">
+        <a href="student/urlaubAnmelden">
+            <button class="btn bg-blue mx-5 text-white p-3" >Urlaub anmelden</button>
+        </a>
+        <a href="/klausuranmeldung">
+            <button class="btn bg-yellow mx-5 p-3">Klausur anmelden</button>
+        </a>
+    </div>
+
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/jquery.datetimepicker.full.min.js"></script>
+    <script>
+
+        var startTime = null;
+        var endTime = null;
+
+        jQuery('#tag').datetimepicker({
+            format: 'd.m.Y',
+            timepicker: false,
+            lang: 'de',
+            weeks: true,
+            dayOfWeekStart: 1
+        });
+        jQuery('#von').datetimepicker({
+            format: 'H:i',
+            datepicker: false,
+            allowTimes: startTime
+        });
+        jQuery('#bis').datetimepicker({
+            format: 'H:i',
+            datepicker: false,
+            allowTimes: endTime
+        });
+    </script>
+</div>
+</body>
+</html>

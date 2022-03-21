@@ -27,13 +27,19 @@ public class Student {
 
 
     public void addUrlaub(LocalDate datum, LocalTime start, LocalTime ende) {
-        resturlaub -= Duration.between(start, ende).toMinutes();
+     //   resturlaub -= Duration.between(start, ende).toMinutes();
         urlaube.add(new Urlaub(datum, start, ende));
     }
 
+    public void berechneRestUrlaub (){
+        resturlaub = 240 - urlaube.stream()
+                .mapToInt(u -> (int) Duration.between(u.startzeit(),u.endzeit()).toMinutes())
+                .sum();
+    }
+
     public boolean urlaubStornieren(LocalDate datum, LocalTime start, LocalTime ende) {
-        if (urlaubExistiert(datum, start, ende)) {
-            resturlaub += Duration.between(start, ende).toMinutes();
+        if (urlaubExistiertSchon(datum, start, ende)) {
+            //resturlaub += Duration.between(start, ende).toMinutes();
             urlaube.removeIf(u -> u.datum().equals(datum)
                     && u.startzeit().equals(start)
                     && u.endzeit().equals(ende));
@@ -77,7 +83,7 @@ public class Student {
         klausuren.add(referenz);
     }
 
-    public boolean urlaubExistiert(LocalDate datum, LocalTime start, LocalTime ende) {
+    public boolean urlaubExistiertSchon(LocalDate datum, LocalTime start, LocalTime ende) {
         Urlaub urlaub = new Urlaub(datum, start, ende);
         return urlaube.contains(urlaub);
     }
@@ -90,6 +96,10 @@ public class Student {
         this.resturlaub = resturlaub;
     }
 
+    public int summeUrlaubs(){
+
+        return 240 - resturlaub;
+    }
 
     @Override
     public boolean equals(Object o) {
