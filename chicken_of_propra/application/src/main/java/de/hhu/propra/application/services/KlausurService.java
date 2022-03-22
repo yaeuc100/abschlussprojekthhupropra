@@ -21,5 +21,8 @@ public class KlausurService {
         return klausurRepository.alleKlausuren();
     }
 
+    public Klausur klausurMitId(Long id){
+        return klausurRepository.klausurMitId(id);
+    }
 
 }

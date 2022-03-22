@@ -6,13 +6,12 @@ import java.util.Objects;
 
 public record Klausur(Long id, String name, LocalDateTime datum, int dauer, long lsf, boolean online) {
 
-    @Override
-    public String toString() {
+
+    public String formatiert() {
         return name + " ( " + datum.toLocalDate().toString() + ", " +
                 datum.toLocalTime().toString() + " Uhr - " +
                 datum.toLocalTime().plusMinutes(dauer).toString() + " Uhr )";
      }
-
 
     @Override
     public boolean equals(Object o) {

@@ -19,21 +19,14 @@
   <div class="formular mt-3">
     <p class="alert"><strong>Wenn die Klausur in der Auswahl noch nicht vorhanden ist, dann können Sie
       sie <a
-              href="/klausuren">hier</a> anlegen.</strong></p>
-    <form name="klausur_anmelden" method="post" th:action="@{/student/klausuranmeldung}" th:object="${klausur}"><input type="hidden" name="_csrf" value="61870cb0-f6c3-4fde-9f69-0244d0576cf5"/>
+              href="/student/klausurErstellen">hier</a> anlegen.</strong></p>
+    <form name="klausur_anmelden" method="post" th:action="@{/student/klausuranmeldung}"><input type="hidden" name="_csrf" value="61870cb0-f6c3-4fde-9f69-0244d0576cf5"/>
       <select class="form-control" name="klausur" id="klausur-select">
-          <option th:each=" k : ${klausuren}" th:text="${k.toString()}" th:value="${k}">
-            <div  th:field="*{id}" hidden></div>
-            <div  th:field="*{name}" hidden></div>
-            <div  th:field="*{datum}" hidden></div>
-            <div  th:field="*{dauer}" hidden></div>
-            <div  th:field="*{lsf}" hidden></div>
-            <div  th:field="*{online}" hidden></div>
-          </option>
+          <option th:each=" k : ${klausuren}" th:text="${k.formatiert()}" th:value="${k.id()}"></option>
       </select>
       <table>
-        <tr th:each ="f : ${fehler}">
-          <td th:text="${f}"></td>
+        <tr>
+          <td th:text="${fehler}"></td>
         </tr>
 
       </table>

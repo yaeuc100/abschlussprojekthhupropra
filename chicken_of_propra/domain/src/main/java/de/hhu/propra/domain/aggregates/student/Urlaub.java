@@ -24,4 +24,13 @@ public record Urlaub (LocalDate datum, LocalTime startzeit, LocalTime endzeit) {
     public int hashCode() {
         return Objects.hash(datum, startzeit, endzeit);
     }
+
+    @Override
+    public String toString() {
+        return "Urlaub{" +
+                "datum=" + datum +
+                ", startzeit=" + startzeit +
+                ", endzeit=" + endzeit +
+                '}';
+    }
 }

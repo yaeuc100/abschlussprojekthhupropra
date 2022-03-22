@@ -1,6 +1,9 @@
 package de.hhu.propra.application.dto;
 
+import de.hhu.propra.application.utils.UrlaubKlausurBearbeitung;
+import de.hhu.propra.application.utils.UrlaubValidierung;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
+import de.hhu.propra.domain.aggregates.student.Urlaub;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -17,6 +20,17 @@ public record KlausurDto (String name , String datum , String startzeit, String 
         return new Klausur(null, dto.name, datumMitZeit, dauer ,dto.lsf , dto.online());
     }
 
+    public String formatiereDatum(){
+        return datum + ", " + startzeit + " Uhr - " + endzeit + " Uhr";
+    }
+    public String formatiereFreistellung(){
+        UrlaubKlausurBearbeitung urlaubKlausurBearbeitung = new UrlaubKlausurBearbeitung();
+        KlausurDto klausurDto = new KlausurDto(name, datum, startzeit, endzeit, lsf, online);
+        Klausur klausur = KlausurDto.toKlausur(klausurDto);
+        Urlaub urlaub = urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausur);
+
+        return urlaub.startzeit() + "Uhr - " + urlaub.endzeit() + " Uhr";
+    }
     public static KlausurDto toKlausurDto(Klausur klausur){
         return new KlausurDto( klausur.name(),
                 klausur.datum().toLocalDate().toString(),

@@ -9,42 +9,46 @@ import de.hhu.propra.domain.aggregates.student.Urlaub;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.ZoneId;
+import java.util.*;
+
+import static java.util.Calendar.getInstance;
 
 public class KlausurValidierung {
 
     private Set<String> fehlgeschlagen = new HashSet<>();
-    //TODO keine überschneidung
 
     public Set<String> getFehlgeschlagen() {
         return fehlgeschlagen;
     }
 
-    public boolean klausurLiegtInDb(List<Klausur> klausurDtos, Klausur klausur){
+    public boolean vielfachesVon15(KlausurDto klausurDto) {
+        Klausur klausur = KlausurDto.toKlausur(klausurDto);
 
-        boolean ergebnis = klausurDtos.contains(klausur);
+        int startMinuten = klausur.datum().getMinute();
+        boolean ergebnis = startMinuten % 15 == 0 && klausur.dauer() % 15 == 0;
+        if (!ergebnis) {
+            fehlgeschlagen.add(KlausurFehler.VIELFACHES_VON_15);
+        }
+        return ergebnis;
+    }
+
+    public boolean klausurLiegtInDb(List<Klausur> klausuren, Klausur klausur){
+        boolean ergebnis = klausuren.contains(klausur);
         if(ergebnis){
             fehlgeschlagen.add(KlausurFehler.KLAUSUR_LIEGT_In_DB);
         }
         return ergebnis;
     }
 
-    public boolean keineKlausurUeberschneidung(List<Klausur> klausurDtos, Klausur klausur){
-
-        UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
-        UrlaubKlausurBearbeitung urlaubKlausurBearbeitung = new UrlaubKlausurBearbeitung();
-        Urlaub neueKlausur = urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausur);
+    public boolean keineKlausurUeberschneidung(List<Klausur> klausuren, Klausur klausur){
         boolean ergebnis = true;
-        for(Klausur k : klausurDtos){
-            System.out.println(k);
-            if(k.datum().toLocalDate().equals(klausur.datum().toLocalDate())){
-                Urlaub bereitsBestehendeKlausur = urlaubKlausurBearbeitung.freieZeitDurchKlausur(k);
-                if(urlaubValidierung.pruefeUrlaubUeberschneidung(bereitsBestehendeKlausur,neueKlausur)){
-                    ergebnis = false;
-                }
+        for(Klausur k : klausuren){
+            if(pruefeZweiUeberschneidungen(k, klausur)){
+                ergebnis = false;
+                break;
             }
         }
         if(!ergebnis){
@@ -52,6 +56,32 @@ public class KlausurValidierung {
         }
         return ergebnis;
     }
+
+    boolean pruefeZweiUeberschneidungen(Klausur ersteKlausur, Klausur zweiteKlausur) {
+        LocalTime ersteKlausurStart = ersteKlausur.datum().toLocalTime();
+        LocalTime ersteKlausurEnde = ersteKlausur.datum().toLocalTime().plusMinutes(ersteKlausur.dauer());
+        LocalTime zweiteKlausurStart = zweiteKlausur.datum().toLocalTime();
+        LocalTime zweiteKlausurEnde = zweiteKlausur.datum().toLocalTime().plusMinutes(zweiteKlausur.dauer());
+        if(!ersteKlausur.datum().equals(zweiteKlausur.datum())){
+            return false;
+        }
+        return ersteKlausurEnde.isAfter(zweiteKlausurStart) && zweiteKlausurEnde.isAfter(ersteKlausurStart);
+    }
+
+    public boolean amWochenende(KlausurDto klausur){
+        boolean ergebnis = true;
+        Date date = Date.from(KlausurDto.toKlausur(klausur).datum().toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Calendar datum = getInstance();
+        datum.setTime(date);
+        if((datum.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ) ||
+                (datum.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY )){
+            fehlgeschlagen.add(KlausurFehler.AM_WOCHENENDE);
+            ergebnis = false;
+        }
+        return ergebnis;
+    }
+
+
 
     public boolean datumLiegtInPraktikumszeit(KlausurDto klausurDto) {
         LocalDate start = LocalDate.of(2022, 3, 6); //ein tag vorher
@@ -67,29 +97,39 @@ public class KlausurValidierung {
     public boolean lsfIDPasst(KlausurDto klausur) throws IOException {
         String alsString = Long.toString(klausur.lsf());
         boolean ergebnis = true;
+        if(klausur.name().isBlank()) {
+            fehlgeschlagen.add("Der Veranstaltungsname darf nicht leer sein");
+            return false;
+        }
         if (alsString.length() != 6) {
             fehlgeschlagen.add(KlausurFehler.UNGUELTIGE_LSFID);
             ergebnis = false;
         }
         if (!LsfIdValidierung.namePasstZuId(klausur)) {
             String nachricht = new String(
-                    ("Die angegebene Veranstaltungsname ist ungültig. " +
+                    ("Der angegebene Veranstaltungsname ist ungültig. " +
                             "Der dazu bestehende Name ist ").getBytes(), StandardCharsets.UTF_8) + LsfIdValidierung.getName(klausur);
             fehlgeschlagen.add(nachricht);
             ergebnis = false;
         }
+
         return ergebnis;
     }
 
     public boolean startzeitVorEndzeit(KlausurDto klausurDto) {
         boolean ergebnis = LocalTime.parse(klausurDto.startzeit()).isBefore(LocalTime.parse(klausurDto.endzeit()));
         if (!ergebnis){
-            fehlgeschlagen.add(UrlaubFehler.STARTZEIT_VOR_ENDZEIT);
+            fehlgeschlagen.add(KlausurFehler.STARTZEIT_VOR_ENDZEIT);
         }
         return ergebnis;
     }
 
     public boolean klausurIstValide(KlausurDto klausur) throws IOException {
-        return datumLiegtInPraktikumszeit(klausur) && lsfIDPasst(klausur) && startzeitVorEndzeit(klausur);
+        return datumLiegtInPraktikumszeit(klausur)
+                && lsfIDPasst(klausur)
+                && startzeitVorEndzeit(klausur)
+                && startzeitVorEndzeit(klausur)
+                && amWochenende(klausur)
+                && vielfachesVon15(klausur);
     }
 }

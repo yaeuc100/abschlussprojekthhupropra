@@ -7,9 +7,10 @@ import de.hhu.propra.domain.aggregates.student.Urlaub;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.ZoneId;
+import java.util.*;
+
+import static java.util.Calendar.getInstance;
 
 //     vielfaches von 15 min
 //     startzeit mod 15 min
@@ -33,6 +34,19 @@ public class UrlaubValidierung {
         boolean ergebnis = startMinuten % 15 == 0 && endMinuten % 15 == 0;
         if (!ergebnis) {
             fehlgeschlagen.add(UrlaubFehler.VIELFACHES_VON_15);
+        }
+        return ergebnis;
+    }
+
+    public boolean amWochenende(Urlaub urlaub){
+        boolean ergebnis = true;
+        Date date = Date.from(urlaub.datum().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Calendar datum = getInstance();
+        datum.setTime(date);
+        if((datum.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ) ||
+                (datum.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY )){
+            fehlgeschlagen.add(UrlaubFehler.AM_WOCHENENDE);
+            ergebnis = false;
         }
         return ergebnis;
     }
@@ -64,7 +78,7 @@ public class UrlaubValidierung {
             valide = false;
         }
         if (!valide){
-            fehlgeschlagen.add(UrlaubFehler.ZWEI_URLAUBe_AN_TAG);
+            fehlgeschlagen.add(UrlaubFehler.ZWEI_URLAUBE_AN_TAG);
         }
         return valide;
     }
@@ -76,6 +90,15 @@ public class UrlaubValidierung {
         }
         return ergebnis;
     }
+
+    public boolean urlaubNurVorDemTagDesUrlaubsStornieren(Urlaub urlaub) {
+        boolean ergebnis = urlaub.datum().isAfter(LocalDate.now());
+        if (!ergebnis){
+            fehlgeschlagen.add(UrlaubFehler.STONIERUNG_RECHTZEITIG);
+        }
+        return ergebnis;
+    }
+
 
     public boolean genugUrlaub(Student student, Urlaub urlaub) {
         Duration duration = Duration.between(urlaub.startzeit(), urlaub.endzeit());
@@ -118,7 +141,6 @@ public class UrlaubValidierung {
 
     }
 
-    // TODO: Auch Klausur
     public boolean startzeitVorEndzeit(Urlaub urlaub) {
         boolean ergebnis = urlaub.startzeit().isBefore(urlaub.endzeit());
         if (!ergebnis){
@@ -149,7 +171,7 @@ public class UrlaubValidierung {
     public boolean urlaubIstValide(Urlaub urlaub) {
         return vielfachesVon15(urlaub) && dauerIstValide(urlaub)
                 && urlaubNurVorDemTagDesUrlaubs(urlaub) && startzeitVorEndzeit(urlaub)
-                && datumLiegtInPraktikumszeit(urlaub);
+                && datumLiegtInPraktikumszeit(urlaub) && amWochenende(urlaub);
     }
 
 }

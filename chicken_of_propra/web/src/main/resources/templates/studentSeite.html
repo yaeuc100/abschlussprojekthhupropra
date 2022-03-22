@@ -33,10 +33,23 @@
             <td th:text="${urlaub.startzeit()}"></td>
             <td th:text="${urlaub.endzeit()}"></td>
             <td th:text="${urlaub.berechneZeitraum()}"></td>
+            <td>
+                <form method="post"
+                      th:action="@{/student/urlaubstornieren}">
+                    <input type="hidden" name="datum" th:value="${urlaub.datum()}">
+                    <input type="hidden" name="startzeit" th:value="${urlaub.startzeit()}">
+                    <input type="hidden" name="endzeit" th:value="${urlaub.endzeit()}">
+
+                    <button class="btn btn-danger">Stornieren</button>
+                </form>
+            </td>
         </tr>
+
+
 
         </tbody>
         <tfoot>
+
         <tr>
             <td><strong>Summe</strong></td>
             <td></td>
@@ -50,11 +63,39 @@
             <td></td>
             <td><strong th:text="${student.getResturlaub()}"></strong></td>
         </tr>
+
         </tfoot>
     </table>
+    <td th:text="${fehler}"></td>
     <h2 id="klausur">Klausuren</h2>
-    <p class="alert alert-warning">Sie sind für keine Klausuren
-        angemeldet.</p>
+    <div>
+        <p>Sie sind für folgende Klausuren angemeldet:</p>
+        <table name="angemeldete_klausuren" class="table mb-5">
+            <thead>
+            <tr>
+                <th>Veranstaltung</th>
+                <th>Klausurzeit</th>
+                <th>Freistellung vom Praktikum</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="entry, stat : ${klausuren}">
+
+                <td th:text="${entry.value.name()}">Präsenzklausur Halo</td>
+                <td th:text="${entry.value.formatiereDatum()}">23.03.2022, 09:15 - 10:00 Uhr</td>
+                <td th:text="${entry.value.formatiereFreistellung()}">08:30 - 12:00 Uhr</td>
+                <td>
+                    <form method="post"
+                          th:action="@{/student/klausurstornieren}">
+                        <input type="hidden" name="referenz" th:value="${entry.key}">
+                        <button class="btn btn-danger">Stornieren</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
 
     <div class="text-center pt-5">

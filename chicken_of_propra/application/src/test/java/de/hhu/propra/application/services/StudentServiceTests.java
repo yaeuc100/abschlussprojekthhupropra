@@ -4,6 +4,7 @@ import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.fehler.KlausurFehler;
 import de.hhu.propra.application.fehler.UrlaubFehler;
+import de.hhu.propra.application.repositories.AuditLogRepository;
 import de.hhu.propra.application.repositories.KlausurRepository;
 import de.hhu.propra.application.repositories.StudentRepository;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
@@ -31,13 +32,15 @@ public class StudentServiceTests {
 
     private KlausurRepository klausurRepository;
     private StudentRepository studentRepository;
+    private AuditLogRepository auditLogRepository;
     private StudentService studentService;
 
     @BeforeEach
     void vorbereiten() {
         this.klausurRepository = mock(KlausurRepository.class);
         this.studentRepository = mock(StudentRepository.class);
-        this.studentService = new StudentService(studentRepository, klausurRepository);
+        this.auditLogRepository = mock(AuditLogRepository.class);
+        this.studentService = new StudentService(studentRepository, klausurRepository, auditLogRepository);
 
     }
 
@@ -78,7 +81,7 @@ public class StudentServiceTests {
 
         //assert
         assertThat(student.getUrlaube()).hasSize(1);
-        assertThat(ergebnis).contains(UrlaubFehler.ZWEI_URLAUBe_AN_TAG);
+        assertThat(ergebnis).contains(UrlaubFehler.ZWEI_URLAUBE_AN_TAG);
     }
 
     @Test
@@ -333,11 +336,11 @@ public class StudentServiceTests {
         //act
         studentService.urlaubAnlegen(student.getHandle(), urlaub1);
         studentService.urlaubAnlegen(student.getHandle(), urlaub2);
-        boolean ergebnis = studentService.urlaubStornieren(student.getHandle(), urlaub2);
+        Set<String> ergebnis = studentService.urlaubStornieren(student.getHandle(), urlaub2);
 
         //assert
         assertThat(student.getUrlaube()).hasSize(1);
-        assertThat(ergebnis).isTrue();
+        assertThat(ergebnis).isEmpty();
     }
 
 
@@ -353,11 +356,11 @@ public class StudentServiceTests {
         Urlaub urlaub = UrlaubDto.toUrlaub(urlaub1);
         //act
         student.addUrlaub(urlaub.datum(),urlaub.startzeit(),urlaub.endzeit());
-        boolean ergebnis = studentService.urlaubStornieren(student.getHandle(), urlaub1);
+        Set<String> ergebnis = studentService.urlaubStornieren(student.getHandle(), urlaub1);
 
         //assert
         assertThat(student.getUrlaube()).hasSize(1);
-        assertThat(ergebnis).isFalse();
+        assertThat(ergebnis).isNotEmpty();
     }
 
     @Test
@@ -370,10 +373,10 @@ public class StudentServiceTests {
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
 
         //act
-        boolean ergebnis = studentService.urlaubStornieren(student.getHandle(), urlaub1);
+        Set<String> ergebnis = studentService.urlaubStornieren(student.getHandle(), urlaub1);
 
         //assert
-        assertThat(ergebnis).isFalse();
+        assertThat(ergebnis).isNotEmpty();
     }
 
     @Test
@@ -425,15 +428,22 @@ public class StudentServiceTests {
     void test18() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("Betriebssysteme und Systemprogrammierung",
-                LocalDate.now().toString(),
-                LocalTime.now().toString(),
-                LocalTime.now().plusMinutes(90).toString(),
+                LocalDate.of(3000,4,22).toString(),
+                LocalTime.of(9,0).toString(),
+                LocalTime.of(11,0).plusMinutes(90).toString(),
+                217480,
+                true);
+        Klausur klausur = new Klausur(1L,
+                "Betriebssysteme und Systemprogrammierung",
+                LocalDateTime.of(3000, 4, 22, 9, 0),
+                120,
                 217480,
                 true);
         when(klausurRepository.alleKlausuren()).thenReturn(Collections.emptyList());
+        when(klausurRepository.klausurMitDaten(klausurDto)).thenReturn(klausur);
 
         //act
-        Set<String> ergebnis = studentService.klausurErstellen(klausurDto);
+        Set<String> ergebnis = studentService.klausurErstellen(null, klausurDto);
 
         //assert
         assertThat(ergebnis).isEmpty();
@@ -477,7 +487,7 @@ public class StudentServiceTests {
         when(klausurRepository.alleKlausuren()).thenReturn(klausurListe);
 
         //act
-        Set<String> ergebnis = studentService.klausurErstellen(klausurDto);
+        Set<String> ergebnis = studentService.klausurErstellen(null, klausurDto);
 
         //assert
         assertThat(ergebnis).contains("Die Klausur ist schon vorhanden");
@@ -511,7 +521,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Eine Klausur an einem Tag kann erstellt werden, " +
+    @DisplayName("Eine Klausur an einem Tag kann nicht erstellt werden, " +
             "wenn sie sich mit einer vorher erstellten Klausur überschneidet")
     void test20() throws IOException {
         //arrange
@@ -527,12 +537,17 @@ public class StudentServiceTests {
                 LocalDateTime.of(2022,3,22,11,30).toLocalTime().plusMinutes(90).toString(),
                 217480,
                 false);    //10:00 - 11:30
+        Klausur klausur = new Klausur(1L, "Betriebssysteme und Systemprogrammierung",
+                LocalDateTime.of(2022,3,22,10,0),
+                90,
+                217480,
+                false);
         List<Klausur> klausurListe = new ArrayList<>();
         klausurListe.add(KlausurDto.toKlausur(klausurDto1));
         when(klausurRepository.alleKlausuren()).thenReturn(klausurListe);
-
+        when(klausurRepository.klausurMitDaten(klausurDto2)).thenReturn(klausur);
         //act
-        Set<String> ergebnis = studentService.klausurErstellen(klausurDto2);
+        Set<String> ergebnis = studentService.klausurErstellen(null, klausurDto2);
 
         //assert
         assertThat(ergebnis).isEmpty();
@@ -557,7 +572,7 @@ public class StudentServiceTests {
         student.addKlausur(klausur1);
 
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
-        when(klausurRepository.alleKlausuren()).thenReturn(List.of(klausur1,klausur2));
+        when(klausurRepository.alleKlausuren()).thenReturn(List.of(klausur1, klausur2));
         when(klausurRepository.klausurMitId(1L)).thenReturn(klausur1);
         when(klausurRepository.klausurMitId(2L)).thenReturn(klausur2);
 
@@ -575,12 +590,12 @@ public class StudentServiceTests {
     void test30() {
         //arrange
         Klausur klausur1 = new Klausur(1L, "Betriebssysteme und Systemprogrammierung",
-                LocalDateTime.of(2022, 3, 22, 9, 30),
+                LocalDateTime.of(3000, 3, 22, 9, 30),
                 90,
                 217480,
                 true); // 09:00 - 11:00
         Klausur klausur2 = new Klausur(2L, "Einführung in die Computerlinguistik",
-                LocalDateTime.of(2022, 3, 22, 9, 30),
+                LocalDateTime.of(3000, 3, 22, 9, 30),
                 90,
                 222916,
                 true); // 09:00 - 11:00
@@ -756,7 +771,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Der Student hat an einem Tag Urlaub und will genau zu dieser Zeit zwei Klausuren hintereinaden anmelden")
+    @DisplayName("Der Student hat an einem Tag Urlaub und will genau zu dieser Zeit zwei Klausuren hintereinander anmelden")
     void test26() {
         //arrange
         Urlaub dto = new Urlaub(LocalDate.of(2020, 1, 1),

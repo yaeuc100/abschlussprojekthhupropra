@@ -93,16 +93,17 @@ public class KlausurRepositoryImplTests {
   void test4(){
     //arrange
     KlausurRepositoryImpl klausurRepository = new KlausurRepositoryImpl(klausurDao, db);
-    KlausurDto klausur = new KlausurDto("Rechnernetze",
+    Klausur klausur = new Klausur(null,"Rechnernetze",
             LocalDateTime.of(2020,01,01,10,00),
             60,123456,true);
+    KlausurDto dtoAusKlausur = KlausurDto.toKlausurDto(klausur);
     Klausur erwartet = new Klausur(1L,
             "Rechnernetze",
             LocalDateTime.of(2020,01,01,10,00),
             60,123456,true);
 
     //act
-    Klausur klausurAusDb = klausurRepository.klausurMitDaten(klausur);
+    Klausur klausurAusDb = klausurRepository.klausurMitDaten(dtoAusKlausur);
 
     //assert
     assertThat(klausurAusDb).isEqualTo(erwartet);

@@ -31,3 +31,11 @@ CREATE TABLE IF NOT EXISTS klausur_referenz
     student_entity int,
     PRIMARY KEY (id, student_entity)
 );
+
+CREATE TABLE IF NOT EXISTS audit_entity
+(
+    id int auto_increment primary key ,
+    aenderung VARCHAR(200),
+    handle VARCHAR(50),
+    zeitpunkt DATETIME
+)

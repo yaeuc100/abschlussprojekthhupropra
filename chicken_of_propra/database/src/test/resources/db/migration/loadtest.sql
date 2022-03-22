@@ -44,5 +44,9 @@ INSERT INTO klausur_referenz
 VALUES ('3','1');
 
 
+INSERT INTO audit_entity
+VALUES ('1','xyz','olli','2021-01-01 10:00:00.000000');
 
 
+INSERT INTO audit_entity
+VALUES ('2','xyzxyz','sabrina','2021-01-01 11:00:00.000000');

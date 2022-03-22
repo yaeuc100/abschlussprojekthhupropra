@@ -16,7 +16,7 @@
     <h1>Urlaub anmelden</h1>
 
     <div class="formular mt-3" >
-        <form type="time" name="urlaub_anmelden" class="mt-3" method="post" th:action="@{/student/urlaubAnmelden}" th:object="${urlaub}">
+        <form type="time" name="urlaub_anmelden" class="mt-3" method="post" th:action="@{/student/urlaubanmeldung}" th:object="${urlaub}">
             <div class="form-floating mb-3">
                 <input th:field="*{datum}" type="date" class="form-control" id="tag"
                        placeholder=" " name="datum" value="">

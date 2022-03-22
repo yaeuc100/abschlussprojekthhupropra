@@ -9,15 +9,22 @@ import java.util.Objects;
 public record UrlaubDto(String datum, String startzeit, String endzeit) {
 
     public static Urlaub toUrlaub(UrlaubDto dto){
-        System.out.println(dto.datum);
-        System.out.println(dto.startzeit);
+
         return new Urlaub(LocalDate.parse(dto.datum),
                 LocalTime.parse(dto.startzeit()),
                 LocalTime.parse(dto.endzeit()));
     }
+    public static UrlaubDto toUrlaubDto(Urlaub urlaub){
+        return new UrlaubDto(
+                urlaub.datum().toString(),
+                urlaub.startzeit().toString(),
+                urlaub.endzeit().toString()
+        );
+    }
+
     @Override
     public String toString() {
-        return "UrlaubDto{" +
+        return "Urlaub{" +
                 "datum=" + datum +
                 ", startzeit=" + startzeit +
                 ", endzeit=" + endzeit +
