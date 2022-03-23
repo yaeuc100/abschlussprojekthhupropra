@@ -11,13 +11,6 @@ import java.util.List;
 
 public class StudentServiceHilfsMethoden {
 
-
-    private KlausurRepository klausurRepository;
-
-    public StudentServiceHilfsMethoden(KlausurRepository klausurRepository){
-        this.klausurRepository = klausurRepository;
-    }
-
     public List<Klausur> studentHatKlausurAnTag(List<Klausur> klausuren, LocalDate datum) {
         return klausuren.stream()
                 .filter(k -> k.datum().toLocalDate().equals(datum))

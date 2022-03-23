@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table>
+    <tbody>
+    <tr>
+        <td>Datum</td>
+        <td>Student</td>
+        <td>Log</td>
+
+    </tr>
+    <tr th:each="log : ${logs}">
+        <td th:text="${log.getZeitpunkt()}"></td>
+        <td th:text="${log.getHandle()}"></td>
+        <td th:text="${log.getAenderung()}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

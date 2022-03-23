@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class LsfIdValidierung {
 
-    private static String erstelleUrl(long lsf){
+    static String erstelleUrl(long lsf){
         return "https://lsf.hhu.de/qisserver/rds?state=verpublish&status=init&vmfile=no&publishid="
                 + lsf + "&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung";
     }
@@ -20,7 +20,7 @@ public class LsfIdValidierung {
         return new Scanner(new URL(url).openStream(), "UTF-8").useDelimiter("\\A").next();
     }
 
-    public static String getName(KlausurDto klausurDto) throws IOException {
+    static String getName(KlausurDto klausurDto) throws IOException {
         String content = getInhalt(erstelleUrl(klausurDto.lsf()));
         String ergebnis = "";
         String[] lines = content.split("\n");
@@ -31,7 +31,7 @@ public class LsfIdValidierung {
         return ergebnis;
     }
 
-    private static int startIndex(String line){
+    static int startIndex(String line){
         for(int i = 0 ; i< line.length() ;i++){
             if(line.charAt(i) != ' ') {
                 return i+1;

@@ -17,10 +17,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LsfIdValidierungTests {
 
-    //TODO Set mit fehlermeldung testen
+    //TODO Test getINhalt, startIndex
 
     @Test
-    @DisplayName("Der Name der Klausur passt nicht zur lsf")
+    @DisplayName("Der Name der Klausur passt nicht zur LSF-ID")
     void test() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("aaksfjgakqio",
@@ -39,7 +39,7 @@ public class LsfIdValidierungTests {
     }
 
     @Test
-    @DisplayName("name passt nicht zu lsf")
+    @DisplayName("Der Name der Klausur passt zur LSF-ID")
     void test2() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("Einführung in die Computerlinguistik",
@@ -56,7 +56,7 @@ public class LsfIdValidierungTests {
         assertThat(ergebnis).isTrue();
     }
     @Test
-    @DisplayName("Name der Veranstaltung im HTML Seite gefunden")
+    @DisplayName("Der Name der Veranstaltung wird in der HTML Seite gefunden")
     void test3() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("Einführung in die Computerlinguistik",
@@ -72,4 +72,19 @@ public class LsfIdValidierungTests {
         //assert
         assertThat(ergebnis).isEqualTo(new String("Einführung in die Computerlinguistik".getBytes(),StandardCharsets.UTF_8));
     }
+
+    @Test
+    @DisplayName("Der richtige Link zu einer gültigen LSF-ID wird zurückgegeben")
+    void test4() throws IOException {
+        //arrange
+        long lsfID = 22291;
+
+        //act
+        String ergebnis = LsfIdValidierung.erstelleUrl(22291);
+
+        //assert
+        assertThat(ergebnis).isEqualTo("https://lsf.hhu.de/qisserver/rds?state=verpublish&status=init&vmfile=no&pub" +
+                "lishid=22291&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung");
+    }
+
 }

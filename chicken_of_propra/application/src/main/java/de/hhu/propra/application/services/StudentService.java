@@ -44,7 +44,7 @@ public class StudentService {
     }
 
     public Set<String> urlaubAnlegen(String studentHandle, UrlaubDto urlaubDto) {
-        StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden(klausurRepository);
+        StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden();
         Urlaub urlaub = UrlaubDto.toUrlaub(urlaubDto);
         UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
         Student student = studentRepository.studentMitHandle(studentHandle);
@@ -97,7 +97,7 @@ public class StudentService {
     }
 
     public synchronized Set<String> klausurAnmelden(String studentHandle, Long klausurId) {
-        StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden(klausurRepository);
+        StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden();
         KlausurValidierung klausurValidierung = new KlausurValidierung();
         Student student = studentRepository.studentMitHandle(studentHandle);
         Klausur klausurAusDb = klausurRepository.klausurMitId(klausurId);
@@ -165,7 +165,7 @@ public class StudentService {
     }
 
     public void fuegeUrlaubeZusammen(LocalDate datum, Student student, List<Urlaub> urlaube) {
-        StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden(klausurRepository);
+        StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden();
         logsZufuegeUrlaubeZusammen(datum, student, urlaube);
         hilfsMethoden.storniereAlleUrlaubeAnTag(student,datum);
         for(Urlaub urlaub : urlaube){
@@ -176,7 +176,7 @@ public class StudentService {
     }
 
     private void logsZufuegeUrlaubeZusammen(LocalDate datum, Student student, List<Urlaub> urlaube){
-        StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden(klausurRepository);
+        StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden();
         List<Urlaub> stornierte = hilfsMethoden.stornierteUrlaube(hilfsMethoden.findeUrlaubeAmSelbenTag(student, datum), urlaube);
         List<Urlaub> neue = hilfsMethoden.neueUrlaube(hilfsMethoden.findeUrlaubeAmSelbenTag(student, datum), urlaube);
         if(!stornierte.isEmpty()){

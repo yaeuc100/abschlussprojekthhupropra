@@ -2,14 +2,11 @@ package de.hhu.propra.application.utils;
 
 import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.fehler.KlausurFehler;
-import de.hhu.propra.application.fehler.UrlaubFehler;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
-import de.hhu.propra.domain.aggregates.student.Urlaub;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -24,7 +21,7 @@ public class KlausurValidierung {
         return fehlgeschlagen;
     }
 
-    public boolean vielfachesVon15(KlausurDto klausurDto) {
+    boolean vielfachesVon15(KlausurDto klausurDto) {
         Klausur klausur = KlausurDto.toKlausur(klausurDto);
 
         int startMinuten = klausur.datum().getMinute();
@@ -46,7 +43,7 @@ public class KlausurValidierung {
     public boolean keineKlausurUeberschneidung(List<Klausur> klausuren, Klausur klausur){
         boolean ergebnis = true;
         for(Klausur k : klausuren){
-            if(pruefeZweiUeberschneidungen(k, klausur)){
+            if(pruefeUeberschneidung(k, klausur)){
                 ergebnis = false;
                 break;
             }
@@ -57,18 +54,18 @@ public class KlausurValidierung {
         return ergebnis;
     }
 
-    boolean pruefeZweiUeberschneidungen(Klausur ersteKlausur, Klausur zweiteKlausur) {
+    boolean pruefeUeberschneidung(Klausur ersteKlausur, Klausur zweiteKlausur) {
         LocalTime ersteKlausurStart = ersteKlausur.datum().toLocalTime();
         LocalTime ersteKlausurEnde = ersteKlausur.datum().toLocalTime().plusMinutes(ersteKlausur.dauer());
         LocalTime zweiteKlausurStart = zweiteKlausur.datum().toLocalTime();
         LocalTime zweiteKlausurEnde = zweiteKlausur.datum().toLocalTime().plusMinutes(zweiteKlausur.dauer());
-        if(!ersteKlausur.datum().equals(zweiteKlausur.datum())){
+        if(!ersteKlausur.datum().toLocalDate().equals(zweiteKlausur.datum().toLocalDate())){
             return false;
         }
-        return ersteKlausurEnde.isAfter(zweiteKlausurStart) && zweiteKlausurEnde.isAfter(ersteKlausurStart);
+        return (ersteKlausurEnde.isAfter(zweiteKlausurStart) && zweiteKlausurEnde.isAfter(ersteKlausurStart));
     }
 
-    public boolean amWochenende(KlausurDto klausur){
+    boolean amWochenende(KlausurDto klausur){
         boolean ergebnis = true;
         Date date = Date.from(KlausurDto.toKlausur(klausur).datum().toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
         Calendar datum = getInstance();
@@ -83,7 +80,7 @@ public class KlausurValidierung {
 
 
 
-    public boolean datumLiegtInPraktikumszeit(KlausurDto klausurDto) {
+    boolean datumLiegtInPraktikumszeit(KlausurDto klausurDto) {
         LocalDate start = LocalDate.of(2022, 3, 6); //ein tag vorher
         LocalDate ende = LocalDate.of(4000, 3, 26);
         Klausur klausur = KlausurDto.toKlausur(klausurDto);
@@ -94,11 +91,11 @@ public class KlausurValidierung {
         return ergebnis;
     }
 
-    public boolean lsfIDPasst(KlausurDto klausur) throws IOException {
+    boolean lsfIDPasst(KlausurDto klausur) throws IOException {
         String alsString = Long.toString(klausur.lsf());
         boolean ergebnis = true;
         if(klausur.name().isBlank()) {
-            fehlgeschlagen.add("Der Veranstaltungsname darf nicht leer sein");
+            fehlgeschlagen.add(KlausurFehler.NAME_NICHT_LEER);
             return false;
         }
         if (alsString.length() != 6) {
@@ -116,7 +113,7 @@ public class KlausurValidierung {
         return ergebnis;
     }
 
-    public boolean startzeitVorEndzeit(KlausurDto klausurDto) {
+    boolean startzeitVorEndzeit(KlausurDto klausurDto) {
         boolean ergebnis = LocalTime.parse(klausurDto.startzeit()).isBefore(LocalTime.parse(klausurDto.endzeit()));
         if (!ergebnis){
             fehlgeschlagen.add(KlausurFehler.STARTZEIT_VOR_ENDZEIT);

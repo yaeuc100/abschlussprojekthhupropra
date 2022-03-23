@@ -4,10 +4,12 @@ import de.hhu.propra.application.repositories.AuditLogRepository;
 import de.hhu.propra.database.dao.AuditDao;
 import de.hhu.propra.database.entities.AuditEntity;
 import de.hhu.propra.domain.auditLog.AuditLog;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class AuditLogRepositoryImpl implements AuditLogRepository {
 
     private final AuditDao auditDao ;

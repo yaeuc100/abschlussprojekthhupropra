@@ -28,7 +28,7 @@ public class UrlaubValidierung {
         return fehlgeschlagen;
     }
 
-    public boolean vielfachesVon15(Urlaub urlaub) {
+    boolean vielfachesVon15(Urlaub urlaub) {
         int startMinuten = urlaub.startzeit().getMinute();
         int endMinuten = urlaub.endzeit().getMinute();
         boolean ergebnis = startMinuten % 15 == 0 && endMinuten % 15 == 0;
@@ -38,7 +38,7 @@ public class UrlaubValidierung {
         return ergebnis;
     }
 
-    public boolean amWochenende(Urlaub urlaub){
+    boolean amWochenende(Urlaub urlaub){
         boolean ergebnis = true;
         Date date = Date.from(urlaub.datum().atStartOfDay(ZoneId.systemDefault()).toInstant());
         Calendar datum = getInstance();
@@ -51,7 +51,7 @@ public class UrlaubValidierung {
         return ergebnis;
     }
 
-    public boolean dauerIstValide(Urlaub urlaub) {
+    boolean dauerIstValide(Urlaub urlaub) {
         Duration diff = Duration.between(urlaub.startzeit(), urlaub.endzeit());
         long minuten = diff.toMinutes();
         boolean ergebnis = (minuten == 240 || minuten <= 150 );
@@ -83,7 +83,7 @@ public class UrlaubValidierung {
         return valide;
     }
 
-    public boolean urlaubNurVorDemTagDesUrlaubs(Urlaub urlaub) {
+    boolean urlaubNurVorDemTagDesUrlaubs(Urlaub urlaub) {
         boolean ergebnis = urlaub.datum().isAfter(LocalDate.now());
         if (!ergebnis){
             fehlgeschlagen.add(UrlaubFehler.ANTRAG_RECHTZEITIG);
@@ -98,7 +98,6 @@ public class UrlaubValidierung {
         }
         return ergebnis;
     }
-
 
     public boolean genugUrlaub(Student student, Urlaub urlaub) {
         Duration duration = Duration.between(urlaub.startzeit(), urlaub.endzeit());
@@ -141,7 +140,7 @@ public class UrlaubValidierung {
 
     }
 
-    public boolean startzeitVorEndzeit(Urlaub urlaub) {
+    boolean startzeitVorEndzeit(Urlaub urlaub) {
         boolean ergebnis = urlaub.startzeit().isBefore(urlaub.endzeit());
         if (!ergebnis){
             fehlgeschlagen.add(UrlaubFehler.STARTZEIT_VOR_ENDZEIT);
@@ -149,7 +148,7 @@ public class UrlaubValidierung {
         return ergebnis;
     }
 
-    public boolean datumLiegtInPraktikumszeit(Urlaub urlaub) {
+    boolean datumLiegtInPraktikumszeit(Urlaub urlaub) {
         LocalDate start = LocalDate.of(2022, 3, 6); //ein tag vorher
         LocalDate ende = LocalDate.of(4000, 3, 26);
         boolean ergebnis = urlaub.datum().isAfter(start) && ende.isAfter(urlaub.datum());

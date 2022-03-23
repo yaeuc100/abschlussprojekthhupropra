@@ -75,7 +75,7 @@ public class StudentRepositoryImplTests {
     }
 
     @Test
-    @DisplayName("Richtiger Student wird raus gelesen und ein Urlaub storniert")
+    @DisplayName("Richtiger Student wird ausgelesen und ein Urlaub storniert")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
     void test3(){
@@ -103,7 +103,7 @@ public class StudentRepositoryImplTests {
 
 
     @Test
-    @DisplayName("alle Studenten werden geholt")
+    @DisplayName("Alle Studenten werden aus DB geholt")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
     void test4(){
