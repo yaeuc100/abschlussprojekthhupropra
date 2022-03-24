@@ -31,7 +31,7 @@ public class LsfIdValidierung {
         return ergebnis;
     }
 
-//    static String lsfungueltig()
+
 
 
 

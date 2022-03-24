@@ -617,12 +617,12 @@ public class StudentServiceTests {
     @DisplayName("Student beantragt Urlaub am ganzen Tag an dem er Klausur hat")
     void test21() {
         //arrange
-        UrlaubDto dto = new UrlaubDto(LocalDate.of(2020, 1, 1).toString(),
+        UrlaubDto dto = new UrlaubDto(LocalDate.of(2024, 1, 1).toString(),
                 LocalTime.of(8, 30).toString(),
                 LocalTime.of(12, 30).toString());
         Klausur klausur = new Klausur(1L,
                 "Betriebssysteme und Systemprogrammierung",
-                LocalDateTime.of(2020, 1, 1, 10, 0),
+                LocalDateTime.of(2024, 1, 1, 10, 0),
                 60,
                 217480,
                 true);
@@ -630,11 +630,11 @@ public class StudentServiceTests {
         student.addKlausur(klausur);
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
         when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
-        Urlaub ergebnis1 = new Urlaub(LocalDate.of(2020, 1, 1),
+        Urlaub ergebnis1 = new Urlaub(LocalDate.of(2024, 1, 1),
                 LocalTime.of(8, 30),
                 LocalTime.of(9, 30));
 
-        Urlaub ergebnis2 = new Urlaub(LocalDate.of(2020, 1, 1),
+        Urlaub ergebnis2 = new Urlaub(LocalDate.of(2024, 1, 1),
                 LocalTime.of(11, 0),
                 LocalTime.of(12, 30));
 
@@ -651,18 +651,18 @@ public class StudentServiceTests {
     @DisplayName("Student beantragt Urlaub am ganzen Tag an dem er 2 Klausuren hat")
     void test22() {
         //arrange
-        UrlaubDto dto = new UrlaubDto(LocalDate.of(2020, 1, 1).toString(),
+        UrlaubDto dto = new UrlaubDto(LocalDate.of(2024, 1, 1).toString(),
                 LocalTime.of(8, 30).toString(),
                 LocalTime.of(12, 30).toString());
         Klausur klausur = new Klausur(1L,
                 "Betriebssysteme und Systemprogrammierung",
-                LocalDateTime.of(2020, 1, 1, 9, 30),
+                LocalDateTime.of(2024, 1, 1, 9, 30),
                 60,
                 217480,
                 true); // bis 10:30
         Klausur klausur1 = new Klausur(2L,
                 "Grundlagen der Computernetzwerke (vormals: Rechnernetze)",
-                LocalDateTime.of(2020, 1, 1, 11, 30),
+                LocalDateTime.of(2024, 1, 1, 11, 30),
                 30,
                 219478,
                 true);
@@ -672,13 +672,13 @@ public class StudentServiceTests {
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
         when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
         when(klausurRepository.klausurMitId(2L)).thenReturn(klausur1);
-        Urlaub ergebnis1 = new Urlaub(LocalDate.of(2020, 1, 1),
+        Urlaub ergebnis1 = new Urlaub(LocalDate.of(2024, 1, 1),
                 LocalTime.of(8, 30),
                 LocalTime.of(9, 0));
-        Urlaub ergebnis2 = new Urlaub(LocalDate.of(2020, 1, 1),
+        Urlaub ergebnis2 = new Urlaub(LocalDate.of(2024, 1, 1),
                 LocalTime.of(10, 30),
                 LocalTime.of(11, 0));
-        Urlaub ergebnis3 = new Urlaub(LocalDate.of(2020, 1, 1),
+        Urlaub ergebnis3 = new Urlaub(LocalDate.of(2024, 1, 1),
                 LocalTime.of(12, 0),
                 LocalTime.of(12, 30));
 
@@ -695,16 +695,16 @@ public class StudentServiceTests {
     @DisplayName("Student beantragt Urlaub und hat am Tag bereits Urlaub und eine Klausur")
     void test23() {
         //arrange
-        UrlaubDto dto = new UrlaubDto(LocalDate.of(2020, 1, 1).toString(),
+        UrlaubDto dto = new UrlaubDto(LocalDate.of(2024, 1, 1).toString(),
                 LocalTime.of(10, 0).toString(),
                 LocalTime.of(12, 30).toString());
-        UrlaubDto dto2 = new UrlaubDto(LocalDate.of(2020, 1, 1).toString(),
+        UrlaubDto dto2 = new UrlaubDto(LocalDate.of(2024, 1, 1).toString(),
                 LocalTime.of(8, 30).toString(),
                 LocalTime.of(9, 0).toString());
 
         Klausur klausur = new Klausur(1L,
                 "Betriebssysteme und Systemprogrammierung",
-                LocalDateTime.of(2020, 1, 1, 9, 30),
+                LocalDateTime.of(2024, 1, 1, 9, 30),
                 60,
                 217480,
                 true); // bis 10:30
@@ -714,10 +714,10 @@ public class StudentServiceTests {
 
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
         when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
-       Urlaub ergebnis1 = new Urlaub(LocalDate.of(2020, 1, 1),
+       Urlaub ergebnis1 = new Urlaub(LocalDate.of(2024, 1, 1),
                 LocalTime.of(8, 30),
                 LocalTime.of(9, 0));
-        Urlaub ergebnis2 = new Urlaub(LocalDate.of(2020, 1, 1),
+        Urlaub ergebnis2 = new Urlaub(LocalDate.of(2024, 1, 1),
                 LocalTime.of(10, 30),
                 LocalTime.of(12, 30));
 

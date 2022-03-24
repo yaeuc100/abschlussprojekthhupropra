@@ -7,7 +7,9 @@
 [Spring] <<..spring..>>
 
 [Database] --> [Application]
+[Database] --> [Domain]
 [Web] --> [Application]
 [Application] --> [Domain]
+[Spring] --> [Application]
 
 @enduml

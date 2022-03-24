@@ -18,6 +18,8 @@ public class AuditLogService {
     }
 
     public List<AuditDto> alle(){
-        return auditLogRepository.nachrichten().stream().map(AuditDto::toAuditDto).collect(Collectors.toList());
+        return auditLogRepository.nachrichten().stream()
+                .map(AuditDto::toAuditDto)
+                .collect(Collectors.toList());
     }
 }

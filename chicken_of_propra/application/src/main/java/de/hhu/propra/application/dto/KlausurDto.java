@@ -30,18 +30,6 @@ public record KlausurDto (@NotNull String name,
         return new Klausur(null, dto.name, datumMitZeit, dauer ,dto.lsf , dto.online());
     }
 
-    public String formatiereDatum(){
-        return datum + ", " + startzeit + " Uhr - " + endzeit + " Uhr";
-    }
-    public String formatiereFreistellung(){
-        UrlaubKlausurBearbeitung urlaubKlausurBearbeitung = new UrlaubKlausurBearbeitung();
-        KlausurDto klausurDto = new KlausurDto(name, datum, startzeit, endzeit, lsf, online);
-        Klausur klausur = KlausurDto.toKlausur(klausurDto);
-        Urlaub urlaub = urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausur);
-
-        return urlaub.startzeit() + " Uhr - " + urlaub.endzeit() + " Uhr";
-    }
-
     public static KlausurDto toKlausurDto(Klausur klausur){
         return new KlausurDto( klausur.name(),
                 klausur.datum().toLocalDate().toString(),
@@ -51,6 +39,20 @@ public record KlausurDto (@NotNull String name,
                 klausur.online()
                 );
     }
+    
+    public String formatiereDatum(){
+        return datum + ", " + startzeit + " Uhr - " + endzeit + " Uhr";
+    }
+
+    public String formatiereFreistellung(){
+        UrlaubKlausurBearbeitung urlaubKlausurBearbeitung = new UrlaubKlausurBearbeitung();
+        KlausurDto klausurDto = new KlausurDto(name, datum, startzeit, endzeit, lsf, online);
+        Klausur klausur = KlausurDto.toKlausur(klausurDto);
+        Urlaub urlaub = urlaubKlausurBearbeitung.freieZeitDurchKlausur(klausur);
+
+        return urlaub.startzeit() + " Uhr - " + urlaub.endzeit() + " Uhr";
+    }
+
 
     @Override
     public String toString() {

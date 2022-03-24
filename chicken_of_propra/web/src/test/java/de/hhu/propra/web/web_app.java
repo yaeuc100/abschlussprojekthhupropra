@@ -10,6 +10,4 @@ import org.springframework.stereotype.Repository;
 
 
 @SpringBootApplication()
-@ComponentScan(basePackages = {"de.hhu.propra"}
-        ,includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = {ApplicationService.class}))
 public class web_app { }

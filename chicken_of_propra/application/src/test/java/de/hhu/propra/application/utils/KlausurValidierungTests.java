@@ -281,7 +281,7 @@ public class KlausurValidierungTests {
     }
 
     @Test
-    @DisplayName("Die Lsf ID iat ungültig")
+    @DisplayName("Die Lsf ID ist ungültig")
     void test2() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("Betriebssysteme und Systemprogrammierung" ,
