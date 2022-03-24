@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,7 +92,7 @@ public class StudentRepositoryImpl implements StudentRepository {
         for(KlausurReferenz ref : entity.getKlausuren()){
             student.addKlausurRef(ref);
         }
-        student.berechneRestUrlaub();
+        student.berechneResturlaub();
         return student;
 
     }

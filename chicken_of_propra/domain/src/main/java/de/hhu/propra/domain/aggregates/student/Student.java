@@ -27,11 +27,10 @@ public class Student {
 
 
     public void addUrlaub(LocalDate datum, LocalTime start, LocalTime ende) {
-     //   resturlaub -= Duration.between(start, ende).toMinutes();
         urlaube.add(new Urlaub(datum, start, ende));
     }
 
-    public void berechneRestUrlaub (){
+    public void berechneResturlaub(){
         resturlaub = 240 - urlaube.stream()
                 .mapToInt(u -> (int) Duration.between(u.startzeit(),u.endzeit()).toMinutes())
                 .sum();
@@ -39,7 +38,6 @@ public class Student {
 
     public boolean urlaubStornieren(LocalDate datum, LocalTime start, LocalTime ende) {
         if (urlaubExistiertSchon(datum, start, ende)) {
-            //resturlaub += Duration.between(start, ende).toMinutes();
             urlaube.removeIf(u -> u.datum().equals(datum)
                     && u.startzeit().equals(start)
                     && u.endzeit().equals(ende));
@@ -48,10 +46,6 @@ public class Student {
         return false;
     }
 
-
-    public void addAnwesenheit(LocalDate datum, LocalTime start, LocalTime ende) {
-        anwesenheiten.add(new Anwesenheit(datum, start, ende));
-    }
 
     public Long getId() {
         return id;
@@ -96,8 +90,7 @@ public class Student {
         this.resturlaub = resturlaub;
     }
 
-    public int summeUrlaubs(){
-
+    public int berechneUrlaubszeit(){
         return 240 - resturlaub;
     }
 

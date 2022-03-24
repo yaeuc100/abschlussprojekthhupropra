@@ -98,13 +98,13 @@ public class KlausurValidierung {
             fehlgeschlagen.add(KlausurFehler.NAME_NICHT_LEER);
             return false;
         }
-        if (alsString.length() != 6) {
-            fehlgeschlagen.add(KlausurFehler.UNGUELTIGE_LSFID);
-            ergebnis = false;
-        }
+
         if (!LsfIdValidierung.namePasstZuId(klausur)) {
-            String nachricht = new String(
-                    ("Der angegebene Veranstaltungsname ist ungültig. " +
+            String nachricht;
+            if(LsfIdValidierung.getName(klausur).isBlank())
+                nachricht = KlausurFehler.UNGUELTIGE_LSFID;
+            else
+                nachricht= new String(("Der angegebene Veranstaltungsname ist ungültig. " +
                             "Der dazu bestehende Name ist ").getBytes(), StandardCharsets.UTF_8) + LsfIdValidierung.getName(klausur);
             fehlgeschlagen.add(nachricht);
             ergebnis = false;

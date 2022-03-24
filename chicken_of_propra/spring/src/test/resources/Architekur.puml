@@ -1,0 +1,13 @@
+@startuml
+
+[Web] <<..controller..>>
+[Application] <<..application..>>
+[Database] <<..database..>>
+[Domain] <<..domain..>>
+[Spring] <<..spring..>>
+
+[Database] --> [Application]
+[Web] --> [Application]
+[Application] --> [Domain]
+
+@enduml

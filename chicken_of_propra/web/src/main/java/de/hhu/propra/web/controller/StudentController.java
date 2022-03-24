@@ -4,13 +4,13 @@ import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.services.KlausurService;
 import de.hhu.propra.application.services.StudentService;
-import de.hhu.propra.domain.aggregates.klausur.Klausur;
-import de.hhu.propra.domain.aggregates.student.Urlaub;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
@@ -51,23 +51,20 @@ public class StudentController {
 
     @GetMapping("student/klausuranmeldung")
     public String klausurAnmeldung(Model model) throws IOException {
-        Klausur klausur = new Klausur(0L, "", LocalDateTime.now(), 0, 0, false);
         model.addAttribute("klausuren", klausurService.alleKlausuren());
         return "klausuranmeldung";
     }
 
     @GetMapping("student/urlaubanmeldung")
     public String urlaubAnmeldung(Model model) {
-        UrlaubDto urlaub = new UrlaubDto(LocalDate.now().toString(),
-                LocalTime.now().toString(),
-                LocalTime.now().toString());
+        UrlaubDto urlaub = new UrlaubDto(null, null, null);
         model.addAttribute("urlaub", urlaub);
         return "urlaubanmeldung";
     }
 
     @GetMapping("student/klausurErstellen")
     public String klausurErstellen(Model model) {
-        KlausurDto klausur = new KlausurDto("", "", "", "", 1L, false);
+        KlausurDto klausur = new KlausurDto(null, null, null, null, 1L, false);
         model.addAttribute("klausur", klausur);
         return "klausurErstellen";
     }
@@ -75,12 +72,17 @@ public class StudentController {
     @PostMapping("student/klausurErstellen")
     public String klausurErstellen(Model model,
                                    Principal principal,
-                                   @ModelAttribute("klausur") KlausurDto klausurDto) throws IOException {
+                                   @Valid @ModelAttribute("klausur") KlausurDto klausurDto, BindingResult bindingResult) throws IOException {
+        if(bindingResult.hasErrors()){
+            return "klausurErstellen";
+        }
+
         Set<String> fehlermeldungen = studentService.klausurErstellen(principal.getName(), klausurDto);
         if(!fehlermeldungen.isEmpty()){
             model.addAttribute("fehler", fehlermeldungen);
             return "klausurErstellen";
         }
+
         return "redirect://localhost:8080/student";
     }
 
@@ -99,7 +101,10 @@ public class StudentController {
     @PostMapping("student/urlaubanmeldung")
     public String urlaubAnmelden(Model model,
                                  Principal principal,
-                                 @ModelAttribute("urlaub") UrlaubDto urlaub){
+                                 @Valid @ModelAttribute("urlaub") UrlaubDto urlaub, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return "urlaubanmeldung";
+        }
         Set<String> fehlermeldungen = studentService.urlaubAnlegen(principal.getName(), urlaub);
         if(!fehlermeldungen.isEmpty()){
             model.addAttribute("falscherUrlaub", fehlermeldungen);

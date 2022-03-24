@@ -13,16 +13,14 @@ import de.hhu.propra.domain.aggregates.student.Urlaub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -43,8 +41,6 @@ public class StudentServiceTests {
         this.studentService = new StudentService(studentRepository, klausurRepository, auditLogRepository);
 
     }
-
-    //Tests zum Urlaub
 
     @Test
     @DisplayName("Urlaub wird erfolgreich zu Student hinzugefügt")
@@ -213,7 +209,7 @@ public class StudentServiceTests {
                 LocalTime.of(9,45));
         Student student = new Student(1L,"x");
         student.addUrlaub(urlaub1.datum(),urlaub1.startzeit(),urlaub1.endzeit());
-        student.berechneRestUrlaub();
+        student.berechneResturlaub();
 
         //arrange
         boolean hinzugefuegt = studentService.fuegeUrlaubHinzu(student, urlaub2);
@@ -816,8 +812,35 @@ public class StudentServiceTests {
     }
 
 
+    @Test
+    @DisplayName("KlausurDto Verknüpfung mit KlausurId funktioniert")
+    public void test31(){
+        //arrange
+        Klausur klausur = new Klausur(1L,
+                "Betriebssysteme und Systemprogrammierung",
+                LocalDateTime.of(2020, 1, 1, 9, 30),
+                60,
+                217480,
+                true); // bis 10:30
+        Klausur klausur1 = new Klausur(2L,
+                "Betriebssysteme und Systemprogrammierung",
+                LocalDateTime.of(2020, 1, 1, 9, 30),
+                60,
+                217480,
+                true); // bis 10:30
+        Student student = new Student(1L,"x");
+        student.addKlausur(klausur);
+        student.addKlausur(klausur1);
+        when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
+        when(klausurRepository.klausurMitId(2L)).thenReturn(klausur1);
 
+        //act
+        HashMap<Long,KlausurDto> map = studentService.holeAlleKlausurDtosMitID(student);
 
+        //assert
+        assertThat(map.keySet()).containsExactly(1L,2L);
+        assertThat(map.values()).containsExactly(KlausurDto.toKlausurDto(klausur),KlausurDto.toKlausurDto(klausur1));
+    }
 
 
 

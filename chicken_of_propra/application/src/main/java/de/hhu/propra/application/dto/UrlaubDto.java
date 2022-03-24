@@ -1,19 +1,24 @@
 package de.hhu.propra.application.dto;
 
 import de.hhu.propra.domain.aggregates.student.Urlaub;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public record UrlaubDto(String datum, String startzeit, String endzeit) {
+public record UrlaubDto(
+        @NotBlank @DateTimeFormat(pattern = "dd.mm.yyyy") String datum,
+        @NotBlank @DateTimeFormat(pattern = "hh.mm") String startzeit,
+        @NotBlank @DateTimeFormat(pattern = "hh.mm") String endzeit) {
 
     public static Urlaub toUrlaub(UrlaubDto dto){
-
         return new Urlaub(LocalDate.parse(dto.datum),
                 LocalTime.parse(dto.startzeit()),
                 LocalTime.parse(dto.endzeit()));
     }
+
     public static UrlaubDto toUrlaubDto(Urlaub urlaub){
         return new UrlaubDto(
                 urlaub.datum().toString(),

@@ -5,12 +5,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <title>PP2 Urlaub Übersicht</title>
-    <link rel="stylesheet" type="text/css"
-          href="/css/bootstrap.min.css">
-    <link href="/css/jquery.datetimepicker.min.css"
-          rel="stylesheet">
-    <link href="/css/site.css"
-          rel="stylesheet">
+
 </head>
 <body>
 <div class="container" th:object="${student}">
@@ -54,7 +49,7 @@
             <td><strong>Summe</strong></td>
             <td></td>
             <td></td>
-            <td><strong th:text="${student.summeUrlaubs()}"></strong></td>
+            <td><strong th:text="${student.berechneUrlaubszeit()}"></strong></td>
             <td></td>
         </tr>
         <tr>
@@ -98,41 +93,21 @@
     </div>
 
 
-    <div class="text-center pt-5">
-        <a href="student/urlaubanmeldung">
-            <button class="btn bg-blue mx-5 text-white p-3" >Urlaub anmelden</button>
-        </a>
-        <a href="student/klausuranmeldung">
-            <button class="btn bg-yellow mx-5 p-3">Klausur anmelden</button>
-        </a>
+    <div class="container">
+        <div class="row">
+             <div class="col text-center">
+                <a href="student/urlaubanmeldung">
+                    <button class="btn btn-primary mx-0 p-4" >Urlaub anmelden</button>
+                </a>
+                <a>
+                    <button class="btn btn-transparent mx-5 p-4" disabled></button>
+                </a>
+                <a href="student/klausuranmeldung">
+                    <button class="btn btn-primary mx-0 p-4">Klausur anmelden</button>
+                </a>
+            </div>
+        </div>
     </div>
-
-    <script src="/js/jquery-3.6.0.min.js"></script>
-    <script src="/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/jquery.datetimepicker.full.min.js"></script>
-    <script>
-
-        var startTime = null;
-        var endTime = null;
-
-        jQuery('#tag').datetimepicker({
-            format: 'd.m.Y',
-            timepicker: false,
-            lang: 'de',
-            weeks: true,
-            dayOfWeekStart: 1
-        });
-        jQuery('#von').datetimepicker({
-            format: 'H:i',
-            datepicker: false,
-            allowTimes: startTime
-        });
-        jQuery('#bis').datetimepicker({
-            format: 'H:i',
-            datepicker: false,
-            allowTimes: endTime
-        });
-    </script>
 </div>
 </body>
 </html>

@@ -16,7 +16,7 @@ public class LsfIdValidierung {
                 + lsf + "&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung";
     }
 
-    private static String getInhalt(String url) throws IOException {
+    static String getInhalt(String url) throws IOException {
         return new Scanner(new URL(url).openStream(), "UTF-8").useDelimiter("\\A").next();
     }
 
@@ -30,6 +30,10 @@ public class LsfIdValidierung {
         }
         return ergebnis;
     }
+
+//    static String lsfungueltig()
+
+
 
     static int startIndex(String line){
         for(int i = 0 ; i< line.length() ;i++){

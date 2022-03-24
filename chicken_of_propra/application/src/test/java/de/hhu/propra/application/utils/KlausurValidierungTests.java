@@ -281,21 +281,24 @@ public class KlausurValidierungTests {
     }
 
     @Test
-    @DisplayName("Die Lsf ID hat die falsche Länge")
+    @DisplayName("Die Lsf ID iat ungültig")
     void test2() throws IOException {
         //arrange
-        KlausurDto klausurDto = new KlausurDto("x" ,
+        KlausurDto klausurDto = new KlausurDto("Betriebssysteme und Systemprogrammierung" ,
                 LocalDate.of(2022,3,17).toString(),
                 LocalTime.of(10,30).toString(),
                 LocalTime.of(11,0).toString(),
-                12345,
+                12,
                 true);
 
         //act
         boolean ergebnis = klausurValidierung.lsfIDPasst(klausurDto);
+        Set<String> fehler = klausurValidierung.getFehlgeschlagen();
 
         //assert
         assertThat(ergebnis).isFalse();
+        assertThat(fehler).contains(KlausurFehler.UNGUELTIGE_LSFID);
+        assertThat(fehler).hasSize(1);
     }
 
     @Test

@@ -20,10 +20,6 @@ public record Urlaub (LocalDate datum, LocalTime startzeit, LocalTime endzeit) {
         return Objects.equals(datum, urlaub.datum) && Objects.equals(startzeit, urlaub.startzeit) && Objects.equals(endzeit, urlaub.endzeit);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(datum, startzeit, endzeit);
-    }
 
     @Override
     public String toString() {

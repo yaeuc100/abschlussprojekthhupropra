@@ -5,21 +5,26 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
   <title>PP2 Urlaub Übersicht</title>
-  <link rel="stylesheet" type="text/css"
-        href="/css/bootstrap.min.css">
-  <link href="/css/jquery.datetimepicker.min.css"
-        rel="stylesheet">
-  <link href="/css/site.css"
-        rel="stylesheet">
+
 </head>
 <body>
 <div class="container">
   <h1>Anmeldung zu einer Klausur</h1>
 
   <div class="formular mt-3">
-    <p class="alert"><strong>Wenn die Klausur in der Auswahl noch nicht vorhanden ist, dann können Sie
-      sie <a
-              href="/student/klausurErstellen">hier</a> anlegen.</strong></p>
+
+    <div class="container">
+      <div class="row">
+        <div class="col text-center">
+          <div class="alert"><strong>Wenn die Klausur in der Auswahl noch nicht vorhanden ist, dann können Sie
+            sie hier anlegen: </strong></div>
+          <a href="/student/klausurErstellen">
+            <button class="btn btn-primary" >Klausur erstellen</button>
+          </a>
+        </div>
+      </div>
+    </div>
+    <br>
     <form name="klausur_anmelden" method="post" th:action="@{/student/klausuranmeldung}"><input type="hidden" name="_csrf" value="61870cb0-f6c3-4fde-9f69-0244d0576cf5"/>
       <select class="form-control" name="klausur" id="klausur-select">
           <option th:each=" k : ${klausuren}" th:text="${k.formatiert()}" th:value="${k.id()}"></option>
@@ -42,38 +47,10 @@
         Ggf. überprüfen wir die Teilnahme an der Klausur über die entsprechenden Teilnehmerlisten
       </p>
 
-      <button name="klausuranmeldung_abschicken" type="submit" class="btn btn-primary mt-2">Eintragen</button>
+      <button name="klausuranmeldung_abschicken" type="submit" class="btn btn-info btn-lg btn-block">Eintragen</button>
     </form>
   </div>
 
 </div>
-
-<script src="/js/jquery-3.6.0.min.js"></script>
-<script src="/js/bootstrap.bundle.min.js"></script>
-<script src="/js/jquery.datetimepicker.full.min.js"></script>
-<script>
-
-  var startTime = ["09:30","09:45","10:00","10:15","10:30","10:45","11:00","11:15","11:30","11:45","12:00","12:15","12:30","12:45","13:00","13:15"];
-  var endTime = ["09:45","10:00","10:15","10:30","10:45","11:00","11:15","11:30","11:45","12:00","12:15","12:30","12:45","13:00","13:15","13:30"];
-
-  jQuery('#tag').datetimepicker({
-    format: 'd.m.Y',
-    timepicker: false,
-    lang: 'de',
-    weeks: true,
-    dayOfWeekStart: 1
-  });
-  jQuery('#von').datetimepicker({
-    format: 'H:i',
-    datepicker: false,
-    allowTimes: startTime
-  });
-  jQuery('#bis').datetimepicker({
-    format: 'H:i',
-    datepicker: false,
-    allowTimes: endTime
-  });
-</script>
-
 </body>
 </html>

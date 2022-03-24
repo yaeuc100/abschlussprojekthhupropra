@@ -5,8 +5,13 @@ import org.assertj.core.internal.Bytes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -86,5 +91,58 @@ public class LsfIdValidierungTests {
         assertThat(ergebnis).isEqualTo("https://lsf.hhu.de/qisserver/rds?state=verpublish&status=init&vmfile=no&pub" +
                 "lishid=22291&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung");
     }
+
+    @Test
+    @DisplayName("Der richtige HTML Inhalt wird zu einer URL geladen")
+    void test5() throws IOException {
+        //arrange
+
+        String path = new File(".").getAbsolutePath();
+        path = path.substring(0,path.length()-1).replace(Character.toString(92),"/") + "src/test/java/de/hhu/propra/application/utils/testfile.txt";
+
+        String url = "https://lsf.hhu.de/qisserver/rds?state=verpublish&status=init&vmfile=no&pub" +
+                "lishid=22291&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung";
+        byte[] richtigerInhaltArray = Files.readAllBytes(Path.of(path));
+        String richtigerInhalt = new String(richtigerInhaltArray);
+        richtigerInhalt = richtigerInhalt.replace(" ","");
+        richtigerInhalt = richtigerInhalt.replace("\n","");
+
+        //act
+        String ergebnis = LsfIdValidierung.getInhalt(url);
+        ergebnis = ergebnis.replace(" ","");
+        ergebnis = ergebnis.replace("\n","");
+        //assert
+        assertThat(ergebnis).contains(richtigerInhalt);
+    }
+
+    @Test
+    @DisplayName("Bei einem String wird der erste Buchstabe nach 7 Leerzeichen gefunden")
+    void test6() throws IOException {
+        //arrange
+        String string = "       Hallo";
+
+        //act
+        int ergebnis = LsfIdValidierung.startIndex(string);
+
+        //arrange
+        assertThat(ergebnis).isEqualTo(8);
+    }
+
+    @Test
+    @DisplayName("Bei einem String, der nicht mit Leerzeichen startet, gibt die startIndex Methode -1 aus")
+    void test7() throws IOException {
+        //arrange
+        String string ="Hallo";
+
+        //act
+        int ergebnis = LsfIdValidierung.startIndex(string);
+
+        //arrange
+        assertThat(ergebnis).isEqualTo(-1);
+    }
+
+
+
+
 
 }

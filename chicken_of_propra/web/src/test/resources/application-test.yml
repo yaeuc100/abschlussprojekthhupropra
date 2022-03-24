@@ -1,0 +1,20 @@
+chicken:
+  organizers: yaeuc100
+  tutoren: donald, daisy, minnie, mickey, gundel, dagobert, FaroukBelghith, yaeuc100
+
+spring:
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            scope: user
+
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token

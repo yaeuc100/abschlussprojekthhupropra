@@ -5,10 +5,7 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
   <title>Neue Klausur eintragen</title>
-  <link rel="stylesheet" type="text/css"
-        href="/css/bootstrap.min.css">
-  <link href="/css/jquery.datetimepicker.min.css"
-        rel="stylesheet">
+
 </head>
 <body>
 <div class="container">
@@ -18,15 +15,15 @@
   <form name="klausurform" method="post" th:action="@{/student/klausurErstellen}" th:object="${klausur}"><input type="hidden" name="_csrf" value="61870cb0-f6c3-4fde-9f69-0244d0576cf5"/>
 
     <div class="form-floating mb-3">
-      <input type="text" class="form-control" th:field="*{name}" id="veranstaltung" placeholder=" ">
       <label for="veranstaltung">Name der Veranstaltung</label>
-
+      <input type="text" class="form-control" th:field="*{name}" id="veranstaltung" placeholder=" ">
+      <div class="text-danger" th:if="${#fields.hasErrors()}">Name darf nicht leer sein</div>
     </div>
 
 
     <div class="form-floating mb-3">
-      <input type="text" class="form-control" th:field="*{lsf}" id="lsfId" placeholder=" ">
       <label for="lsfId" class="form-label">ID der Veranstaltung im LSF</label>
+      <input type="text" class="form-control" th:field="*{lsf}" id="lsfId" placeholder=" ">
 
       <div class="form-text">Sie finden die LSF Veranstaltungs-ID im <a
               href="https://lsf.hhu.de/qisserver/rds?state=wtree&search=1&category=veranstaltung.browse&navigationPosition=lectures%2Clectureindex&breadcrumb=lectureindex&topitem=lectures&subitem=lectureindex"
@@ -41,74 +38,40 @@
     </div>
 
     <div class="form-floating mb-3">
-      <input class="form-control" th:field="*{datum}"id="tag" type="date"
-             placeholder=" " name="datum" value="">
       <label for="tag" class="form-label">Datum der Klausur (dd-mm-yyyy)</label>
-
+      <input class="form-control" th:field="*{datum}" id="tag" type="date"
+             placeholder=" " name="datum">
+      <div class="text-danger" th:if="${#fields.hasErrors()}">Datum darf nicht leer sein</div>
     </div>
 
     <div class="form-floating mb-3">
-      <input class="form-control"  th:field="*{startzeit}"id="von" placeholder=" " name="von" value="" type="time">
       <label for="von">Klausurbeginn (hh:mm)</label>
+      <input class="form-control"  th:field="*{startzeit}"id="von" placeholder=" " name="von" type="time">
       <div class="form-text">Runden Sie die Startzeit auf die nächste vorgegebene Zeit ab. Falls die Klausur vor 08:30 Uhr beginnt, tragen Sie bitte 08:30 Uhr ein.
       </div>
-
+      <div class="text-danger" th:if="${#fields.hasErrors()}">Startzeit darf nicht leer sein</div>
     </div>
 
     <div class="form-floating mb-3">
-      <input class="form-control" th:field="*{endzeit}" id="bis" placeholder=" " name="bis" value="" type="time">
       <label for="bis" class="form-label">Klausurende (hh:mm)</label>
+      <input class="form-control" th:field="*{endzeit}" id="bis" placeholder=" " name="bis" type="time">
       <div class="form-text">Runden Sie die Zeit auf die nächste vorgegebene Zeit auf. Falls die Klausur nach 13:30 Uhr endet, tragen Sie bitte 13:30 Uhr ein.
       </div>
+      <div class="text-danger" th:if="${#fields.hasErrors()}">Endzeit darf nicht leer sein</div>
 
     </div>
 
-    <button name="submitbtn" class="btn btn-primary" type="submit">Eintragen</button>
+    <button name="submitbtn" class="btn btn-info btn-lg btn-block" type="submit">Eintragen</button>
   </form>
 
   <table>
     <tr th:each="f : ${fehler}">
-      <td th:text="${f}"></td>
+      <td class="text-danger" th:text="${f}"></td>
     </tr>
   </table>
 
 
-  <script src="/js/jquery-3.6.0.min.js"></script>
-  <script src="/js/bootstrap.bundle.min.js"></script>
-  <script src="/js/jquery.datetimepicker.full.min.js"></script>
-  <script>
-    jQuery('#tag').datetimepicker({
-      format: 'd.m.Y',
-      timepicker: false,
-      lang: 'de',
-      weeks: true,
-      dayOfWeekStart: 1
-    });
-    jQuery('#von').datetimepicker({
-      format: 'H:i',
-      datepicker: false,
-      allowTimes: [
-        '08:30',
-        '09:00','09:30',
-        '10:00','10:30',
-        '11:00','11:30',
-        '12:00','12:30',
-        '13:00','13:30'
-      ]
-    });
-    jQuery('#bis').datetimepicker({
-      format: 'H:i',
-      datepicker: false,
-      allowTimes: [
-        '08:30',
-        '09:00','09:30',
-        '10:00','10:30',
-        '11:00','11:30',
-        '12:00','12:30',
-        '13:00','13:30'
-      ]
-    });
-  </script>
+
 </div>
 </body>
 </html>

@@ -35,7 +35,8 @@ public class AuditLog {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AuditLog auditLog = (AuditLog) o;
-        return Objects.equals(aenderung, auditLog.aenderung) && Objects.equals(handle, auditLog.handle) && Objects.equals(zeitpunkt, auditLog.zeitpunkt);
+        return Objects.equals(aenderung, auditLog.aenderung) && Objects.equals(handle, auditLog.handle)
+                && Objects.equals(zeitpunkt, auditLog.zeitpunkt);
     }
 
     @Override

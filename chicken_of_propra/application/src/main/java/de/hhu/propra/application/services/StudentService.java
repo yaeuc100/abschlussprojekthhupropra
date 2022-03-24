@@ -49,10 +49,10 @@ public class StudentService {
         UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
         Student student = studentRepository.studentMitHandle(studentHandle);
         List<Urlaub> urlaubeAnTag = hilfsMethoden.findeUrlaubeAmSelbenTag(student, urlaub.datum());
-        List<Klausur> KlausurenVonStudent = holeAlleKlausurenMitID(student);
+        List<Klausur> KlausurenVonStudent = holeAlleKlausurenMitId(student);
         List<Klausur> klausurenVonStudentAnTag = hilfsMethoden.studentHatKlausurAnTag(KlausurenVonStudent, urlaub.datum());
 
-        if (!klausurenVonStudentAnTag.isEmpty() && urlaubValidierung.genugUrlaub(student,urlaub)) {
+        if (!klausurenVonStudentAnTag.isEmpty() && urlaubValidierung.genugUrlaub(student,urlaub) && urlaubValidierung.urlaubIstValide(urlaub)) {
             List<Urlaub> resultierendeUrlaube = urlaubKlausurBearbeitung.urlaubKlausurValidierung(urlaub, klausurenVonStudentAnTag);
             resultierendeUrlaube.addAll(urlaubeAnTag);
             resultierendeUrlaube = urlaubValidierung.urlaubeZusammenfuegen(resultierendeUrlaube);
@@ -72,7 +72,7 @@ public class StudentService {
         UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
         if (urlaubValidierung.genugUrlaub(student, urlaub)) {
             student.addUrlaub(urlaub.datum(), urlaub.startzeit(), urlaub.endzeit());
-            student.berechneRestUrlaub();
+            student.berechneResturlaub();
             auditLogRepository.save(AuditLogErzeugung.urlaubHinzugefuegt(student.getHandle(), urlaub));
             studentRepository.save(student);
             return true;
@@ -103,7 +103,7 @@ public class StudentService {
         Klausur klausurAusDb = klausurRepository.klausurMitId(klausurId);
 
         List<Klausur> klausurenDerStudentAmTag =
-                hilfsMethoden.studentHatKlausurAnTag(holeAlleKlausurenMitID(student),
+                hilfsMethoden.studentHatKlausurAnTag(holeAlleKlausurenMitId(student),
                         klausurAusDb.datum().toLocalDate());
 
         if(klausurValidierung.keineKlausurUeberschneidung(klausurenDerStudentAmTag,klausurAusDb)) {
@@ -124,7 +124,7 @@ public class StudentService {
 
         if (urlaubValidierung.urlaubNurVorDemTagDesUrlaubsStornieren(urlaub)) {
             ergebnis = student.urlaubStornieren(urlaub.datum(), urlaub.startzeit(), urlaub.endzeit());
-            student.berechneRestUrlaub();
+            student.berechneResturlaub();
             auditLogRepository.save(AuditLogErzeugung.urlaubStorniert(studentHandle, urlaubDto));
             studentRepository.save(student);
         }
@@ -143,14 +143,14 @@ public class StudentService {
         studentRepository.save(student);
     }
 
-    private List<Klausur> holeAlleKlausurenMitID(Student student) {
+    private List<Klausur> holeAlleKlausurenMitId(Student student) {
         return student.getKlausuren().stream()
                 .map(klausurRepository::klausurMitId)
                 .collect(Collectors.toList());
     }
     public HashMap<Long,KlausurDto> holeAlleKlausurDtosMitID(Student student) {
         HashMap<Long,KlausurDto> dtos = new HashMap<>();
-         holeAlleKlausurenMitID(student).stream().forEach(k->dtos.put(k.id(),KlausurDto.toKlausurDto(k)));
+         holeAlleKlausurenMitId(student).stream().forEach(k->dtos.put(k.id(),KlausurDto.toKlausurDto(k)));
          return dtos;
 
     }
@@ -171,7 +171,7 @@ public class StudentService {
         for(Urlaub urlaub : urlaube){
             student.addUrlaub(urlaub.datum(),urlaub.startzeit(),urlaub.endzeit());
         }
-        student.berechneRestUrlaub();
+        student.berechneResturlaub();
         studentRepository.save(student);
     }
 
