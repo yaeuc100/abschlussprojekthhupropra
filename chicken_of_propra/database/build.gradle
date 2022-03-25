@@ -33,3 +33,6 @@ bootJar {
 jar {
     enabled = true
 }
+bootRun{
+    enabled = false
+}
