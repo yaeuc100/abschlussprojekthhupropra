@@ -19,7 +19,7 @@
             <th>von</th>
             <th>bis</th>
             <th>Zeit (min)</th>
-            <th></th>
+            <th aria-label="Urlaub stornieren"></th>
         </tr>
         </thead>
         <tbody th:each="urlaub : ${student.getUrlaube()}">
@@ -71,7 +71,7 @@
                 <th>Veranstaltung</th>
                 <th>Klausurzeit</th>
                 <th>Freistellung vom Praktikum</th>
-                <th></th>
+                <th aria-label="Klausur stornieren"></th>
             </tr>
             </thead>
             <tbody>
@@ -96,14 +96,16 @@
     <div class="container">
         <div class="row">
              <div class="col text-center">
-                <a href="student/urlaubanmeldung">
-                    <button class="btn btn-primary mx-0 p-4" >Urlaub anmelden</button>
+                <a href="student/urlaubanmeldung" >
+                    <button class="btn btn-dark mx-0 p-4 btn-block" alt="Zur Urlaubanmeldungsseite" >
+                        <strong>Urlaub anmelden</strong>
+                    </button>
                 </a>
-                <a>
-                    <button class="btn btn-transparent mx-5 p-4" disabled></button>
-                </a>
-                <a href="student/klausuranmeldung">
-                    <button class="btn btn-primary mx-0 p-4">Klausur anmelden</button>
+                 <br>
+                <a href="student/klausuranmeldung" alt="Zur Klausuranmeldungsseite">
+                    <button class="btn btn-secondary mx-0 p-4 btn-block" >
+                        <strong>Klausur anmelden</strong>
+                    </button>
                 </a>
             </div>
         </div>
