@@ -13,14 +13,14 @@ public class UrlaubTests {
 
     @Test
     @DisplayName("Zwei gleiche Urlaube werden als gleich erkannt")
-    void test1(){
+    void test1() {
         //arrange
-        Urlaub urlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(10,11),
-                LocalTime.of(15,15));
-        Urlaub urlaub2 = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(10,11),
-                LocalTime.of(15,15));
+        Urlaub urlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(10, 11),
+                LocalTime.of(15, 15));
+        Urlaub urlaub2 = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(10, 11),
+                LocalTime.of(15, 15));
 
         //act
         boolean ergebnis = urlaub.equals(urlaub2);
@@ -31,14 +31,14 @@ public class UrlaubTests {
 
     @Test
     @DisplayName("Zwei verschiedene Urlaube werden als unterschiedlich erkannt")
-    void test2(){
+    void test2() {
         //arrange
-        Urlaub urlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(10,11),
-                LocalTime.of(15,15));
-        Urlaub urlaub2 = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(10,11),
-                LocalTime.of(15,30));
+        Urlaub urlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(10, 11),
+                LocalTime.of(15, 15));
+        Urlaub urlaub2 = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(10, 11),
+                LocalTime.of(15, 30));
 
         //act
         boolean ergebnis = urlaub.equals(urlaub2);
@@ -49,11 +49,11 @@ public class UrlaubTests {
 
     @Test
     @DisplayName("Der Zeitraum des Urlaub wird richtig berechnet")
-    void test3(){
+    void test3() {
         //arrange
-        Urlaub urlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(10,11),
-                LocalTime.of(15,15));
+        Urlaub urlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(10, 11),
+                LocalTime.of(15, 15));
 
 
         //act
@@ -65,11 +65,11 @@ public class UrlaubTests {
 
     @Test
     @DisplayName("Der Urlaub wird richtig als String dargestellt")
-    void test4(){
+    void test4() {
         //arrange
-        Urlaub urlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(10,11),
-                LocalTime.of(15,15));
+        Urlaub urlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(10, 11),
+                LocalTime.of(15, 15));
 
 
         //act

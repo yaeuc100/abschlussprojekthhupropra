@@ -26,7 +26,7 @@ public class AuditLog {
         return zeitpunkt;
     }
 
-    public void setZeitpunkt(LocalDateTime zeitpunkt){
+    public void setZeitpunkt(LocalDateTime zeitpunkt) {
         this.zeitpunkt = zeitpunkt;
     }
 

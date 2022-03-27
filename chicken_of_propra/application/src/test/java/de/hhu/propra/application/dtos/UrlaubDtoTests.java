@@ -1,7 +1,6 @@
 package de.hhu.propra.application.dtos;
 
 
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
@@ -17,16 +16,16 @@ public class UrlaubDtoTests {
 
     @Test
     @DisplayName("Ein UrlaubDto wird richtig zu einem Urlaub übersetzt")
-    void test(){
+    void test() {
         //arrange
         UrlaubDto urlaubDto = new UrlaubDto(
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString());
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString());
         Urlaub urlaub = new Urlaub(
-                LocalDate.of(6000,10,10),
-                LocalTime.of(10,30),
-                LocalTime.of(11,0));
+                LocalDate.of(6000, 10, 10),
+                LocalTime.of(10, 30),
+                LocalTime.of(11, 0));
 
         //act
         Urlaub ergebnis = UrlaubDto.toUrlaub(urlaubDto);
@@ -37,16 +36,16 @@ public class UrlaubDtoTests {
 
     @Test
     @DisplayName("Ein Urlaub wird richtig zu einem UrlaubDto übersetzt")
-    void test1(){
+    void test1() {
         //arrange
         Urlaub urlaub = new Urlaub(
-                LocalDate.of(6000,10,10),
-                LocalTime.of(10,30),
-                LocalTime.of(11,0));
+                LocalDate.of(6000, 10, 10),
+                LocalTime.of(10, 30),
+                LocalTime.of(11, 0));
         UrlaubDto urlaubDto = new UrlaubDto(
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString());
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString());
 
 
         //act
@@ -58,12 +57,12 @@ public class UrlaubDtoTests {
 
     @Test
     @DisplayName("Ein UrlaubDto wird richtig durch toString formatiert")
-    void test2(){
+    void test2() {
         //arrange
         UrlaubDto urlaubDto = new UrlaubDto(
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString());
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString());
 
 
         //act
@@ -75,16 +74,16 @@ public class UrlaubDtoTests {
 
     @Test
     @DisplayName("Zwei gleiche UrlaubDtos werden als gleich erkannt")
-    void test3(){
+    void test3() {
         //arrange
         UrlaubDto urlaubDto = new UrlaubDto(
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString());
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString());
         UrlaubDto urlaubDto2 = new UrlaubDto(
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString());
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString());
 
 
         //act
@@ -96,16 +95,16 @@ public class UrlaubDtoTests {
 
     @Test
     @DisplayName("Zwei unterschiedliche UrlaubDtos werden als verschieden erkannt")
-    void test4(){
+    void test4() {
         //arrange
         UrlaubDto urlaubDto = new UrlaubDto(
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString());
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString());
         UrlaubDto urlaubDto2 = new UrlaubDto(
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,0).toString(),
-                LocalTime.of(11,0).toString());
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 0).toString(),
+                LocalTime.of(11, 0).toString());
 
 
         //act
@@ -114,7 +113,6 @@ public class UrlaubDtoTests {
         //assert
         assertThat(ergebnis).isFalse();
     }
-
 
 
 }

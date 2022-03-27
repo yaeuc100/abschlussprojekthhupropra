@@ -3,3 +3,12 @@ spring:
     include:
       - 'database'
       - 'web'
+
+#spring:
+#  profiles:
+#    include:
+#      - 'database'
+#      - 'web'
+#  config:
+#    - praktikumstart = ${PRAKTIKUMSTART: "2022-3-6"}
+#    - praktikumende = ${PRAKTIKUMENDE: "2022-3-26"}

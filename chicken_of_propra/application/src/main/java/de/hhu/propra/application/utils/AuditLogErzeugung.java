@@ -6,17 +6,17 @@ import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
 
 public class AuditLogErzeugung {
-    public static AuditLog urlaubHinzugefuegt(String studentHandle, Urlaub urlaub){
+    public static AuditLog urlaubHinzugefuegt(String studentHandle, Urlaub urlaub) {
         String aenderung = urlaub.toString() + " hinzugefuegt";
         return new AuditLog(aenderung, studentHandle);
     }
 
-    public static AuditLog urlaubStorniert(String studentHandle, UrlaubDto urlaub){
+    public static AuditLog urlaubStorniert(String studentHandle, UrlaubDto urlaub) {
         String aenderung = urlaub.toString() + " storniert";
         return new AuditLog(aenderung, studentHandle);
     }
 
-    public static AuditLog klausurErstellen(String studentHandle, Klausur klausur){
+    public static AuditLog klausurErstellen(String studentHandle, Klausur klausur) {
         String aenderung = "Klausur{id=" +
                 klausur.id().toString() +
                 ", name=" +
@@ -25,7 +25,7 @@ public class AuditLogErzeugung {
         return new AuditLog(aenderung, studentHandle);
     }
 
-    public static AuditLog klausurAnmelden(String studentHandle, Klausur klausur){
+    public static AuditLog klausurAnmelden(String studentHandle, Klausur klausur) {
         String aenderung = "Klausur{id=" +
                 klausur.id().toString() +
                 ", name=" +
@@ -34,7 +34,7 @@ public class AuditLogErzeugung {
         return new AuditLog(aenderung, studentHandle);
     }
 
-    public static AuditLog klausurStorniert(String studentHandle, Klausur klausur){
+    public static AuditLog klausurStorniert(String studentHandle, Klausur klausur) {
         String aenderung = "Klausur{id=" +
                 klausur.id().toString() +
                 ", name=" +

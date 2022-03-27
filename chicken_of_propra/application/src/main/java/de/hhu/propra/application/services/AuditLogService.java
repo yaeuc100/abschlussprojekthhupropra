@@ -17,7 +17,7 @@ public class AuditLogService {
         this.auditLogRepository = auditLogRepository;
     }
 
-    public List<AuditDto> alle(){
+    public List<AuditDto> alle() {
         return auditLogRepository.nachrichten().stream()
                 .map(AuditDto::toAuditDto)
                 .collect(Collectors.toList());

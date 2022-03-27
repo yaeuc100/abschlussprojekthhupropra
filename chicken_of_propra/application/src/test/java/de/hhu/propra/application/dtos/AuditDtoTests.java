@@ -11,7 +11,7 @@ public class AuditDtoTests {
 
     @Test
     @DisplayName("Das AuditLog wird richtig zu einem AuditDto übersetzt")
-    void test1(){
+    void test1() {
         //arrange
         AuditLog auditLog = new AuditLog("Urlaub angemeldet", "Fred");
 

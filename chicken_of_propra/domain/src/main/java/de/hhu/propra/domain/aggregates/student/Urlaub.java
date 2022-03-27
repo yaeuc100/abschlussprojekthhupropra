@@ -5,11 +5,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public record Urlaub (LocalDate datum, LocalTime startzeit, LocalTime endzeit) {
+public record Urlaub(LocalDate datum, LocalTime startzeit, LocalTime endzeit) {
 
 
-    public long berechneZeitraum(){
-        return Duration.between(startzeit,endzeit).toMinutes();
+    public long berechneZeitraum() {
+        return Duration.between(startzeit, endzeit).toMinutes();
     }
 
     @Override

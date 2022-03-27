@@ -19,7 +19,6 @@ import static com.tngtech.archunit.library.plantuml.PlantUmlArchCondition.adhere
 public class ArchUnitTests {
 
 
-
     @ArchTest
     ArchRule keinAutowired = GeneralCodingRules.NO_CLASSES_SHOULD_USE_FIELD_INJECTION;
 
@@ -27,7 +26,7 @@ public class ArchUnitTests {
     ArchRule onionTest = onionArchitecture()
             .domainModels("..domain..")
             .applicationServices("..application..")
-            .adapter("Web","..web..")
+            .adapter("Web", "..web..")
             .adapter("Database", "..database..")
             .adapter("Spring", "..spring..")
             .allowEmptyShould(true);

@@ -18,15 +18,15 @@ public class StudentServiceHilfsMethoden {
 
     }
 
-    public List<Urlaub> findeUrlaubeAmSelbenTag(Student student, LocalDate datum){
+    public List<Urlaub> findeUrlaubeAmSelbenTag(Student student, LocalDate datum) {
         return student.getUrlaube().stream()
                 .filter(u -> u.datum().equals(datum))
                 .map(u -> new Urlaub(u.datum(), u.startzeit(), u.endzeit()))
                 .toList();
     }
 
-    public void storniereAlleUrlaubeAnTag(Student student, LocalDate datum){
-        for(Urlaub urlaub : findeUrlaubeAmSelbenTag(student, datum)){
+    public void storniereAlleUrlaubeAnTag(Student student, LocalDate datum) {
+        for (Urlaub urlaub : findeUrlaubeAmSelbenTag(student, datum)) {
             student.urlaubStornieren(urlaub.datum(), urlaub.startzeit(), urlaub.endzeit());
         }
     }

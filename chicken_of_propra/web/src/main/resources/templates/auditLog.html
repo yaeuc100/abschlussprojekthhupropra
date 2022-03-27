@@ -9,21 +9,21 @@
 </head>
 <body>
 <div>
-<table class="table table-striped">
-    <tbody>
-    <tr>
-        <td>Datum</td>
-        <td>Student</td>
-        <td>Log</td>
+    <table class="table table-striped">
+        <tbody>
+        <tr>
+            <td>Datum</td>
+            <td>Student</td>
+            <td>Log</td>
 
-    </tr>
-    <tr th:each="log : ${logs}">
-        <td th:text="${log.datum}"></td>
-        <td th:text="${log.handle}"></td>
-        <td th:text="${log.aenderung}"></td>
-    </tr>
-    </tbody>
-</table>
+        </tr>
+        <tr th:each="log : ${logs}">
+            <td th:text="${log.datum}"></td>
+            <td th:text="${log.handle}"></td>
+            <td th:text="${log.aenderung}"></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>

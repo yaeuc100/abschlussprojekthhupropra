@@ -17,62 +17,61 @@ public class StudentTests {
 
     @Test
     @DisplayName("Ein Urlaub wird zum Student hinzugefügt")
-    void test1(){
+    void test1() {
         //arrange
         Student student = new Student(1L, "olli");
 
         //act
-        student.addUrlaub(LocalDate.of(2022,2,22),
-                LocalTime.of(10,0),
-                LocalTime.of(12,0));
+        student.addUrlaub(LocalDate.of(2022, 2, 22),
+                LocalTime.of(10, 0),
+                LocalTime.of(12, 0));
         List<Urlaub> urlaube = student.getUrlaube();
 
         //assert
-        assertThat(urlaube).contains(new Urlaub(LocalDate.of(2022,2,22),
-                LocalTime.of(10,0),
-                LocalTime.of(12,0)));
+        assertThat(urlaube).contains(new Urlaub(LocalDate.of(2022, 2, 22),
+                LocalTime.of(10, 0),
+                LocalTime.of(12, 0)));
         assertThat(urlaube).hasSize(1);
 
     }
 
     @Test
     @DisplayName("Zwei Urlaube werden zum Studenten hinzugefügt")
-    void test2(){
+    void test2() {
         //arrange
         Student student = new Student(1L, "olli");
 
         //act
-        student.addUrlaub(LocalDate.of(2022,2,22),
-                LocalTime.of(10,0),
-                LocalTime.of(12,0));
-        student.addUrlaub(LocalDate.of(2022,2,22),
-                LocalTime.of(9,30),
-                LocalTime.of(11,30));
+        student.addUrlaub(LocalDate.of(2022, 2, 22),
+                LocalTime.of(10, 0),
+                LocalTime.of(12, 0));
+        student.addUrlaub(LocalDate.of(2022, 2, 22),
+                LocalTime.of(9, 30),
+                LocalTime.of(11, 30));
         List<Urlaub> urlaube = student.getUrlaube();
 
         //assert
-        assertThat(urlaube).contains(new Urlaub(LocalDate.of(2022,2,22),
-                                                   LocalTime.of(10,0),
-                                                   LocalTime.of(12,0)),
-                                              new Urlaub(LocalDate.of(2022,2,22),
-                                                   LocalTime.of(10,0),
-                                                   LocalTime.of(12,0)));
+        assertThat(urlaube).contains(new Urlaub(LocalDate.of(2022, 2, 22),
+                        LocalTime.of(10, 0),
+                        LocalTime.of(12, 0)),
+                new Urlaub(LocalDate.of(2022, 2, 22),
+                        LocalTime.of(10, 0),
+                        LocalTime.of(12, 0)));
         assertThat(urlaube).hasSize(2);
-
 
 
     }
 
     @Test
     @DisplayName("Ein Urlaub wird zum Student hinzugefügt und der Resturlaub wird richtig berechnet")
-    void test3(){
+    void test3() {
         //arrange
         Student student = new Student(1L, "olli");
 
         //act
-        student.addUrlaub(LocalDate.of(2022,2,22),
-                LocalTime.of(10,0),
-                LocalTime.of(12,0));
+        student.addUrlaub(LocalDate.of(2022, 2, 22),
+                LocalTime.of(10, 0),
+                LocalTime.of(12, 0));
         student.berechneResturlaub();
         int resturlaub = student.getResturlaub();
 
@@ -102,29 +101,29 @@ public class StudentTests {
     }
 
 
-        @Test
-        @DisplayName("Ein Urlaub zum Studenten hinzugefügt und anschließend storniert")
-        void test5(){
-            //arrange
-            Student student = new Student(1L, "olli");
+    @Test
+    @DisplayName("Ein Urlaub zum Studenten hinzugefügt und anschließend storniert")
+    void test5() {
+        //arrange
+        Student student = new Student(1L, "olli");
 
-            //act
-            student.addUrlaub(LocalDate.of(2022, 2, 23),
-                    LocalTime.of(10, 0),
-                    LocalTime.of(12, 0));
-            student.urlaubStornieren(LocalDate.of(2022, 2, 23),
-                    LocalTime.of(10, 0),
-                    LocalTime.of(12, 0));
-            List<Urlaub> urlaube = student.getUrlaube();
+        //act
+        student.addUrlaub(LocalDate.of(2022, 2, 23),
+                LocalTime.of(10, 0),
+                LocalTime.of(12, 0));
+        student.urlaubStornieren(LocalDate.of(2022, 2, 23),
+                LocalTime.of(10, 0),
+                LocalTime.of(12, 0));
+        List<Urlaub> urlaube = student.getUrlaube();
 
-            //assert
-            assertThat(urlaube).isEmpty();
-        }
+        //assert
+        assertThat(urlaube).isEmpty();
+    }
 
 
     @Test
     @DisplayName("Wenn kein Urlaub storniert wird, gibt die urlaubStornieren-Methode false zurück")
-    void test6(){
+    void test6() {
         //arrange
         Student student = new Student(1L, "olli");
 
@@ -142,7 +141,7 @@ public class StudentTests {
 
     @Test
     @DisplayName("Wenn ein Urlaub storniert wird, gibt die urlaubStornieren-Methode true zurück")
-    void test7(){
+    void test7() {
         //arrange
         Student student = new Student(1L, "olli");
 
@@ -160,7 +159,7 @@ public class StudentTests {
 
     @Test
     @DisplayName("Bei zwei vorhandenen Urlauben wird einer richtig storniert")
-    void test8(){
+    void test8() {
         //arrange
         Student student = new Student(1L, "olli");
         student.addUrlaub(LocalDate.of(2022, 2, 23),
@@ -183,7 +182,7 @@ public class StudentTests {
 
     @Test
     @DisplayName("Methode urlaubExistiertSchon gibt true zurück, falls der Urlaub schon existiert")
-    void test9(){
+    void test9() {
         //arrange
         Student student = new Student(1L, "olli");
         student.addUrlaub(LocalDate.of(2022, 2, 23),
@@ -201,7 +200,7 @@ public class StudentTests {
 
     @Test
     @DisplayName("Methode urlaubExistiertSchon gibt false zurück, falls der Urlaub noch nicht existiert")
-    void test10(){
+    void test10() {
         //arrange
         Student student = new Student(1L, "olli");
         student.addUrlaub(LocalDate.of(2022, 2, 23),
@@ -220,11 +219,11 @@ public class StudentTests {
 
     @Test
     @DisplayName("Eine Klausur wird richtig stoniert")
-    void test12(){
+    void test12() {
         //arrange
         Student student = new Student(1L, "olli");
         Klausur klausur = new Klausur(1L, "Mathe",
-                LocalDateTime.of(2022,3,22,9,0),
+                LocalDateTime.of(2022, 3, 22, 9, 0),
                 90,
                 12345, true);
         student.addKlausur(klausur);
@@ -239,7 +238,7 @@ public class StudentTests {
 
     @Test
     @DisplayName("Die genommene Urlaubszeit wird richtig berechnet")
-    void test13(){
+    void test13() {
         //arrange
         Student student = new Student(1L, "olli");
         student.addUrlaub(LocalDate.of(2022, 2, 23),
@@ -259,7 +258,7 @@ public class StudentTests {
 
     @Test
     @DisplayName("Zwei identische Studenten werden als gleich erkannt")
-    void test14(){
+    void test14() {
         //arrange
         Student student = new Student(1L, "olli");
         Student zweiterStudent = new Student(1L, "olli");
@@ -273,7 +272,7 @@ public class StudentTests {
 
     @Test
     @DisplayName("Die genommene Urlaubszeit wird richtig berechnet")
-    void test15(){
+    void test15() {
         //arrange
         Student student = new Student(1L, "olli");
         Student zweiterStudent = new Student(12L, "olli");
@@ -284,10 +283,6 @@ public class StudentTests {
         //assert
         assertThat(ergebnis).isFalse();
     }
-
-
-
-
 
 
 }

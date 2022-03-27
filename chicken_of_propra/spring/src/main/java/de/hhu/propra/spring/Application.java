@@ -11,7 +11,7 @@ import java.util.Properties;
 
 @SpringBootApplication()
 @ComponentScan(basePackages = {"de.hhu.propra"}
-        ,includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = ApplicationService.class))
+        , includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = ApplicationService.class))
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

@@ -199,16 +199,16 @@ public class StudentServiceTests {
 
     @Test
     @DisplayName("Student hat nicht genug Resturlaub, somit wird Urlaub nicht hinzugefügt ")
-    void test28(){
+    void test28() {
         //act
-        Urlaub urlaub1 = new Urlaub(LocalDate.of(2020,1,1),
-                LocalTime.of(8,30),
-                LocalTime.of(11,30));
-        Urlaub urlaub2 = new Urlaub(LocalDate.of(2020,1,2),
-                LocalTime.of(8,30),
-                LocalTime.of(9,45));
-        Student student = new Student(1L,"x");
-        student.addUrlaub(urlaub1.datum(),urlaub1.startzeit(),urlaub1.endzeit());
+        Urlaub urlaub1 = new Urlaub(LocalDate.of(2020, 1, 1),
+                LocalTime.of(8, 30),
+                LocalTime.of(11, 30));
+        Urlaub urlaub2 = new Urlaub(LocalDate.of(2020, 1, 2),
+                LocalTime.of(8, 30),
+                LocalTime.of(9, 45));
+        Student student = new Student(1L, "x");
+        student.addUrlaub(urlaub1.datum(), urlaub1.startzeit(), urlaub1.endzeit());
         student.berechneResturlaub();
 
         //arrange
@@ -351,7 +351,7 @@ public class StudentServiceTests {
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
         Urlaub urlaub = UrlaubDto.toUrlaub(urlaub1);
         //act
-        student.addUrlaub(urlaub.datum(),urlaub.startzeit(),urlaub.endzeit());
+        student.addUrlaub(urlaub.datum(), urlaub.startzeit(), urlaub.endzeit());
         Set<String> ergebnis = studentService.urlaubStornieren(student.getHandle(), urlaub1);
 
         //assert
@@ -424,9 +424,9 @@ public class StudentServiceTests {
     void test18() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("Betriebssysteme und Systemprogrammierung",
-                LocalDate.of(3000,4,22).toString(),
-                LocalTime.of(9,0).toString(),
-                LocalTime.of(11,0).plusMinutes(90).toString(),
+                LocalDate.of(3000, 4, 22).toString(),
+                LocalTime.of(9, 0).toString(),
+                LocalTime.of(11, 0).plusMinutes(90).toString(),
                 217480,
                 true);
         Klausur klausur = new Klausur(1L,
@@ -522,19 +522,19 @@ public class StudentServiceTests {
     void test20() throws IOException {
         //arrange
         KlausurDto klausurDto1 = new KlausurDto("Einführung in die Computerlinguistik",
-                LocalDateTime.of(2022,3,22,9,30).toLocalDate().toString(),
-                LocalDateTime.of(2022,3,22,9,30).toLocalTime().toString(),
-                LocalDateTime.of(2022,3,22,9,30).toLocalTime().plusMinutes(90).toString(),
+                LocalDateTime.of(2022, 3, 22, 9, 30).toLocalDate().toString(),
+                LocalDateTime.of(2022, 3, 22, 9, 30).toLocalTime().toString(),
+                LocalDateTime.of(2022, 3, 22, 9, 30).toLocalTime().plusMinutes(90).toString(),
                 222916,
                 true);     //9:30 - 11:00
         KlausurDto klausurDto2 = new KlausurDto("Betriebssysteme und Systemprogrammierung",
-                LocalDateTime.of(2022,3,22,10,0).toLocalDate().toString(),
-                LocalDateTime.of(2022,3,22,10,0).toLocalTime().toString(),
-                LocalDateTime.of(2022,3,22,11,30).toLocalTime().plusMinutes(90).toString(),
+                LocalDateTime.of(2022, 3, 22, 10, 0).toLocalDate().toString(),
+                LocalDateTime.of(2022, 3, 22, 10, 0).toLocalTime().toString(),
+                LocalDateTime.of(2022, 3, 22, 11, 30).toLocalTime().plusMinutes(90).toString(),
                 217480,
                 false);    //10:00 - 11:30
         Klausur klausur = new Klausur(1L, "Betriebssysteme und Systemprogrammierung",
-                LocalDateTime.of(2022,3,22,10,0),
+                LocalDateTime.of(2022, 3, 22, 10, 0),
                 90,
                 217480,
                 false);
@@ -552,15 +552,15 @@ public class StudentServiceTests {
     @Test
     @DisplayName("Eine Klausur an einem Tag kann nicht zu einem Student hinzugefügt werden, " +
             "wenn sie sich mit einer vorher hinzugefügten Klausur überschneidet")
-    void test29()  {
+    void test29() {
         //arrange
         Klausur klausur1 = new Klausur(1L, "Betriebssysteme und Systemprogrammierung",
-                LocalDateTime.of(2022,3,22,9,30),
+                LocalDateTime.of(2022, 3, 22, 9, 30),
                 90,
                 217480,
                 true); // 09:00 - 11:00
         Klausur klausur2 = new Klausur(2L, "Einführung in die Computerlinguistik",
-                LocalDateTime.of(2022,3,22,8,30),
+                LocalDateTime.of(2022, 3, 22, 8, 30),
                 90,
                 222916,
                 true); // 08:00 - 10:00
@@ -714,7 +714,7 @@ public class StudentServiceTests {
 
         when(studentRepository.studentMitHandle("x")).thenReturn(student);
         when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
-       Urlaub ergebnis1 = new Urlaub(LocalDate.of(2024, 1, 1),
+        Urlaub ergebnis1 = new Urlaub(LocalDate.of(2024, 1, 1),
                 LocalTime.of(8, 30),
                 LocalTime.of(9, 0));
         Urlaub ergebnis2 = new Urlaub(LocalDate.of(2024, 1, 1),
@@ -729,7 +729,6 @@ public class StudentServiceTests {
         assertThat(student.getUrlaube()).contains(ergebnis1, ergebnis2);
         assertThat(student.getResturlaub()).isEqualTo(90);
     }
-
 
 
     @Test
@@ -814,7 +813,7 @@ public class StudentServiceTests {
 
     @Test
     @DisplayName("KlausurDto Verknüpfung mit KlausurId funktioniert")
-    public void test31(){
+    public void test31() {
         //arrange
         Klausur klausur = new Klausur(1L,
                 "Betriebssysteme und Systemprogrammierung",
@@ -828,20 +827,19 @@ public class StudentServiceTests {
                 60,
                 217480,
                 true); // bis 10:30
-        Student student = new Student(1L,"x");
+        Student student = new Student(1L, "x");
         student.addKlausur(klausur);
         student.addKlausur(klausur1);
         when(klausurRepository.klausurMitId(1L)).thenReturn(klausur);
         when(klausurRepository.klausurMitId(2L)).thenReturn(klausur1);
 
         //act
-        HashMap<Long,KlausurDto> map = studentService.holeAlleKlausurDtosMitID(student);
+        HashMap<Long, KlausurDto> map = studentService.holeAlleKlausurDtosMitID(student);
 
         //assert
-        assertThat(map.keySet()).containsExactly(1L,2L);
-        assertThat(map.values()).containsExactly(KlausurDto.toKlausurDto(klausur),KlausurDto.toKlausurDto(klausur1));
+        assertThat(map.keySet()).containsExactly(1L, 2L);
+        assertThat(map.values()).containsExactly(KlausurDto.toKlausurDto(klausur), KlausurDto.toKlausurDto(klausur1));
     }
-
 
 
 }

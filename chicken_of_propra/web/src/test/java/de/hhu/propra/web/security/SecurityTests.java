@@ -28,10 +28,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest
 @ComponentScan(basePackages = {"de.hhu.propra"}
-        ,includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = {ApplicationService.class}))
+        , includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = {ApplicationService.class}))
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class SecurityTests {
+public class
+SecurityTests {
 
     @Autowired
     MockMvc mockMvc;
@@ -53,7 +54,7 @@ public class SecurityTests {
     @DisplayName("Student hat keinen Zugriff auf logs")
     void test2() throws Exception {
         MockHttpSession session = AuthenticationTemplate.studentSession();
-        when(studentService.studentMitHandle("AlexStudent")).thenReturn(new Student(1L,"AlexStudent"));
+        when(studentService.studentMitHandle("AlexStudent")).thenReturn(new Student(1L, "AlexStudent"));
         mockMvc.perform(get("/student").session(session))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/logs/").session(session))

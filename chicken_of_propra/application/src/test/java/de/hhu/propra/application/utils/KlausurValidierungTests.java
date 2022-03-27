@@ -24,12 +24,12 @@ public class KlausurValidierungTests {
 
     @Test
     @DisplayName("Das Datum der Klausur liegt nicht im Praktikumszeitraum")
-    void test1(){
+    void test1() {
         //arrange
-        KlausurDto klausurDto = new KlausurDto("x" ,
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+        KlausurDto klausurDto = new KlausurDto("x",
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 123456,
                 true);
 
@@ -41,16 +41,14 @@ public class KlausurValidierungTests {
     }
 
 
-
-
     @Test
     @DisplayName("Erstellte Klausur darf nicht am Wochenende liegen")
-    void test7(){
+    void test7() {
         //arrange
-        KlausurDto klausur = new KlausurDto("x" ,
-                LocalDate.of(2022,3,19).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+        KlausurDto klausur = new KlausurDto("x",
+                LocalDate.of(2022, 3, 19).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 222916,
                 true);
 
@@ -66,12 +64,12 @@ public class KlausurValidierungTests {
 
     @Test
     @DisplayName("Die Startzeit der Klausur muss vor der Endzeit der Klausur liegen")
-    void test8(){
+    void test8() {
         //arrange
-        KlausurDto klausur = new KlausurDto("x" ,
-                LocalDate.of(2022,3,19).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(8,0).toString(),
+        KlausurDto klausur = new KlausurDto("x",
+                LocalDate.of(2022, 3, 19).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(8, 0).toString(),
                 222916,
                 true);
 
@@ -87,19 +85,19 @@ public class KlausurValidierungTests {
 
     @Test
     @DisplayName("Die erstellte Klausur existiert bereits und wird somit nicht doppelt hinzugefügt")
-    void test9(){
+    void test9() {
         //arrange
-        List<Klausur> klausuren = Stream.of(KlausurDto.toKlausur(new KlausurDto("x" ,
-                LocalDate.of(2022,3,19).toString(),
-                LocalTime.of(8,30).toString(),
-                LocalTime.of(10,0).toString(),
+        List<Klausur> klausuren = Stream.of(KlausurDto.toKlausur(new KlausurDto("x",
+                LocalDate.of(2022, 3, 19).toString(),
+                LocalTime.of(8, 30).toString(),
+                LocalTime.of(10, 0).toString(),
                 222916,
                 true))).collect(Collectors.toList());
 
-        Klausur klausur = KlausurDto.toKlausur(new KlausurDto("x" ,
-                LocalDate.of(2022,3,19).toString(),
-                LocalTime.of(8,30).toString(),
-                LocalTime.of(10,0).toString(),
+        Klausur klausur = KlausurDto.toKlausur(new KlausurDto("x",
+                LocalDate.of(2022, 3, 19).toString(),
+                LocalTime.of(8, 30).toString(),
+                LocalTime.of(10, 0).toString(),
                 222916,
                 true));
 
@@ -115,26 +113,26 @@ public class KlausurValidierungTests {
 
     @Test
     @DisplayName("Eine neue Klausur überschneidet sich mit einer aus der Liste der bereits bestehenden")
-    void test10(){
+    void test10() {
         //arrange
-        List<Klausur> klausuren = Stream.of(KlausurDto.toKlausur(new KlausurDto("x" ,
-                LocalDate.of(2022,3,19).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(12,0).toString(),
-                222916,
-                true)),
-                KlausurDto.toKlausur(new KlausurDto("y" ,
-                        LocalDate.of(2022,3,19).toString(),
-                        LocalTime.of(12,30).toString(),
-                        LocalTime.of(13,30).toString(),
-                        222916,
-                        true)))
+        List<Klausur> klausuren = Stream.of(KlausurDto.toKlausur(new KlausurDto("x",
+                                LocalDate.of(2022, 3, 19).toString(),
+                                LocalTime.of(10, 30).toString(),
+                                LocalTime.of(12, 0).toString(),
+                                222916,
+                                true)),
+                        KlausurDto.toKlausur(new KlausurDto("y",
+                                LocalDate.of(2022, 3, 19).toString(),
+                                LocalTime.of(12, 30).toString(),
+                                LocalTime.of(13, 30).toString(),
+                                222916,
+                                true)))
                 .collect(Collectors.toList());
 
-        Klausur klausur = KlausurDto.toKlausur(new KlausurDto("z" ,
-                LocalDate.of(2022,3,19).toString(),
-                LocalTime.of(8,30).toString(),
-                LocalTime.of(11,0).toString(),
+        Klausur klausur = KlausurDto.toKlausur(new KlausurDto("z",
+                LocalDate.of(2022, 3, 19).toString(),
+                LocalTime.of(8, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 222916,
                 true));
 
@@ -150,19 +148,19 @@ public class KlausurValidierungTests {
 
     @Test
     @DisplayName("Zwei Klausuren überschneiden sich")
-    void test11(){
+    void test11() {
         //arrange
-        Klausur klausur = KlausurDto.toKlausur(new KlausurDto("zx" ,
-                LocalDate.of(2022,3,19).toString(),
-                LocalTime.of(8,30).toString(),
-                LocalTime.of(11,0).toString(),
+        Klausur klausur = KlausurDto.toKlausur(new KlausurDto("zx",
+                LocalDate.of(2022, 3, 19).toString(),
+                LocalTime.of(8, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 222916,
                 true));
 
-        Klausur zweiteKlausur = KlausurDto.toKlausur(new KlausurDto("z" ,
-                LocalDate.of(2022,3,19).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(12,0).toString(),
+        Klausur zweiteKlausur = KlausurDto.toKlausur(new KlausurDto("z",
+                LocalDate.of(2022, 3, 19).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(12, 0).toString(),
                 222916,
                 true));
 
@@ -176,19 +174,19 @@ public class KlausurValidierungTests {
 
     @Test
     @DisplayName("Zwei Klausuren überschneiden sich nicht, weil an verschiedenen Tagen")
-    void test12(){
+    void test12() {
         //arrange
-        Klausur klausur = KlausurDto.toKlausur(new KlausurDto("zx" ,
-                LocalDate.of(2022,3,20).toString(),
-                LocalTime.of(8,30).toString(),
-                LocalTime.of(11,0).toString(),
+        Klausur klausur = KlausurDto.toKlausur(new KlausurDto("zx",
+                LocalDate.of(2022, 3, 20).toString(),
+                LocalTime.of(8, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 222916,
                 true));
 
-        Klausur zweiteKlausur = KlausurDto.toKlausur(new KlausurDto("z" ,
-                LocalDate.of(2022,3,19).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(12,0).toString(),
+        Klausur zweiteKlausur = KlausurDto.toKlausur(new KlausurDto("z",
+                LocalDate.of(2022, 3, 19).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(12, 0).toString(),
                 222916,
                 true));
 
@@ -203,26 +201,26 @@ public class KlausurValidierungTests {
 
     @Test
     @DisplayName("Zwei Klausuren liegen genau zur selben Zeit")
-    void test13(){
+    void test13() {
         //arrange
-        List<Klausur> klausuren = Stream.of(KlausurDto.toKlausur(new KlausurDto("x" ,
-                        LocalDate.of(2022,3,19).toString(),
-                        LocalTime.of(10,30).toString(),
-                        LocalTime.of(12,0).toString(),
-                        222916,
-                        true)),
-                KlausurDto.toKlausur(new KlausurDto("y" ,
-                        LocalDate.of(2022,3,19).toString(),
-                        LocalTime.of(12,30).toString(),
-                        LocalTime.of(13,30).toString(),
-                        222916,
-                        true)))
+        List<Klausur> klausuren = Stream.of(KlausurDto.toKlausur(new KlausurDto("x",
+                                LocalDate.of(2022, 3, 19).toString(),
+                                LocalTime.of(10, 30).toString(),
+                                LocalTime.of(12, 0).toString(),
+                                222916,
+                                true)),
+                        KlausurDto.toKlausur(new KlausurDto("y",
+                                LocalDate.of(2022, 3, 19).toString(),
+                                LocalTime.of(12, 30).toString(),
+                                LocalTime.of(13, 30).toString(),
+                                222916,
+                                true)))
                 .collect(Collectors.toList());
 
-        Klausur zweiteKlausur = KlausurDto.toKlausur(new KlausurDto("z" ,
-                LocalDate.of(2022,3,19).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(12,0).toString(),
+        Klausur zweiteKlausur = KlausurDto.toKlausur(new KlausurDto("z",
+                LocalDate.of(2022, 3, 19).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(12, 0).toString(),
                 222916,
                 true));
 
@@ -240,10 +238,10 @@ public class KlausurValidierungTests {
     @DisplayName("Eine Klausur ohne Name kann nicht angemeldet werden")
     void test14() throws IOException {
         //arrange
-        KlausurDto klausur = new KlausurDto("" ,
-                LocalDate.of(2022,3,19).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(12,0).toString(),
+        KlausurDto klausur = new KlausurDto("",
+                LocalDate.of(2022, 3, 19).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(12, 0).toString(),
                 222916,
                 true);
 
@@ -262,10 +260,10 @@ public class KlausurValidierungTests {
             "Name zur LSF-ID wird vorgeschlagen")
     void test15() throws IOException {
         //arrange
-        KlausurDto klausur = new KlausurDto("Betriebssysteme" ,
-                LocalDate.of(2022,3,19).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(12,0).toString(),
+        KlausurDto klausur = new KlausurDto("Betriebssysteme",
+                LocalDate.of(2022, 3, 19).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(12, 0).toString(),
                 217480,
                 true);
 
@@ -284,10 +282,10 @@ public class KlausurValidierungTests {
     @DisplayName("Die Lsf ID ist ungültig")
     void test2() throws IOException {
         //arrange
-        KlausurDto klausurDto = new KlausurDto("Betriebssysteme und Systemprogrammierung" ,
-                LocalDate.of(2022,3,17).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+        KlausurDto klausurDto = new KlausurDto("Betriebssysteme und Systemprogrammierung",
+                LocalDate.of(2022, 3, 17).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 12,
                 true);
 
@@ -305,10 +303,10 @@ public class KlausurValidierungTests {
     @DisplayName("Die Klausur ist valide")
     void test16() throws IOException {
         //arrange
-        KlausurDto klausurDto = new KlausurDto("Betriebssysteme und Systemprogrammierung" ,
-                LocalDate.of(2022,3,17).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+        KlausurDto klausurDto = new KlausurDto("Betriebssysteme und Systemprogrammierung",
+                LocalDate.of(2022, 3, 17).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 217480,
                 true);
 

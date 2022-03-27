@@ -16,7 +16,6 @@ public class Student {
     private String handle;
     private int resturlaub;
     private Set<Urlaub> urlaube = new HashSet<>();
-    private Set<Anwesenheit> anwesenheiten = new HashSet<>();
     private Set<KlausurReferenz> klausuren = new HashSet<>();
 
     public Student(Long id, String handle) {
@@ -30,9 +29,9 @@ public class Student {
         urlaube.add(new Urlaub(datum, start, ende));
     }
 
-    public void berechneResturlaub(){
+    public void berechneResturlaub() {
         resturlaub = 240 - urlaube.stream()
-                .mapToInt(u -> (int) Duration.between(u.startzeit(),u.endzeit()).toMinutes())
+                .mapToInt(u -> (int) Duration.between(u.startzeit(), u.endzeit()).toMinutes())
                 .sum();
     }
 
@@ -90,7 +89,7 @@ public class Student {
         this.resturlaub = resturlaub;
     }
 
-    public int berechneUrlaubszeit(){
+    public int berechneUrlaubszeit() {
         return 240 - resturlaub;
     }
 

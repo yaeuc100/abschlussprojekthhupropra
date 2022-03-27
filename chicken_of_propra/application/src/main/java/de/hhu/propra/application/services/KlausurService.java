@@ -17,11 +17,11 @@ public class KlausurService {
         this.klausurRepository = klausurRepository;
     }
 
-    public List<Klausur> alleKlausuren(){
+    public List<Klausur> alleKlausuren() {
         return klausurRepository.alleKlausuren();
     }
 
-    public Klausur klausurMitId(Long id){
+    public Klausur klausurMitId(Long id) {
         return klausurRepository.klausurMitId(id);
     }
 

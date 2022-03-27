@@ -7,5 +7,5 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 
 
-public interface KlausurDao extends CrudRepository<KlausurEntity,Long> {
+public interface KlausurDao extends CrudRepository<KlausurEntity, Long> {
 }

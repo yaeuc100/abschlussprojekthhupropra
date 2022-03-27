@@ -10,7 +10,7 @@ public record Klausur(Long id, String name, LocalDateTime datum, int dauer, long
         return name + " ( " + datum.toLocalDate().toString() + ", " +
                 datum.toLocalTime().toString() + " Uhr - " +
                 datum.toLocalTime().plusMinutes(dauer).toString() + " Uhr )";
-     }
+    }
 
     @Override
     public boolean equals(Object o) {

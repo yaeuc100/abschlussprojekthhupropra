@@ -26,7 +26,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     @Override
     public Klausur klausurMitId(Long id) {
         Klausur klausur = null;
-        if(klausurDao.existsById(id)){
+        if (klausurDao.existsById(id)) {
             klausur = build(klausurDao.findById(id).get());
         }
         return klausur;
@@ -35,7 +35,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     @Override
     public List<Klausur> alleKlausuren() {
         List<Klausur> klausuren = new ArrayList<>();
-        for(KlausurEntity entity: klausurDao.findAll()){
+        for (KlausurEntity entity : klausurDao.findAll()) {
             klausuren.add(build(entity));
         }
         return klausuren;
@@ -52,14 +52,14 @@ public class KlausurRepositoryImpl implements KlausurRepository {
                       lsf = ? AND 
                       online = ?;""";
         Klausur klausur = KlausurDto.toKlausur(klausurDto);
-        List <KlausurEntity> entities = db.query(SQL,
+        List<KlausurEntity> entities = db.query(SQL,
                 new DataClassRowMapper<>(KlausurEntity.class),
                 klausur.name(),
                 klausur.datum(),
                 klausur.dauer(),
                 klausur.lsf(),
                 klausur.online());
-        if(entities.isEmpty()){
+        if (entities.isEmpty()) {
             return null;
         }
         return build(entities.get(0));
@@ -77,7 +77,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     }
 
 
-    private Klausur build(KlausurEntity klausur){
+    private Klausur build(KlausurEntity klausur) {
         return new Klausur(klausur.id(),
                 klausur.name(),
                 klausur.datum(),

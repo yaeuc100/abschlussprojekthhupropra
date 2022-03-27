@@ -45,23 +45,23 @@ public class UrlaubKlausurBearbeitung {
             if (klausurEndetZuerst(urlaubsEnde, klausurEnde)) {
                 urlaubs.add(new Urlaub(urlaub.datum(), klausurEnde, urlaubsEnde));
             }
-        }
-        else {
+        } else {
             urlaubs.add(urlaub);
         }
         return urlaubs;
     }
-    public List<Urlaub> reduziereUrlaubDurchEineKlausur(List<Urlaub> urlaube, Urlaub freieZeitDurchKlausur){
+
+    public List<Urlaub> reduziereUrlaubDurchEineKlausur(List<Urlaub> urlaube, Urlaub freieZeitDurchKlausur) {
         List<Urlaub> urlaubs = urlaube.stream()
-                .flatMap(u -> reduziereUrlaubDurchKlausur(u,freieZeitDurchKlausur).stream())
+                .flatMap(u -> reduziereUrlaubDurchKlausur(u, freieZeitDurchKlausur).stream())
                 .collect(Collectors.toList());
         return urlaubs;
     }
 
-    public List<Urlaub> reduziereUrlaubDurchMehrereKlausuren(List<Urlaub> urlaube, List<Klausur> klausuren){
-        List<Urlaub> urlaubs = reduziereUrlaubDurchEineKlausur(urlaube,freieZeitDurchKlausur(klausuren.get(0)));
-        for(int i = 1 ; i<klausuren.size() ; i++){
-            urlaubs = reduziereUrlaubDurchEineKlausur(urlaubs,freieZeitDurchKlausur(klausuren.get(i)));
+    public List<Urlaub> reduziereUrlaubDurchMehrereKlausuren(List<Urlaub> urlaube, List<Klausur> klausuren) {
+        List<Urlaub> urlaubs = reduziereUrlaubDurchEineKlausur(urlaube, freieZeitDurchKlausur(klausuren.get(0)));
+        for (int i = 1; i < klausuren.size(); i++) {
+            urlaubs = reduziereUrlaubDurchEineKlausur(urlaubs, freieZeitDurchKlausur(klausuren.get(i)));
         }
         return urlaubs;
     }
@@ -71,7 +71,7 @@ public class UrlaubKlausurBearbeitung {
         for (Klausur klausur : klausuren) {
             urlaubs.addAll(reduziereUrlaubDurchKlausur(urlaub, freieZeitDurchKlausur(klausur)));
         }
-        urlaubs = reduziereUrlaubDurchMehrereKlausuren(urlaubs,klausuren);
+        urlaubs = reduziereUrlaubDurchMehrereKlausuren(urlaubs, klausuren);
         urlaubs = urlaubValidierung.urlaubeZusammenfuegen(urlaubs);
         return urlaubs;
     }

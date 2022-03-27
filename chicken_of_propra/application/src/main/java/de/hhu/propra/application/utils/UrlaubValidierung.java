@@ -18,7 +18,7 @@ import static java.util.Calendar.getInstance;
 //     entweder 240 oder 150 max
 //     max 2 und falls 2 gibt dann mit 90 min abstand zwischen dauer der 2. und 1. urlaub
 //     urlaub bis 00.00 uhr anmelden
-    //TODO Praktikumsstart
+//TODO Praktikumsstart
 public class UrlaubValidierung {
 
     private Set<String> fehlgeschlagen = new HashSet<>();
@@ -38,13 +38,13 @@ public class UrlaubValidierung {
         return ergebnis;
     }
 
-    boolean amWochenende(Urlaub urlaub){
+    boolean amWochenende(Urlaub urlaub) {
         boolean ergebnis = true;
         Date date = Date.from(urlaub.datum().atStartOfDay(ZoneId.systemDefault()).toInstant());
         Calendar datum = getInstance();
         datum.setTime(date);
-        if((datum.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ) ||
-                (datum.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY )){
+        if ((datum.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) ||
+                (datum.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {
             fehlgeschlagen.add(UrlaubFehler.AM_WOCHENENDE);
             ergebnis = false;
         }
@@ -54,7 +54,7 @@ public class UrlaubValidierung {
     boolean dauerIstValide(Urlaub urlaub) {
         Duration diff = Duration.between(urlaub.startzeit(), urlaub.endzeit());
         long minuten = diff.toMinutes();
-        boolean ergebnis = (minuten == 240 || minuten <= 150 );
+        boolean ergebnis = (minuten == 240 || minuten <= 150);
         if (!ergebnis) {
             fehlgeschlagen.add(UrlaubFehler.DAUER_IST_VALIDE);
         }
@@ -77,7 +77,7 @@ public class UrlaubValidierung {
         if (duration.toMinutes() < 90) {
             valide = false;
         }
-        if (!valide){
+        if (!valide) {
             fehlgeschlagen.add(UrlaubFehler.ZWEI_URLAUBE_AN_TAG);
         }
         return valide;
@@ -85,7 +85,7 @@ public class UrlaubValidierung {
 
     boolean urlaubNurVorDemTagDesUrlaubs(Urlaub urlaub) {
         boolean ergebnis = urlaub.datum().isAfter(LocalDate.now());
-        if (!ergebnis){
+        if (!ergebnis) {
             fehlgeschlagen.add(UrlaubFehler.ANTRAG_RECHTZEITIG);
         }
         return ergebnis;
@@ -93,7 +93,7 @@ public class UrlaubValidierung {
 
     public boolean urlaubNurVorDemTagDesUrlaubsStornieren(Urlaub urlaub) {
         boolean ergebnis = urlaub.datum().isAfter(LocalDate.now());
-        if (!ergebnis){
+        if (!ergebnis) {
             fehlgeschlagen.add(UrlaubFehler.STONIERUNG_RECHTZEITIG);
         }
         return ergebnis;
@@ -102,7 +102,7 @@ public class UrlaubValidierung {
     public boolean genugUrlaub(Student student, Urlaub urlaub) {
         Duration duration = Duration.between(urlaub.startzeit(), urlaub.endzeit());
         boolean ergebnis = (duration.toMinutes() <= student.getResturlaub());
-        if(!ergebnis){
+        if (!ergebnis) {
             fehlgeschlagen.add(UrlaubFehler.NICHT_GENUG_URLAUB_VORHANDEN);
         }
         return ergebnis;
@@ -142,7 +142,7 @@ public class UrlaubValidierung {
 
     boolean startzeitVorEndzeit(Urlaub urlaub) {
         boolean ergebnis = urlaub.startzeit().isBefore(urlaub.endzeit());
-        if (!ergebnis){
+        if (!ergebnis) {
             fehlgeschlagen.add(UrlaubFehler.STARTZEIT_VOR_ENDZEIT);
         }
         return ergebnis;
@@ -152,16 +152,16 @@ public class UrlaubValidierung {
         LocalDate start = LocalDate.of(2022, 3, 6); //ein tag vorher
         LocalDate ende = LocalDate.of(4000, 3, 26);
         boolean ergebnis = urlaub.datum().isAfter(start) && ende.isAfter(urlaub.datum());
-        if (!ergebnis){
+        if (!ergebnis) {
             fehlgeschlagen.add(UrlaubFehler.URLAUB_IN_ZEITRAUM);
         }
         return ergebnis;
     }
 
 
-    public boolean bisherMaxEinUrlaub(List<Urlaub> urlaube){
+    public boolean bisherMaxEinUrlaub(List<Urlaub> urlaube) {
         boolean ergebnis = urlaube.size() < 2;
-        if(!ergebnis){
+        if (!ergebnis) {
             fehlgeschlagen.add(UrlaubFehler.MAX_ZWEI_URLAUBE);
         }
         return ergebnis;

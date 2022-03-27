@@ -31,13 +31,13 @@ public class StudentRepositoryImplTests {
     JdbcTemplate db;
 
     @Test
-    @DisplayName("Richtiger Student wird raus gelesen")
+    @DisplayName("Richtiger Student wird aus DB gelesen")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
-    void test1(){
+    void test1() {
         //arrange
         StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
-        Student olli = new Student(1L,"olli");
+        Student olli = new Student(1L, "olli");
         olli.setResturlaub(0);
 
         //act
@@ -48,52 +48,52 @@ public class StudentRepositoryImplTests {
     }
 
     @Test
-    @DisplayName("Richtiger Student wird raus gelesen und hat Urlaube")
+    @DisplayName("Richtiger Student wird aus DB gelesen mit Urlauben")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
-    void test2(){
+    void test2() {
         //arrange
         StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
-        Urlaub urlaub1 = new Urlaub(LocalDate.of(2021,1,1),
-                LocalTime.of(8,30),
-                LocalTime.of(10,30));
-        Urlaub urlaub2 = new Urlaub(LocalDate.of(2021,1,1),
-                LocalTime.of(10,30),
-                LocalTime.of(12,30));
+        Urlaub urlaub1 = new Urlaub(LocalDate.of(2021, 1, 1),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 30));
+        Urlaub urlaub2 = new Urlaub(LocalDate.of(2021, 1, 1),
+                LocalTime.of(10, 30),
+                LocalTime.of(12, 30));
 
-        Student olli = new Student(1L,"olli");
+        Student olli = new Student(1L, "olli");
         olli.setResturlaub(0);
-        olli.addUrlaub(urlaub1.datum(),urlaub1.startzeit(),urlaub1.endzeit());
-        olli.addUrlaub(urlaub2.datum(),urlaub2.startzeit(),urlaub2.endzeit());
+        olli.addUrlaub(urlaub1.datum(), urlaub1.startzeit(), urlaub1.endzeit());
+        olli.addUrlaub(urlaub2.datum(), urlaub2.startzeit(), urlaub2.endzeit());
 
         //act
         Student olliAusDb = studentRepository.studentMitId(1L);
 
         //assert
         assertThat(olliAusDb).isEqualTo(olli);
-        assertThat(olliAusDb.getUrlaube()).contains(urlaub1,urlaub2);
+        assertThat(olliAusDb.getUrlaube()).contains(urlaub1, urlaub2);
     }
 
     @Test
     @DisplayName("Richtiger Student wird ausgelesen und ein Urlaub storniert")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
-    void test3(){
+    void test3() {
         //arrange
         StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
-        Urlaub urlaub1 = new Urlaub(LocalDate.of(2021,1,1),
-                LocalTime.of(8,30),
-                LocalTime.of(10,30));
-        Urlaub urlaub2 = new Urlaub(LocalDate.of(2021,1,1),
-                LocalTime.of(10,30),
-                LocalTime.of(12,30));
+        Urlaub urlaub1 = new Urlaub(LocalDate.of(2021, 1, 1),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 30));
+        Urlaub urlaub2 = new Urlaub(LocalDate.of(2021, 1, 1),
+                LocalTime.of(10, 30),
+                LocalTime.of(12, 30));
 
-        Student olli = new Student(1L,"olli");
-       // olli.setResturlaub(0);
-        olli.addUrlaub(urlaub1.datum(),urlaub1.startzeit(),urlaub1.endzeit());
+        Student olli = new Student(1L, "olli");
+        // olli.setResturlaub(0);
+        olli.addUrlaub(urlaub1.datum(), urlaub1.startzeit(), urlaub1.endzeit());
 
         //act
-        studentRepository.storniereUrlaub(1L,urlaub2);
+        studentRepository.storniereUrlaub(1L, urlaub2);
         Student olliAusDb = studentRepository.studentMitId(1L);
 
         //assert
@@ -106,7 +106,7 @@ public class StudentRepositoryImplTests {
     @DisplayName("Alle Studenten werden aus DB geholt")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
-    void test4(){
+    void test4() {
         //arrange
         StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
 
@@ -119,27 +119,27 @@ public class StudentRepositoryImplTests {
 
 
     @Test
-    @DisplayName("Student wird gespeichert")
+    @DisplayName("Student wird richtig in DB gespeichert")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
-    void test5(){
+    void test5() {
         //arrange
         StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
-        Urlaub urlaub1 = new Urlaub(LocalDate.of(2021,1,1),
-                LocalTime.of(1,30),
-                LocalTime.of(2,30));
-        Urlaub urlaub2 = new Urlaub(LocalDate.of(2021,1,1),
-                LocalTime.of(3,30),
-                LocalTime.of(4,30));
-        Student student = new Student(null,"jens");
+        Urlaub urlaub1 = new Urlaub(LocalDate.of(2021, 1, 1),
+                LocalTime.of(1, 30),
+                LocalTime.of(2, 30));
+        Urlaub urlaub2 = new Urlaub(LocalDate.of(2021, 1, 1),
+                LocalTime.of(3, 30),
+                LocalTime.of(4, 30));
+        Student student = new Student(null, "jens");
         student.setResturlaub(0);
-        student.addUrlaub(urlaub1.datum(),urlaub1.startzeit(),urlaub1.endzeit());
-        student.addUrlaub(urlaub2.datum(),urlaub2.startzeit(),urlaub2.endzeit());
+        student.addUrlaub(urlaub1.datum(), urlaub1.startzeit(), urlaub1.endzeit());
+        student.addUrlaub(urlaub2.datum(), urlaub2.startzeit(), urlaub2.endzeit());
 
-        Student erwartet = new Student(6L,"jens");
+        Student erwartet = new Student(6L, "jens");
         erwartet.setResturlaub(0);
-        erwartet.addUrlaub(urlaub1.datum(),urlaub1.startzeit(),urlaub1.endzeit());
-        erwartet.addUrlaub(urlaub2.datum(),urlaub2.startzeit(),urlaub2.endzeit());
+        erwartet.addUrlaub(urlaub1.datum(), urlaub1.startzeit(), urlaub1.endzeit());
+        erwartet.addUrlaub(urlaub2.datum(), urlaub2.startzeit(), urlaub2.endzeit());
 
 
         //act
@@ -147,23 +147,23 @@ public class StudentRepositoryImplTests {
         //assert
 
         assertThat(studentRepository.studentMitId(6L)).isEqualTo(erwartet);
-        assertThat(studentRepository.studentMitId(6L).getUrlaube()).contains(urlaub1,urlaub2);
+        assertThat(studentRepository.studentMitId(6L).getUrlaube()).contains(urlaub1, urlaub2);
     }
 
     @Test
-    @DisplayName("Richtiger Student wird raus gelesen und hat klausur")
+    @DisplayName("Richtiger Student wird aus DB gelesen und hat klausur")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
-    void test6(){
+    void test6() {
         //arrange
         StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
 
         Klausur klausur = new Klausur(1L,
                 "Rechnernetze",
-                LocalDateTime.of(2020,01,01,10,00),
-                60,123456,true);
+                LocalDateTime.of(2020, 01, 01, 10, 00),
+                60, 123456, true);
 
-        Student sabrina = new Student(5L,"Sabrina");
+        Student sabrina = new Student(5L, "Sabrina");
         sabrina.setResturlaub(240);
         sabrina.addKlausur(klausur);
 
@@ -176,63 +176,63 @@ public class StudentRepositoryImplTests {
     }
 
     @Test
-    @DisplayName("Richtiger Student wird raus gelesen und hat klausuren und Urlaube ")
+    @DisplayName("Richtiger Student wird aus DB gelesen mit Klausuren und Urlauben ")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
-    void test7(){
+    void test7() {
         //arrange
         StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
-        Urlaub urlaub1 = new Urlaub(LocalDate.of(2021,1,1),
-                LocalTime.of(8,30),
-                LocalTime.of(10,30));
-        Urlaub urlaub2 = new Urlaub(LocalDate.of(2021,1,1),
-                LocalTime.of(10,30),
-                LocalTime.of(12,30));
+        Urlaub urlaub1 = new Urlaub(LocalDate.of(2021, 1, 1),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 30));
+        Urlaub urlaub2 = new Urlaub(LocalDate.of(2021, 1, 1),
+                LocalTime.of(10, 30),
+                LocalTime.of(12, 30));
 
-        Student olli = new Student(1L,"olli");
+        Student olli = new Student(1L, "olli");
         olli.setResturlaub(0);
         olli.addKlausurRef(new KlausurReferenz(2L));
         olli.addKlausurRef(new KlausurReferenz(3L));
-        olli.addUrlaub(urlaub1.datum(),urlaub1.startzeit(),urlaub1.endzeit());
-        olli.addUrlaub(urlaub2.datum(),urlaub2.startzeit(),urlaub2.endzeit());
+        olli.addUrlaub(urlaub1.datum(), urlaub1.startzeit(), urlaub1.endzeit());
+        olli.addUrlaub(urlaub2.datum(), urlaub2.startzeit(), urlaub2.endzeit());
 
         //act
         Student olliAusDb = studentRepository.studentMitId(1L);
 
         //assert
         assertThat(olliAusDb).isEqualTo(olli);
-        assertThat(olliAusDb.getKlausuren()).contains(2L,3L);
-        assertThat(olliAusDb.getUrlaube()).contains(urlaub1,urlaub2);
+        assertThat(olliAusDb.getKlausuren()).contains(2L, 3L);
+        assertThat(olliAusDb.getUrlaube()).contains(urlaub1, urlaub2);
     }
 
     @Test
-    @DisplayName("Richtiger Student wird mit Handle raus gelesen und hat klausuren und Urlaube ")
+    @DisplayName("Richtiger Student wird mit Handle aus DB gelesen und hat Klausuren und Urlaube ")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
-    void test8(){
+    void test8() {
         //arrange
         StudentRepositoryImpl studentRepository = new StudentRepositoryImpl(studentDao, db);
-        Urlaub urlaub1 = new Urlaub(LocalDate.of(2021,1,1),
-                LocalTime.of(8,30),
-                LocalTime.of(10,30));
-        Urlaub urlaub2 = new Urlaub(LocalDate.of(2021,1,1),
-                LocalTime.of(10,30),
-                LocalTime.of(12,30));
+        Urlaub urlaub1 = new Urlaub(LocalDate.of(2021, 1, 1),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 30));
+        Urlaub urlaub2 = new Urlaub(LocalDate.of(2021, 1, 1),
+                LocalTime.of(10, 30),
+                LocalTime.of(12, 30));
 
-        Student olli = new Student(1L,"olli");
+        Student olli = new Student(1L, "olli");
         olli.setResturlaub(0);
         olli.addKlausurRef(new KlausurReferenz(2L));
         olli.addKlausurRef(new KlausurReferenz(3L));
-        olli.addUrlaub(urlaub1.datum(),urlaub1.startzeit(),urlaub1.endzeit());
-        olli.addUrlaub(urlaub2.datum(),urlaub2.startzeit(),urlaub2.endzeit());
+        olli.addUrlaub(urlaub1.datum(), urlaub1.startzeit(), urlaub1.endzeit());
+        olli.addUrlaub(urlaub2.datum(), urlaub2.startzeit(), urlaub2.endzeit());
 
         //act
         Student olliAusDb = studentRepository.studentMitHandle("olli");
 
         //assert
         assertThat(olliAusDb).isEqualTo(olli);
-        assertThat(olliAusDb.getKlausuren()).contains(2L,3L);
-        assertThat(olliAusDb.getUrlaube()).contains(urlaub1,urlaub2);
+        assertThat(olliAusDb.getKlausuren()).contains(2L, 3L);
+        assertThat(olliAusDb.getUrlaube()).contains(urlaub1, urlaub2);
     }
 
 }

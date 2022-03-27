@@ -23,11 +23,11 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Die Minuten der Start- und Endzeit sind kein Vielfaches von 15")
-    void test1(){
+    void test1() {
         //arrange
-        Urlaub urlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(10,11),
-                LocalTime.of(15,15));
+        Urlaub urlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(10, 11),
+                LocalTime.of(15, 15));
 
         //act
         boolean ergebnis = urlaubValidierung.vielfachesVon15(urlaub);
@@ -42,11 +42,11 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Urlaubsdauer beträgt keine 240 Minuten oder 150 Minuten maximal")
-    void test2(){
+    void test2() {
         //arrange
-        Urlaub urlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(10,0),
-                LocalTime.of(12,40));
+        Urlaub urlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(10, 0),
+                LocalTime.of(12, 40));
 
         //act
         boolean ergebnis = urlaubValidierung.dauerIstValide(urlaub);
@@ -60,18 +60,18 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Zwei Urlaube müssen 90 Minuten dazwischen haben")
-    void test3(){
+    void test3() {
         //arrange
 
-        Urlaub ersterUrlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(8,30),
-                LocalTime.of(9,0));
-        Urlaub zweiterUrlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(9,30),
-                LocalTime.of(12,30));
+        Urlaub ersterUrlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(8, 30),
+                LocalTime.of(9, 0));
+        Urlaub zweiterUrlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(9, 30),
+                LocalTime.of(12, 30));
 
         //act
-        boolean ergebnis = urlaubValidierung.zweiUrlaubeAnEinemTag(ersterUrlaub,zweiterUrlaub);
+        boolean ergebnis = urlaubValidierung.zweiUrlaubeAnEinemTag(ersterUrlaub, zweiterUrlaub);
         Set<String> fehler = urlaubValidierung.getFehlgeschlagen();
 
         //assert
@@ -82,20 +82,18 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Erster Urlaub nicht am Praktikumsanfang")
-    void test4(){
+    void test4() {
         //arrange
-        Urlaub ersterUrlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(9,30),
-                LocalTime.of(10,0));
+        Urlaub ersterUrlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(9, 30),
+                LocalTime.of(10, 0));
         Urlaub zweiterUrlaub = new Urlaub(LocalDate.now(),
-                LocalTime.of(11,30),
-                LocalTime.of(12,30));
+                LocalTime.of(11, 30),
+                LocalTime.of(12, 30));
 
         //act
-        boolean ergebnis = urlaubValidierung.zweiUrlaubeAnEinemTag(ersterUrlaub,zweiterUrlaub);
+        boolean ergebnis = urlaubValidierung.zweiUrlaubeAnEinemTag(ersterUrlaub, zweiterUrlaub);
         Set<String> fehler = urlaubValidierung.getFehlgeschlagen();
-
-
 
 
         //assert
@@ -106,17 +104,17 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Zweiter Urlaub nicht am Praktikumsende")
-    void test5(){
+    void test5() {
         //arrange
-        Urlaub ersterUrlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(8,30),
-                LocalTime.of(10,0));
-        Urlaub zweiterUrlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(11,30),
-                LocalTime.of(13,30));
+        Urlaub ersterUrlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 0));
+        Urlaub zweiterUrlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(11, 30),
+                LocalTime.of(13, 30));
 
         //act
-        boolean ergebnis = urlaubValidierung.zweiUrlaubeAnEinemTag(ersterUrlaub,zweiterUrlaub);
+        boolean ergebnis = urlaubValidierung.zweiUrlaubeAnEinemTag(ersterUrlaub, zweiterUrlaub);
         Set<String> fehler = urlaubValidierung.getFehlgeschlagen();
 
 
@@ -128,11 +126,11 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Ein Urlaub kann nur bis einen Tag vorher eintragbar")
-    void test6(){
+    void test6() {
         //arrange
-        Urlaub urlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(8,30),
-                LocalTime.of(10,0));
+        Urlaub urlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 0));
 
         //act
         boolean ergebnis = urlaubValidierung.urlaubNurVorDemTagDesUrlaubs(urlaub);
@@ -146,11 +144,11 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Urlaub darf nicht am Wochenende liegen")
-    void test7(){
+    void test7() {
         //arrange
-        Urlaub urlaub = new Urlaub(LocalDate.of(2022,3,19),
-                LocalTime.of(8,30),
-                LocalTime.of(10,0));
+        Urlaub urlaub = new Urlaub(LocalDate.of(2022, 3, 19),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 0));
 
         //act
         boolean ergebnis = urlaubValidierung.amWochenende(urlaub);
@@ -164,11 +162,11 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Die Startzeit des Urlaubs liegt nicht vor der Endzeit des Urlaubs")
-    void test8(){
+    void test8() {
         //arrange
-        Urlaub urlaub = new Urlaub(LocalDate.of(2001,9,11),
-                LocalTime.of(10,30),
-                LocalTime.of(9,0));
+        Urlaub urlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(10, 30),
+                LocalTime.of(9, 0));
 
         //act
         boolean ergebnis = urlaubValidierung.startzeitVorEndzeit(urlaub);
@@ -182,11 +180,11 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Urlaub liegt nicht im Praktikumszeitraum")
-    void test9(){
+    void test9() {
         //arrange
-        Urlaub urlaub = new Urlaub(LocalDate.of(1,9,11),
-                LocalTime.of(8,30),
-                LocalTime.of(10,0));
+        Urlaub urlaub = new Urlaub(LocalDate.of(1, 9, 11),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 0));
 
         //act
         boolean ergebnis = urlaubValidierung.datumLiegtInPraktikumszeit(urlaub);
@@ -200,14 +198,14 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Die Anzahl der Urlaube ist 2, somit größer als max. 1 ")
-    void test10(){
+    void test10() {
         //arrange
-        List<Urlaub> urlaube = List.of(new Urlaub(LocalDate.of(2001,9,11),
-                                        LocalTime.of(8,30),
-                                        LocalTime.of(10,0)),
-                                       new Urlaub(LocalDate.of(2001,9,11),
-                                        LocalTime.of(8,30),
-                                        LocalTime.of(10,0)));
+        List<Urlaub> urlaube = List.of(new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(8, 30),
+                        LocalTime.of(10, 0)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(8, 30),
+                        LocalTime.of(10, 0)));
 
         //act
         boolean ergebnis = urlaubValidierung.bisherMaxEinUrlaub(urlaube);
@@ -219,11 +217,11 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Der Student hat nicht genug Resturlaub")
-    void test11(){
+    void test11() {
         //arrange
-        Urlaub urlaub = new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(8,30),
-                        LocalTime.of(14,0));
+        Urlaub urlaub = new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(8, 30),
+                LocalTime.of(14, 0));
         Student student = new Student(1L, "x");
 
         //act
@@ -238,17 +236,17 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Die Überschneidung von zwei Urlauben wird gefunden")
-    void test12(){
+    void test12() {
         //arrange
-        Urlaub ersterUrlaub = new Urlaub(LocalDate.of(2001,9,11)
-                , LocalTime.of(8,30)
-                , LocalTime.of(10,0));
-        Urlaub zweiterUrlaub = new Urlaub(LocalDate.of(2001,9,11)
-                , LocalTime.of(9,30)
-                , LocalTime.of(13,30));
+        Urlaub ersterUrlaub = new Urlaub(LocalDate.of(2001, 9, 11)
+                , LocalTime.of(8, 30)
+                , LocalTime.of(10, 0));
+        Urlaub zweiterUrlaub = new Urlaub(LocalDate.of(2001, 9, 11)
+                , LocalTime.of(9, 30)
+                , LocalTime.of(13, 30));
 
         //act
-        boolean ergebnis = urlaubValidierung.pruefeUrlaubUeberschneidung(ersterUrlaub,zweiterUrlaub);
+        boolean ergebnis = urlaubValidierung.pruefeUrlaubUeberschneidung(ersterUrlaub, zweiterUrlaub);
 
         //assert
         assertThat(ergebnis).isEqualTo(true);
@@ -256,11 +254,11 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Ein Urlaub ist valide")
-    void test13(){
+    void test13() {
         //arrange
         Urlaub urlaub = new Urlaub(LocalDate.of(3000, 3, 26),
-                LocalTime.of(8,30),
-                LocalTime.of(10,0));
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 0));
 
 
         //act
@@ -271,26 +269,26 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Drei Urlaube an einem Tag werden richtig zu zwei zusammengefügt")
-    void test14(){
+    void test14() {
         //arrange
-        List<Urlaub> urlaube = Stream.of(new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(8,30),
-                        LocalTime.of(10,0)),
-                new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(9,30),
-                        LocalTime.of(11,0)),
-                new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(11,30),
-                        LocalTime.of(12,0))).collect(Collectors.toList());
-        List<Urlaub> ergebnis = List.of(new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(8,30),
-                        LocalTime.of(11,0)),
-                new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(11,30),
-                        LocalTime.of(12,0)));
+        List<Urlaub> urlaube = Stream.of(new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(8, 30),
+                        LocalTime.of(10, 0)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(9, 30),
+                        LocalTime.of(11, 0)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(11, 30),
+                        LocalTime.of(12, 0))).collect(Collectors.toList());
+        List<Urlaub> ergebnis = List.of(new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(8, 30),
+                        LocalTime.of(11, 0)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(11, 30),
+                        LocalTime.of(12, 0)));
 
         //act
-       List<Urlaub> neueUrlaube = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
+        List<Urlaub> neueUrlaube = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
 
 
         //assert
@@ -299,17 +297,17 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Zwei identische Urlaube werden zu einem zusammengefügt")
-    void test15(){
+    void test15() {
         //arrange
-        List<Urlaub> urlaube = Stream.of(new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(8,30),
-                        LocalTime.of(10,0)),
-                new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(8,30),
-                        LocalTime.of(10,0))).collect(Collectors.toList());
-        List<Urlaub> ergebnis = List.of(new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(8,30),
-                        LocalTime.of(10,0)));
+        List<Urlaub> urlaube = Stream.of(new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(8, 30),
+                        LocalTime.of(10, 0)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(8, 30),
+                        LocalTime.of(10, 0))).collect(Collectors.toList());
+        List<Urlaub> ergebnis = List.of(new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(8, 30),
+                LocalTime.of(10, 0)));
 
         //act
         List<Urlaub> neueUrlaube = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
@@ -321,20 +319,20 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Drei Urlaube, die sich überschneiden werden genau zu einem zusammengefügt")
-    void test16(){
+    void test16() {
         //arrange
-        List<Urlaub> urlaube = Stream.of(new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(8,30),
-                        LocalTime.of(10,30)),
-                new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(10,0),
-                        LocalTime.of(11,30)),
-                new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(11,0),
-                        LocalTime.of(12,0))).collect(Collectors.toList());
-        List<Urlaub> ergebnis = List.of(new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(8,30),
-                        LocalTime.of(12,0)));
+        List<Urlaub> urlaube = Stream.of(new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(8, 30),
+                        LocalTime.of(10, 30)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(10, 0),
+                        LocalTime.of(11, 30)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(11, 0),
+                        LocalTime.of(12, 0))).collect(Collectors.toList());
+        List<Urlaub> ergebnis = List.of(new Urlaub(LocalDate.of(2001, 9, 11),
+                LocalTime.of(8, 30),
+                LocalTime.of(12, 0)));
 
         //act
         List<Urlaub> neueUrlaube = urlaubValidierung.urlaubeZusammenfuegen(urlaube);
@@ -346,32 +344,32 @@ public class UrlaubValidierungTests {
 
     @Test
     @DisplayName("Sechs Urlaube werden richtig zu zwei zusammengefügt")
-    void test17(){
+    void test17() {
         //arrange
-        List<Urlaub> urlaube = Stream.of(new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(8,30),
-                        LocalTime.of(10,30)),
-                new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(10,0),
-                        LocalTime.of(12,0)),
-                new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(9,0),
-                        LocalTime.of(11,30)),
-                new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(12,0),
-                        LocalTime.of(13,30)),
-                new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(12,15),
-                        LocalTime.of(12,30)),
-                new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(12,15),
-                        LocalTime.of(13,30))).collect(Collectors.toList());
-        List<Urlaub> ergebnis = List.of(new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(8,30),
-                        LocalTime.of(12,0)),
-                new Urlaub(LocalDate.of(2001,9,11),
-                        LocalTime.of(12,0),
-                        LocalTime.of(13,30)));
+        List<Urlaub> urlaube = Stream.of(new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(8, 30),
+                        LocalTime.of(10, 30)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(10, 0),
+                        LocalTime.of(12, 0)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(9, 0),
+                        LocalTime.of(11, 30)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(12, 0),
+                        LocalTime.of(13, 30)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(12, 15),
+                        LocalTime.of(12, 30)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(12, 15),
+                        LocalTime.of(13, 30))).collect(Collectors.toList());
+        List<Urlaub> ergebnis = List.of(new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(8, 30),
+                        LocalTime.of(12, 0)),
+                new Urlaub(LocalDate.of(2001, 9, 11),
+                        LocalTime.of(12, 0),
+                        LocalTime.of(13, 30)));
 
         //act
         List<Urlaub> neueUrlaube = urlaubValidierung.urlaubeZusammenfuegen(urlaube);

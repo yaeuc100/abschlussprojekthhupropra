@@ -60,7 +60,8 @@ public class StudentEntity {
     public void addKlausur(Klausur klausur) {
         klausuren.add(new KlausurReferenz(klausur.id()));
     }
-    public void addKlausurRef(KlausurReferenz referenz){
+
+    public void addKlausurRef(KlausurReferenz referenz) {
         klausuren.add(referenz);
     }
 }

@@ -29,9 +29,9 @@ public class LsfIdValidierungTests {
     void test() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("aaksfjgakqio",
-                LocalDate.of(2022,3,17).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+                LocalDate.of(2022, 3, 17).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 222916,
                 true);
 
@@ -48,9 +48,9 @@ public class LsfIdValidierungTests {
     void test2() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("Einführung in die Computerlinguistik",
-                LocalDate.of(2022,3,17).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+                LocalDate.of(2022, 3, 17).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 222916,
                 true);
 
@@ -60,14 +60,15 @@ public class LsfIdValidierungTests {
         //assert
         assertThat(ergebnis).isTrue();
     }
+
     @Test
     @DisplayName("Der Name der Veranstaltung wird in der HTML Seite gefunden")
     void test3() throws IOException {
         //arrange
         KlausurDto klausurDto = new KlausurDto("Einführung in die Computerlinguistik",
-                LocalDate.of(2022,3,17).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+                LocalDate.of(2022, 3, 17).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 222916,
                 true);
 
@@ -75,12 +76,12 @@ public class LsfIdValidierungTests {
         String ergebnis = LsfIdValidierung.getName(klausurDto);
 
         //assert
-        assertThat(ergebnis).isEqualTo(new String("Einführung in die Computerlinguistik".getBytes(),StandardCharsets.UTF_8));
+        assertThat(ergebnis).isEqualTo(new String("Einführung in die Computerlinguistik".getBytes(), StandardCharsets.UTF_8));
     }
 
     @Test
     @DisplayName("Der richtige Link zu einer gültigen LSF-ID wird zurückgegeben")
-    void test4(){
+    void test4() {
         //arrange
         long lsfID = 22291;
 
@@ -117,7 +118,7 @@ public class LsfIdValidierungTests {
 
     @Test
     @DisplayName("Bei einem String wird der erste Buchstabe nach 7 Leerzeichen gefunden")
-    void test6()  {
+    void test6() {
         //arrange
         String string = "       Hallo";
 
@@ -132,7 +133,7 @@ public class LsfIdValidierungTests {
     @DisplayName("Bei einem String, der nur aus Leerzeichen besteht wird -1 zurückgegeben")
     void test7() {
         //arrange
-        String string ="    ";
+        String string = "    ";
 
         //act
         int ergebnis = LsfIdValidierung.startIndex(string);
@@ -143,12 +144,12 @@ public class LsfIdValidierungTests {
 
     @Test
     @DisplayName("Der richtige Name zu einer gültigen LSF-ID wird aus dem LSF geholt (Einführung in die Computerlinguistik)")
-    void test8() throws IOException{
+    void test8() throws IOException {
         //arrange
         KlausurDto klausur = new KlausurDto("bla",
-                LocalDate.of(2022,3,17).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+                LocalDate.of(2022, 3, 17).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 222916,
                 true);
 
@@ -161,12 +162,12 @@ public class LsfIdValidierungTests {
 
     @Test
     @DisplayName("Der richtige Name zu einer gültigen LSF-ID wird aus dem LSF geholt (Einführung in die Syntax)")
-    void test9() throws IOException{
+    void test9() throws IOException {
         //arrange
         KlausurDto klausur = new KlausurDto("bla",
-                LocalDate.of(2022,3,17).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+                LocalDate.of(2022, 3, 17).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 222871,
                 true);
 
@@ -179,12 +180,12 @@ public class LsfIdValidierungTests {
 
     @Test
     @DisplayName("Der richtige Name zu einer gültigen LSF-ID wird aus dem LSF geholt (Experimentelle Onkologie in der HNO-Heilkunde)")
-    void test10() throws IOException{
+    void test10() throws IOException {
         //arrange
         KlausurDto klausur = new KlausurDto("bla",
-                LocalDate.of(2022,3,17).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+                LocalDate.of(2022, 3, 17).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 22218,
                 true);
 
@@ -194,9 +195,6 @@ public class LsfIdValidierungTests {
         //arrange
         assertThat(name).isEqualTo("Experimentelle Onkologie in der HNO-Heilkunde");
     }
-
-
-
 
 
 }

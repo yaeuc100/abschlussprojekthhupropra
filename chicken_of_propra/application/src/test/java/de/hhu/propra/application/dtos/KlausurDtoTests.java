@@ -15,16 +15,16 @@ public class KlausurDtoTests {
 
     @Test
     @DisplayName("Das KlausurDto wird richtig zu einer Klausur übersetzt")
-    void test1(){
+    void test1() {
         //arrange
-        KlausurDto klausurDto = new KlausurDto("x" ,
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+        KlausurDto klausurDto = new KlausurDto("x",
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 123456,
                 true);
-        Klausur klausur = new Klausur(1L,"x" ,
-                LocalDateTime.of(6000,10,10,10,30),
+        Klausur klausur = new Klausur(1L, "x",
+                LocalDateTime.of(6000, 10, 10, 10, 30),
                 30,
                 123456,
                 true);
@@ -38,17 +38,17 @@ public class KlausurDtoTests {
 
     @Test
     @DisplayName("Die Klausur wird richtig zu einem KlausurDto übersetzt")
-    void test2(){
+    void test2() {
         //arrange
-        Klausur klausur = new Klausur(1L,"x" ,
-                                 LocalDateTime.of(6000,10,10,10,30),
-                                 30,
-                                 123456,
-                                 true);
-        KlausurDto klausurDto = new KlausurDto("x" ,
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+        Klausur klausur = new Klausur(1L, "x",
+                LocalDateTime.of(6000, 10, 10, 10, 30),
+                30,
+                123456,
+                true);
+        KlausurDto klausurDto = new KlausurDto("x",
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 123456,
                 true);
 
@@ -62,12 +62,12 @@ public class KlausurDtoTests {
 
     @Test
     @DisplayName("Das Datum eines KlausurDtos wird richtig formatiert")
-    void test3(){
+    void test3() {
         //arrange
-        KlausurDto klausurDto = new KlausurDto("x" ,
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+        KlausurDto klausurDto = new KlausurDto("x",
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 123456,
                 true);
 
@@ -81,12 +81,12 @@ public class KlausurDtoTests {
 
     @Test
     @DisplayName("Die Freistellung eines KlausurDtos wird richtig formatiert")
-    void test4(){
+    void test4() {
         //arrange
-        KlausurDto klausurDto = new KlausurDto("x" ,
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+        KlausurDto klausurDto = new KlausurDto("x",
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 123456,
                 true);
 
@@ -100,12 +100,12 @@ public class KlausurDtoTests {
 
     @Test
     @DisplayName("Die toString Methode formatiert ein KlausurDto richtig")
-    void test5(){
+    void test5() {
         //arrange
-        KlausurDto klausurDto = new KlausurDto("x" ,
-                LocalDate.of(6000,10,10).toString(),
-                LocalTime.of(10,30).toString(),
-                LocalTime.of(11,0).toString(),
+        KlausurDto klausurDto = new KlausurDto("x",
+                LocalDate.of(6000, 10, 10).toString(),
+                LocalTime.of(10, 30).toString(),
+                LocalTime.of(11, 0).toString(),
                 123456,
                 true);
 

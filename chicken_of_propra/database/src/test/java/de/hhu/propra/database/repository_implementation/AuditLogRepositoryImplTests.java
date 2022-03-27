@@ -27,33 +27,41 @@ public class AuditLogRepositoryImplTests {
     @DisplayName("Alle Audits werden geholt")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
-    void test1(){
+    void test1() {
+        //arrange
         AuditLogRepositoryImpl auditLogRepository = new AuditLogRepositoryImpl(auditDao);
-        List<AuditLog> logs = auditLogRepository.nachrichten();
-        AuditLog expected = new AuditLog("xyz","olli");
-        expected.setZeitpunkt(LocalDateTime.of(2021,1,1,10,0));
-        AuditLog expected2 = new AuditLog("xyzxyz","sabrina");
-        expected2.setZeitpunkt(LocalDateTime.of(2021,1,1,11,0));
+        AuditLog erwartet = new AuditLog("xyz", "olli");
+        erwartet.setZeitpunkt(LocalDateTime.of(2021, 1, 1, 10, 0));
+        AuditLog erwartet2 = new AuditLog("xyzxyz", "sabrina");
+        erwartet2.setZeitpunkt(LocalDateTime.of(2021, 1, 1, 11, 0));
 
-        assertThat(logs).contains(expected,expected2);
+        //act
+        List<AuditLog> logs = auditLogRepository.nachrichten();
+
+        //assert
+        assertThat(logs).contains(erwartet, erwartet2);
     }
 
     @Test
-    @DisplayName("AuditLog wird gespeichert")
+    @DisplayName("AuditLogs werden korrekt gespeichert")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
-    void test2(){
+    void test2() {
+        //arrange
         AuditLogRepositoryImpl auditLogRepository = new AuditLogRepositoryImpl(auditDao);
-        AuditLog audit = new AuditLog("abc","david");
-        audit.setZeitpunkt(LocalDateTime.of(2021,1,1,10,0));
-        AuditLog expected = new AuditLog("xyz","olli");
-        expected.setZeitpunkt(LocalDateTime.of(2021,1,1,10,0));
-        AuditLog expected2 = new AuditLog("xyzxyz","sabrina");
-        expected2.setZeitpunkt(LocalDateTime.of(2021,1,1,11,0));
+        AuditLog auditLog = new AuditLog("abc", "david");
+        auditLog.setZeitpunkt(LocalDateTime.of(2021, 1, 1, 10, 0));
+        AuditLog erwartet = new AuditLog("xyz", "olli");
+        erwartet.setZeitpunkt(LocalDateTime.of(2021, 1, 1, 10, 0));
+        AuditLog erwartet2 = new AuditLog("xyzxyz", "sabrina");
+        erwartet2.setZeitpunkt(LocalDateTime.of(2021, 1, 1, 11, 0));
 
-        auditLogRepository.save(audit);
+        //act
+        auditLogRepository.save(auditLog);
         List<AuditLog> logs = auditLogRepository.nachrichten();
-        assertThat(logs).contains(expected,expected2,audit);
+
+        //assert
+        assertThat(logs).contains(erwartet, erwartet2, auditLog);
     }
 
 }

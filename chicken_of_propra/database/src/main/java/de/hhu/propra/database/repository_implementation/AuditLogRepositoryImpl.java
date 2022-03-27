@@ -12,8 +12,9 @@ import java.util.List;
 @Repository
 public class AuditLogRepositoryImpl implements AuditLogRepository {
 
-    private final AuditDao auditDao ;
-    public AuditLogRepositoryImpl(AuditDao auditDao){
+    private final AuditDao auditDao;
+
+    public AuditLogRepositoryImpl(AuditDao auditDao) {
         this.auditDao = auditDao;
     }
 
@@ -26,18 +27,18 @@ public class AuditLogRepositoryImpl implements AuditLogRepository {
     @Override
     public List<AuditLog> nachrichten() {
         List<AuditLog> log = new ArrayList<>();
-        for(AuditEntity entity : auditDao.findAll()){
-            log.add(toAudit(entity));
+        for (AuditEntity entity : auditDao.findAll()) {
+            log.add(toAuditLog(entity));
         }
         return log;
     }
 
-    private AuditEntity toEntity(AuditLog auditLog){
-        return  new AuditEntity(null, auditLog.getAenderung(), auditLog.getHandle(),auditLog.getZeitpunkt());
+    private AuditEntity toEntity(AuditLog auditLog) {
+        return new AuditEntity(null, auditLog.getAenderung(), auditLog.getHandle(), auditLog.getZeitpunkt());
     }
 
-    private AuditLog toAudit(AuditEntity entity){
-        AuditLog audit =  new AuditLog(entity.aenderung(),entity.handle());
+    private AuditLog toAuditLog(AuditEntity entity) {
+        AuditLog audit = new AuditLog(entity.aenderung(), entity.handle());
         audit.setZeitpunkt(entity.zeitpunkt());
         return audit;
     }

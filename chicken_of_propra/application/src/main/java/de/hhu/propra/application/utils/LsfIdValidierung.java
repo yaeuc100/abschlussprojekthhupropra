@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class LsfIdValidierung {
 
-    static String erstelleUrl(long lsf){
+    static String erstelleUrl(long lsf) {
         return "https://lsf.hhu.de/qisserver/rds?state=verpublish&status=init&vmfile=no&publishid="
                 + lsf + "&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung";
     }
@@ -24,21 +24,18 @@ public class LsfIdValidierung {
         String content = getInhalt(erstelleUrl(klausurDto.lsf()));
         String ergebnis = "";
         String[] lines = content.split("\n");
-        for(String line : lines){
-            if(line.contains(" - Einzelansicht"))
-                ergebnis = line.substring(startIndex(line),line.indexOf(" - Einzelansicht"));
+        for (String line : lines) {
+            if (line.contains(" - Einzelansicht"))
+                ergebnis = line.substring(startIndex(line), line.indexOf(" - Einzelansicht"));
         }
         return ergebnis;
     }
 
 
-
-
-
-    static int startIndex(String line){
-        for(int i = 0 ; i< line.length() ;i++){
-            if(line.charAt(i) != ' ') {
-                return i+1;
+    static int startIndex(String line) {
+        for (int i = 0; i < line.length(); i++) {
+            if (line.charAt(i) != ' ') {
+                return i + 1;
             }
         }
         return -1;
@@ -48,7 +45,7 @@ public class LsfIdValidierung {
     public static boolean namePasstZuId(KlausurDto klausurDto) throws IOException {
         String input = klausurDto.name() + " - Einzelansicht";
         byte[] byteArr = input.getBytes();
-        String str = new String(byteArr,StandardCharsets.UTF_8);
+        String str = new String(byteArr, StandardCharsets.UTF_8);
 
         return getInhalt(erstelleUrl(klausurDto.lsf())).contains(str);
     }

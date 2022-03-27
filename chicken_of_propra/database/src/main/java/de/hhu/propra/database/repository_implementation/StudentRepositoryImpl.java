@@ -26,12 +26,10 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
 
-
-
     @Override
     public Student studentMitId(Long id) {
         Student student = null;
-        if(studentDao.existsById(id)){
+        if (studentDao.existsById(id)) {
             student = buildStudent(studentDao.findById(id).get());
         }
         return student;
@@ -44,7 +42,7 @@ public class StudentRepositoryImpl implements StudentRepository {
                 FROM student_entity
                 WHERE handle = ?;""";
         List<StudentEntity> entities = db.query(SQL, new DataClassRowMapper<>(StudentEntity.class), handle);
-        if(entities.isEmpty()){
+        if (entities.isEmpty()) {
             return null;
         }
         return studentMitId(entities.get(0).getId());
@@ -53,7 +51,7 @@ public class StudentRepositoryImpl implements StudentRepository {
     @Override
     public List<Student> alleStudenten() {
         List<Student> studenten = new ArrayList<>();
-        for(StudentEntity entity : studentDao.findAll()){
+        for (StudentEntity entity : studentDao.findAll()) {
             studenten.add(buildStudent(entity));
         }
         return studenten;
@@ -61,35 +59,34 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     @Override
     public void save(Student student) {
-        StudentEntity entity = new StudentEntity(student.getId(),student.getHandle());
+        StudentEntity entity = new StudentEntity(student.getId(), student.getHandle());
         entity.setResturlaub(student.getResturlaub());
-        for (Urlaub urlaub : student.getUrlaube()){
+        for (Urlaub urlaub : student.getUrlaube()) {
             entity.addUrlaube(urlaub);
         }
-        for (Long ref : student.getKlausuren()){
+        for (Long ref : student.getKlausuren()) {
             entity.addKlausurRef(new KlausurReferenz(ref));
         }
 
-        System.out.println("saved rest : " + student.getResturlaub());
         studentDao.save(entity);
     }
 
     @Override
     public void storniereUrlaub(Long studentId, Urlaub urlaub) {
         Student studentAusDb = buildStudent(studentDao.findById(studentId).get());
-        studentAusDb.urlaubStornieren(urlaub.datum(),urlaub.startzeit(),urlaub.endzeit());
+        studentAusDb.urlaubStornieren(urlaub.datum(), urlaub.startzeit(), urlaub.endzeit());
         save(studentAusDb);
     }
 
-    private Student buildStudent(StudentEntity entity){
-        Student student = new Student(entity.getId(),entity.getHandle());
+    private Student buildStudent(StudentEntity entity) {
+        Student student = new Student(entity.getId(), entity.getHandle());
         student.setResturlaub(entity.getResturlaub());
         //fill Urlaub
-        for(Urlaub urlaub : entity.getUrlaube()){
-            student.addUrlaub(urlaub.datum(),urlaub.startzeit(),urlaub.endzeit());
+        for (Urlaub urlaub : entity.getUrlaube()) {
+            student.addUrlaub(urlaub.datum(), urlaub.startzeit(), urlaub.endzeit());
         }
         //fill KlausurRef
-        for(KlausurReferenz ref : entity.getKlausuren()){
+        for (KlausurReferenz ref : entity.getKlausuren()) {
             student.addKlausurRef(ref);
         }
         student.berechneResturlaub();

@@ -38,6 +38,7 @@ public class TutorControllerTests {
     AuditLogService auditLogService;
 
     Principal principal = new UserPrincipal("tutor");
+
     @Test
     @DisplayName("Logs sind vollständig angezeigt")
     void test() throws Exception {
@@ -46,17 +47,16 @@ public class TutorControllerTests {
         logs.sort(Comparator.comparing(AuditDto::datum));
         when(auditLogService.alle()).thenReturn(audits());
         mockMvc.perform(get("/logs").principal(principal))
-                .andExpect(model().attribute("logs",logs))
+                .andExpect(model().attribute("logs", logs))
                 .andExpect(status().isOk());
     }
 
 
-
-    private List<AuditDto> audits(){
+    private List<AuditDto> audits() {
         List<AuditDto> list = new ArrayList<>();
-        AuditDto auditDto = new AuditDto(LocalDateTime.of(2022,10,10,10,10),"x","bla");
-        AuditDto auditDto1 = new AuditDto(LocalDateTime.of(2023,10,10,10,10),"x","blabla");
-        AuditDto auditDto2 = new AuditDto(LocalDateTime.of(2024,10,10,10,10),"y","babla");
+        AuditDto auditDto = new AuditDto(LocalDateTime.of(2022, 10, 10, 10, 10), "x", "bla");
+        AuditDto auditDto1 = new AuditDto(LocalDateTime.of(2023, 10, 10, 10, 10), "x", "blabla");
+        AuditDto auditDto2 = new AuditDto(LocalDateTime.of(2024, 10, 10, 10, 10), "y", "babla");
         list.add(auditDto);
         list.add(auditDto1);
         list.add(auditDto2);

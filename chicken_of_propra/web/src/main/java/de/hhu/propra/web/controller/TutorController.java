@@ -14,19 +14,18 @@ import java.util.List;
 @Secured("ROLE_TUTOR")
 public class TutorController {
 
-    private final AuditLogService auditLogService;
+  private final AuditLogService auditLogService;
 
-    public TutorController(AuditLogService auditLogService) {
-        this.auditLogService = auditLogService;
-    }
+  public TutorController(AuditLogService auditLogService) {
+    this.auditLogService = auditLogService;
+  }
 
-    @GetMapping("logs")
-    public String index(Model model){
+  @GetMapping("logs")
+  public String index(Model model) {
 
-        List<AuditDto> logs = auditLogService.alle();
-        logs.sort(Comparator.comparing(AuditDto::datum));
-        model.addAttribute("logs",logs);
-        return "auditLog";
-    }
-
+    List<AuditDto> logs = auditLogService.alle();
+    logs.sort(Comparator.comparing(AuditDto::datum));
+    model.addAttribute("logs", logs);
+    return "auditLog";
+  }
 }

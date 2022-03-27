@@ -17,6 +17,6 @@ public class HomeController {
         } else if (httpServletRequest.isUserInRole("Student")) {
             return "redirect://localhost:8080/student";
         }
-        return "redirect://localhost:8080/organisator";
+        return "";
     }
-    }
+}
