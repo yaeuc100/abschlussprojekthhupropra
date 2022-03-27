@@ -13,7 +13,6 @@ import de.hhu.propra.domain.aggregates.student.Urlaub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestTemplate;
 import org.mockito.Mockito;
 
 import java.io.IOException;
@@ -834,7 +833,7 @@ public class StudentServiceTests {
         when(klausurRepository.klausurMitId(2L)).thenReturn(klausur1);
 
         //act
-        HashMap<Long, KlausurDto> map = studentService.holeAlleKlausurDtosMitID(student);
+        HashMap<Long, KlausurDto> map = studentService.holealleklausurdtosmitid(student);
 
         //assert
         assertThat(map.keySet()).containsExactly(1L, 2L);

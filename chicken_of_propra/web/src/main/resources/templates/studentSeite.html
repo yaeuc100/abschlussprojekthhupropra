@@ -19,10 +19,10 @@
             <th>von</th>
             <th>bis</th>
             <th>Zeit (min)</th>
-            <th></th>
+            <th aria-label="Urlaub stornieren"></th>
         </tr>
         </thead>
-        <tbody th:each="urlaub : ${student.getUrlaube()}">
+        <tbody id="Urlaubstabelle" th:each="urlaub : ${student.getUrlaube()}">
         <tr>
             <td th:text="${urlaub.datum()}"></td>
             <td th:text="${urlaub.startzeit()}"></td>
@@ -69,6 +69,7 @@
                 <th>Veranstaltung</th>
                 <th>Klausurzeit</th>
                 <th>Freistellung vom Praktikum</th>
+
             </tr>
 
             <tr th:each="entry, stat : ${klausuren}" id="Klausurtabelle">

@@ -27,7 +27,7 @@ public class KlausurRepositoryImplTests {
     JdbcTemplate db;
 
     @Test
-    @DisplayName("Richtige Klausur wird raus gelesen")
+    @DisplayName("Richtige Klausur wird aus DB gelesen")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
     void test1() {
@@ -35,7 +35,7 @@ public class KlausurRepositoryImplTests {
         KlausurRepositoryImpl klausurRepository = new KlausurRepositoryImpl(klausurDao, db);
         Klausur klausur = new Klausur(1L,
                 "Rechnernetze",
-                LocalDateTime.of(2020, 01, 01, 10, 00),
+                LocalDateTime.of(2020, 1, 1, 10, 0),
                 60, 123456, true);
 
         //act
@@ -47,7 +47,7 @@ public class KlausurRepositoryImplTests {
 
 
     @Test
-    @DisplayName("Alle Klausuren werden geholt")
+    @DisplayName("Alle Klausuren werden aus DB geholt")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
     void test2() {
@@ -63,7 +63,7 @@ public class KlausurRepositoryImplTests {
 
 
     @Test
-    @DisplayName("Klausur wird gespeichert")
+    @DisplayName("Klausur wird richtig in DB gespeichert")
     @Sql({"classpath:db/migration/V1__init.sql",
             "classpath:db/migration/loadtest.sql"})
     void test3() {
@@ -71,11 +71,11 @@ public class KlausurRepositoryImplTests {
         KlausurRepositoryImpl klausurRepository = new KlausurRepositoryImpl(klausurDao, db);
         Klausur klausur = new Klausur(null,
                 "Rechnernetze",
-                LocalDateTime.of(2020, 01, 01, 10, 00),
+                LocalDateTime.of(2020, 1, 1, 10, 0),
                 60, 123456, true);
         Klausur erwartet = new Klausur(4L,
                 "Rechnernetze",
-                LocalDateTime.of(2020, 01, 01, 10, 00),
+                LocalDateTime.of(2020, 1, 1, 10, 0),
                 60, 123456, true);
 
         //act
@@ -94,12 +94,12 @@ public class KlausurRepositoryImplTests {
         //arrange
         KlausurRepositoryImpl klausurRepository = new KlausurRepositoryImpl(klausurDao, db);
         Klausur klausur = new Klausur(null, "Rechnernetze",
-                LocalDateTime.of(2020, 01, 01, 10, 00),
+                LocalDateTime.of(2020, 1, 1, 10, 0),
                 60, 123456, true);
         KlausurDto dtoAusKlausur = KlausurDto.toKlausurDto(klausur);
         Klausur erwartet = new Klausur(1L,
                 "Rechnernetze",
-                LocalDateTime.of(2020, 01, 01, 10, 00),
+                LocalDateTime.of(2020, 1, 1, 10, 0),
                 60, 123456, true);
 
         //act

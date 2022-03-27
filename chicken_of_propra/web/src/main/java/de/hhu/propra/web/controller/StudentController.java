@@ -4,7 +4,6 @@ import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.services.KlausurService;
 import de.hhu.propra.application.services.StudentService;
-import org.springframework.format.annotation.NumberFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,14 +11,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.security.Principal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 @Secured("ROLE_STUDENT")
@@ -49,7 +43,7 @@ public class StudentController {
     }
 
     HashMap<Long, KlausurDto> klausuren =
-        studentService.holeAlleKlausurDtosMitID(studentService.studentMitHandle(handle));
+        studentService.holealleklausurdtosmitid(studentService.studentMitHandle(handle));
     model.addAttribute("student", studentService.studentMitHandle(handle));
     model.addAttribute("klausuren", klausuren);
     return "studentSeite";

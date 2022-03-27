@@ -3,6 +3,7 @@ package de.hhu.propra.application.utils;
 import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.fehler.KlausurFehler;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +15,14 @@ import java.util.*;
 import static java.util.Calendar.getInstance;
 
 public class KlausurValidierung {
+
+//  @Value("${spring.application.praktikumsstart:2022-3-6}" )
+//  String praktikumsstart;
+//  private LocalDate ps = LocalDate.parse(praktikumsstart);
+//  @Value("${spring.application.praktikumsende:4000-3-26}")
+//  String praktikumsende;
+
+ // private LocalDate pe = LocalDate.parse(praktikumsende);
 
   private Set<String> fehlgeschlagen = new HashSet<>();
 
@@ -95,6 +104,8 @@ public class KlausurValidierung {
 
   boolean datumLiegtInPraktikumszeit(KlausurDto klausurDto) {
     LocalDate start = LocalDate.of(2022, 3, 6); // ein tag vorher
+ //   LocalDate start = ps;
+
     LocalDate ende = LocalDate.of(4000, 3, 26);
     Klausur klausur = KlausurDto.toKlausur(klausurDto);
     boolean ergebnis =

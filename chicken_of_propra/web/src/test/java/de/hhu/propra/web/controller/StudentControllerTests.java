@@ -6,23 +6,18 @@ import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.fehler.KlausurFehler;
 import de.hhu.propra.application.fehler.UrlaubFehler;
-import de.hhu.propra.application.services.AuditLogService;
 import de.hhu.propra.application.services.KlausurService;
 import de.hhu.propra.application.services.StudentService;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.KlausurReferenz;
 import de.hhu.propra.domain.aggregates.student.Student;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
-import de.hhu.propra.web.security.AuthenticationTemplate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,7 +26,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.when;
@@ -65,7 +59,7 @@ public class StudentControllerTests {
         when(klausurService.alleKlausuren()).thenReturn(klausuren());
         when(klausurService.klausurMitId(1L)).thenReturn(klausuren().get(0));
         when(studentService.studentMitHandle("AlexStudent")).thenReturn(student);
-        when(studentService.holeAlleKlausurDtosMitID(student)).thenReturn(map);
+        when(studentService.holealleklausurdtosmitid(student)).thenReturn(map);
 
         mockMvc.perform(get("/student").principal(principal))
                 .andExpect(status().isOk())
