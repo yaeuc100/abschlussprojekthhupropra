@@ -19,7 +19,7 @@
                     <div class="alert"><strong>Wenn die Klausur in der Auswahl noch nicht vorhanden ist, dann können Sie
                         sie hier anlegen: </strong></div>
                     <a href="/student/klausurErstellen">
-                        <button class="btn btn-primary">Zur Klausurerstellungsseite</button>
+                        <button aria-label="Button zur Klausurerstellungsseite" class="btn btn-primary"><strong>Klausur erstellen</strong></button>
                     </a>
                 </div>
             </div>
@@ -51,8 +51,8 @@
             Ggf. überprüfen wir die Teilnahme an der Klausur über die entsprechenden Teilnehmerlisten.
             </p>
             <div th:if="${keinKlausuren}" class="text-danger">Es gibt noch keine Klausuren</div>
-            <button name="klausuranmeldung_abschicken" type="submit" class="btn btn-dark btn-lg btn-block"
-                    th:disabled="${keinKlausuren}">Klausuranmeldung bestätigen
+            <button aria-label="Klausuranmeldung bestätigen" name="klausuranmeldung_abschicken" type="submit" class="btn btn-dark btn-lg btn-block"
+                    th:disabled="${keinKlausuren}">Klausur anmelden
             </button>
         </form>
     </div>

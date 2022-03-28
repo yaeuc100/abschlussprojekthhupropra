@@ -17,7 +17,7 @@
 
         <div class="form-floating mb-3">
             <label for="veranstaltung">Name der Veranstaltung</label>
-            <input type="text" class="form-control" th:field="*{name}" id="veranstaltung" placeholder=" ">
+            <input type="text" class="form-control" th:field="*{name}" id="veranstaltung" placeholder="Einführung in die Computerlinguistik">
             <div class="text-danger" th:if="${#fields.hasErrors()}">Name darf nicht leer sein</div>
         </div>
 
@@ -28,7 +28,7 @@
 
             <div class="form-text">Sie finden die LSF Veranstaltungs-ID im <a
                     href="https://lsf.hhu.de/qisserver/rds?state=wtree&search=1&category=veranstaltung.browse&navigationPosition=lectures%2Clectureindex&breadcrumb=lectureindex&topitem=lectures&subitem=lectureindex"
-                    target="_blank" aria-label="Link zum LSF">LSF</a>.
+                    target="_blank" aria-label="Zum LSF, um IDs zu finden">LSF</a>.
             </div>
         </div>
         <div class="form-check">
@@ -40,14 +40,14 @@
         </div>
 
         <div class="form-floating mb-3">
-            <label for="tag" class="form-label">Datum der Klausur (dd-mm-yyyy)</label>
+            <label aria-label="Datum der Klausur im Format tt-mm-jjjj" for="tag" class="form-label">Datum der Klausur (tt-mm-jjjj)</label>
             <input class="form-control" th:field="*{datum}" id="tag" type="date"
                    placeholder=" " name="datum">
             <div class="text-danger" th:if="${#fields.hasErrors()}">Datum darf nicht leer sein</div>
         </div>
 
         <div class="form-floating mb-3">
-            <label for="von">Klausurbeginn (hh:mm)</label>
+            <label aria-label="Startzeit der Klausur im Format ss:mm" for="von">Klausurbeginn (ss:mm)</label>
             <input class="form-control" th:field="*{startzeit}" id="von" placeholder=" " name="von" type="time">
             <div class="form-text">Runden Sie die Startzeit auf die nächste volle Viertelstunde ab.
             </div>
@@ -55,7 +55,7 @@
         </div>
 
         <div class="form-floating mb-3">
-            <label for="bis" class="form-label">Klausurende (hh:mm)</label>
+            <label aria-label="Endzeit der Klausur im Format ss:mm" for="bis" class="form-label">Klausurende (ss:mm)</label>
             <input class="form-control" th:field="*{endzeit}" id="bis" placeholder=" " name="bis" type="time">
             <div class="form-text">Runden Sie die Zeit auf die nächste volle Viertelstunge auf.
             </div>
@@ -63,7 +63,7 @@
 
         </div>
 
-        <button name="submitbtn" class="btn btn-dark btn-lg btn-block" type="submit">Klausurerstellung bestätigen</button>
+        <button aria-label="Klausurerstellung bestätigen" name="submitbtn" class="btn btn-dark btn-lg btn-block" type="submit">Klausure erstellen</button>
     </form>
 
     <table>

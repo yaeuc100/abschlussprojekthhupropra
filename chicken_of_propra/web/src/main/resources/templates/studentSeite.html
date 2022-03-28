@@ -12,14 +12,16 @@
     <h1>Übersicht: Freistellungen</h1>
 
     <h2>Urlaubszeiten</h2>
+    <p>Sie haben folgenden Urlaub angemeldet:</p>
     <table id="urlaub_table" class="table mb-5">
+        <caption></caption>
         <thead>
         <tr>
-            <th>Datum</th>
-            <th>von</th>
-            <th>bis</th>
-            <th>Zeit (min)</th>
-            <th aria-label="Urlaub stornieren"></th>
+            <th aria-label="Urlaubsdatum">Datum</th>
+            <th>Startzeit</th>
+            <th>Endzeit</th>
+            <th>Dauer in Minuten</th>
+            <th aria-label="Urlaub stornieren">Stornierung</th>
         </tr>
         </thead>
         <tbody id="Urlaubstabelle" th:each="urlaub : ${student.getUrlaube()}">
@@ -35,7 +37,7 @@
                     <input type="hidden" name="startzeit" th:value="${urlaub.startzeit()}">
                     <input type="hidden" name="endzeit" th:value="${urlaub.endzeit()}">
 
-                    <button class="btn btn-danger">Urlaub stornieren</button>
+                    <button aria-label="Urlaub stornieren" class="btn btn-danger">✘</button>
                 </form>
             </td>
         </tr>
@@ -69,7 +71,7 @@
                 <th>Veranstaltung</th>
                 <th>Klausurzeit</th>
                 <th>Freistellung vom Praktikum</th>
-
+                <th>Stornierung </th>
             </tr>
 
             <tr th:each="entry, stat : ${klausuren}" id="Klausurtabelle">
@@ -81,7 +83,7 @@
                     <form method="post"
                           th:action="@{/student/klausurstornieren}">
                         <input type="hidden" name="referenz" th:value="${entry.key}">
-                        <button class="btn btn-danger" >Stornieren</button>
+                        <button aria-label="Klausur stornieren" class="btn btn-danger" >✘</button>
                     </form>
                 </td>
             </tr>

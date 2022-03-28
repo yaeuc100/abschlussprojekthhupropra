@@ -24,7 +24,7 @@ public class KlausurTests {
         String formatiert = klausur.formatiert();
 
         //assert
-        assertThat(formatiert).isEqualTo("Rechnernetze ( 2020-01-01, 10:00 Uhr - 11:00 Uhr )");
+        assertThat(formatiert).isEqualTo("Rechnernetze ( Datum 2020-01-01, 10:00 Uhr - 11:00 Uhr )");
     }
 
     @Test
