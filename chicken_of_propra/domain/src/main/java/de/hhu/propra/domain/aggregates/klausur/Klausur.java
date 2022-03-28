@@ -7,7 +7,7 @@ public record Klausur(Long id, String name, LocalDateTime datum, int dauer, long
 
 
     public String formatiert() {
-        return name + " ( " + datum.toLocalDate().toString() + ", " +
+        return name + " ( Datum " + datum.toLocalDate().toString() + ", " +
                 datum.toLocalTime().toString() + " Uhr - " +
                 datum.toLocalTime().plusMinutes(dauer).toString() + " Uhr )";
     }

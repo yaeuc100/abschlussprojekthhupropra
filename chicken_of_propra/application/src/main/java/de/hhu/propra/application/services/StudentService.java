@@ -67,8 +67,12 @@ public class StudentService {
    */
   public Set<String> urlaubAnlegen(String studentHandle, UrlaubDto urlaubDto) {
     StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden();
-    Urlaub urlaub = UrlaubDto.toUrlaub(urlaubDto);
     UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
+    Urlaub urlaub = UrlaubDto.toUrlaub(urlaubDto);
+    if(urlaub == null){
+      urlaubValidierung.datumUngueltig();
+      return urlaubValidierung.getFehlgeschlagen();
+    }
     Student student = studentRepository.studentMitHandle(studentHandle);
     List<Urlaub> urlaubeAnTag = hilfsMethoden.findeUrlaubeAmSelbenTag(student, urlaub.datum());
     List<Klausur> klausurenVonStudent = holeAlleKlausurenMitId(student);
@@ -122,6 +126,10 @@ public class StudentService {
       throws IOException {
     KlausurValidierung klausurValidierung = new KlausurValidierung();
     Klausur klausur = KlausurDto.toKlausur(klausurDto);
+    if(klausur == null){
+      klausurValidierung.datumUngueltig();
+      return klausurValidierung.getFehlgeschlagen();
+    }
     List<Klausur> klausuren = klausurRepository.alleKlausuren();
 
     if (!klausurValidierung.klausurLiegtInDb(klausuren, klausur)) {

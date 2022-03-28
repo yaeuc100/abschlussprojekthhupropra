@@ -2,6 +2,7 @@ package de.hhu.propra.application.fehler;
 
 public class KlausurFehler {
 
+    public static final String DATUM_FALSCH = "Das Datum ist falsch formatiert";
     public static final String AM_WOCHENENDE = "Die erstellte Klausur liegt am Wochenende";
     public static final String STARTZEIT_VOR_ENDZEIT = "Die Startzeit der Klausur muss vor der Endzeit der Klausur liegen";
     public static final String KLAUSUR_IN_ZEITRAUM = "Die beantragte Klausur muss im Praktikumszeitraum liegen";

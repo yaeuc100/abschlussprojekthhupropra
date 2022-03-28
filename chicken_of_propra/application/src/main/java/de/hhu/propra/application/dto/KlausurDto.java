@@ -16,18 +16,22 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public record KlausurDto(@NotNull String name,
-                         @NotBlank @DateTimeFormat(pattern = "dd.mm.yyyy") String datum,
+                         @NotBlank @DateTimeFormat(pattern = "yyyy/mm/dd") String datum,
                          @NotBlank @DateTimeFormat(pattern = "hh.mm") String startzeit,
                          @NotBlank @DateTimeFormat(pattern = "hh.mm") String endzeit,
                          long lsf,
                          boolean online) {
 
     public static Klausur toKlausur(KlausurDto dto) {
-        LocalDateTime datumMitZeit = LocalDateTime.of(LocalDate.parse(dto.datum),
-                LocalTime.parse(dto.startzeit));
-        int dauer = (int) Duration.between(LocalTime.parse(dto.startzeit()),
-                LocalTime.parse(dto.endzeit())).toMinutes();
-        return new Klausur(null, dto.name, datumMitZeit, dauer, dto.lsf, dto.online());
+        try {
+            LocalDateTime datumMitZeit = LocalDateTime.of(LocalDate.parse(dto.datum),
+                    LocalTime.parse(dto.startzeit));
+            int dauer = (int) Duration.between(LocalTime.parse(dto.startzeit()),
+                    LocalTime.parse(dto.endzeit())).toMinutes();
+            return new Klausur(null, dto.name, datumMitZeit, dauer, dto.lsf, dto.online());
+        }catch(Exception e){
+            return null;
+        }
     }
 
     public static KlausurDto toKlausurDto(Klausur klausur) {

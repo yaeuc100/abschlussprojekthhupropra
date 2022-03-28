@@ -14,9 +14,13 @@ public record UrlaubDto(
         @NotBlank @DateTimeFormat(pattern = "hh.mm") String endzeit) {
 
     public static Urlaub toUrlaub(UrlaubDto dto) {
-        return new Urlaub(LocalDate.parse(dto.datum),
-                LocalTime.parse(dto.startzeit()),
-                LocalTime.parse(dto.endzeit()));
+        try{
+            return new Urlaub(LocalDate.parse(dto.datum),
+                    LocalTime.parse(dto.startzeit()),
+                    LocalTime.parse(dto.endzeit()));
+        }catch(Exception e){
+            return null;
+        }
     }
 
     public static UrlaubDto toUrlaubDto(Urlaub urlaub) {

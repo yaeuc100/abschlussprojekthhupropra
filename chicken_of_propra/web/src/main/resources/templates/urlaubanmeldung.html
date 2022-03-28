@@ -14,7 +14,7 @@
         <form type="time" name="urlaub_anmelden" class="mt-3" method="post" th:action="@{/student/urlaubanmeldung}"
               th:object="${urlaub}">
             <div class="form-floating mb-3">
-                <label for="tag" class="form-label">Datum (dd.mm.yyyy)</label>
+                <label for="tag" class="form-label">Datum des Urlaubs (dd.mm.yyyy)</label>
                 <input th:field="*{datum}" type="date" class="form-control" id="tag"
                        placeholder=" " name="datum" value="">
                 <div class="text-danger" th:if="${#fields.hasErrors()}">Datum darf nicht leer sein</div>
@@ -23,23 +23,22 @@
             </div>
 
             <div class="form-floating mb-3">
-                <label for="von">Start (hh:mm)</label>
+                <label for="von">Startzeit des Urlaubs (hh:mm)</label>
                 <input th:field="*{startzeit}" type="time" class="form-control" id="von" placeholder=" " name="von"
                        value="">
                 <div class="text-danger" th:if="${#fields.hasErrors()}">Startzeit darf nicht leer sein</div>
-                <div class="form-text">Tragen Sie hier die Uhrzeit ein, wann Sie Ihren Urlaub beginnen wollen.</a>
-                </div>
+
+
 
             </div>
             <div class="form-floating mb-3">
-                <label for="bis" class="form-label">Ende (hh:mm)</label>
+                <label for="bis" class="form-label">Endzeit des Urlaubs (hh:mm)</label>
                 <input th:field="*{endzeit}" type="time" class="form-control" id="bis" placeholder=" " name="bis"
                        value="">
                 <div class="text-danger" th:if="${#fields.hasErrors()}">Endzeit darf nicht leer sein</div>
             </div>
 
-            <button name="urlaubsanmeldung_abschicken" class="btn btn-info btn-lg btn-block" type="submit">Urlaub
-                anmelden
+            <button name="urlaubsanmeldung_abschicken" class="btn btn-dark btn-lg btn-block" type="submit" aria-label="Button um die Urlaubsanmeldung zu bestätigen">Urlaub bestätigen
             </button>
         </form>
         <table>

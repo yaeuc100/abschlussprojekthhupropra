@@ -1,5 +1,6 @@
 package de.hhu.propra.application.utils;
 
+import de.hhu.propra.application.fehler.KlausurFehler;
 import de.hhu.propra.application.fehler.UrlaubFehler;
 import de.hhu.propra.domain.aggregates.student.Student;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
@@ -49,6 +50,10 @@ public class UrlaubValidierung {
             ergebnis = false;
         }
         return ergebnis;
+    }
+
+    public void datumUngueltig(){
+        fehlgeschlagen.add(UrlaubFehler.DATUM_FALSCH);
     }
 
     boolean dauerIstValide(Urlaub urlaub) {

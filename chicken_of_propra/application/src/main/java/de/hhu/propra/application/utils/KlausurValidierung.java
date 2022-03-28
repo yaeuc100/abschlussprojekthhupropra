@@ -116,6 +116,10 @@ public class KlausurValidierung {
     return ergebnis;
   }
 
+  public void datumUngueltig(){
+    fehlgeschlagen.add(KlausurFehler.DATUM_FALSCH);
+  }
+
   boolean lsfIDPasst(KlausurDto klausur) throws IOException {
     String alsString = Long.toString(klausur.lsf());
     boolean ergebnis = true;

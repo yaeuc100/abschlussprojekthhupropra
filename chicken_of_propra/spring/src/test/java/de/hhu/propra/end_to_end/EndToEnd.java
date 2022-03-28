@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.htmlunit.MockMvcWebClientBuilder;
@@ -37,7 +38,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
-
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = Application.class)
 @WithMockUser(username = "oogabooga", roles = {"STUDENT"})
 @AutoConfigureMockMvc
@@ -66,9 +67,6 @@ public class EndToEnd {
         webClient.getOptions().setJavaScriptEnabled(false);
     }
 
-    @Test
-    void contextLoads() {
-    }
 
     @Test
     @Sql({"classpath:db/migration/wipe_data.sql",
@@ -122,7 +120,7 @@ public class EndToEnd {
     @Test
     @Sql({"classpath:db/migration/wipe_data.sql",
             "classpath:db/migration/V1__init.sql"})
-    @DisplayName("Student beantragt eine neue Urlaub")
+    @DisplayName("Student beantragt einen neuen Urlaub")
     void test2() throws IOException {
         UrlaubDto urlaubDto = new UrlaubDto(LocalDate.of(3001, 3, 17).toString(),
                 LocalTime.of(10, 15).toString(),
@@ -233,7 +231,7 @@ public class EndToEnd {
         }
 
         assertThat(redirectErgebnis.getUrl().toString()).isEqualTo("http://localhost:8080/student/klausuranmeldung");
-        assertThat(klausuren).contains("Betriebssysteme und Systemprogrammierung ( 2022-03-28, 10:30 Uhr - 11:00 Uhr )");
+        assertThat(klausuren).contains("Betriebssysteme und Systemprogrammierung ( Datum 2022-03-28, 10:30 Uhr - 11:00 Uhr )");
     }
 
     @Test
@@ -362,7 +360,7 @@ public class EndToEnd {
     @Test
     @Sql({"classpath:db/migration/wipe_data.sql",
             "classpath:db/migration/V1__init.sql"})
-    @DisplayName("urlaub wird storniert")
+    @DisplayName("Urlaub wird storniert")
     void test8() throws IOException {
 
         UrlaubDto urlaubDto = new UrlaubDto(LocalDate.of(3000, 3, 17).toString(),

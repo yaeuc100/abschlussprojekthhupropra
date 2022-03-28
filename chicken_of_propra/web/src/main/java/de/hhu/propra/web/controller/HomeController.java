@@ -14,9 +14,7 @@ public class HomeController {
     public String loginPage(HttpServletRequest httpServletRequest, Model model) {
         if (httpServletRequest.isUserInRole("TUTOR")) {
             return "redirect://localhost:8080/logs";
-        } else if (httpServletRequest.isUserInRole("Student")) {
-            return "redirect://localhost:8080/student";
         }
-        return "";
+        return "redirect://localhost:8080/student";
     }
 }

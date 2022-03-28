@@ -2,6 +2,7 @@ package de.hhu.propra.application.fehler;
 
 public class UrlaubFehler {
 
+    public static final String DATUM_FALSCH = "Das Datum ist falsch formatiert";
     public static final String AM_WOCHENENDE = "Der ausgewählte Urlaub liegt am Wochenende";
     public static final String VIELFACHES_VON_15 = "Der genommene Urlaub muss ein Vielfaches von 15 sein";
     public static final String DAUER_IST_VALIDE = "Die Dauer kann nur 240 min betragen oder kleiner/gleich 150 min ";
