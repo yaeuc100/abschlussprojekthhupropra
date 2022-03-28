@@ -57,13 +57,13 @@
         <div class="form-floating mb-3">
             <label aria-label="Endzeit der Klausur im Format ss:mm" for="bis" class="form-label">Klausurende (ss:mm)</label>
             <input class="form-control" th:field="*{endzeit}" id="bis" placeholder=" " name="bis" type="time">
-            <div class="form-text">Runden Sie die Zeit auf die nächste volle Viertelstunge auf.
+            <div class="form-text">Runden Sie die Zeit auf die nächste volle Viertelstunde auf.
             </div>
             <div class="text-danger" th:if="${#fields.hasErrors()}">Endzeit darf nicht leer sein</div>
 
         </div>
 
-        <button aria-label="Klausurerstellung bestätigen" name="submitbtn" class="btn btn-dark btn-lg btn-block" type="submit">Klausure erstellen</button>
+        <button aria-label="Klausurerstellung bestätigen" name="submitbtn" class="btn btn-dark btn-lg btn-block" type="submit">Klausur erstellen</button>
     </form>
 
     <table>

@@ -1,34 +1,33 @@
 package de.hhu.propra.application.utils;
 
+import static java.util.Calendar.getInstance;
+
 import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.fehler.KlausurFehler;
+import de.hhu.propra.application.fehler.UrlaubFehler;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
-import org.springframework.beans.factory.annotation.Value;
-
+import de.hhu.propra.domain.aggregates.student.Urlaub;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.*;
-
-import static java.util.Calendar.getInstance;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 
 public class KlausurValidierung {
-
-//  @Value("${spring.application.praktikumsstart:2022-3-6}" )
-//  String praktikumsstart;
-//  private LocalDate ps = LocalDate.parse(praktikumsstart);
-//  @Value("${spring.application.praktikumsende:4000-3-26}")
-//  String praktikumsende;
-
- // private LocalDate pe = LocalDate.parse(praktikumsende);
-
   private Set<String> fehlgeschlagen = new HashSet<>();
 
   public Set<String> getFehlgeschlagen() {
     return fehlgeschlagen;
   }
+
 
   boolean vielfachesVon15(KlausurDto klausurDto) {
     Klausur klausur = KlausurDto.toKlausur(klausurDto);
@@ -49,12 +48,15 @@ public class KlausurValidierung {
     return ergebnis;
   }
 
-  /**
-   *
-   * @param klausuren
-   * @param klausur
-   * @return
-   */
+  public boolean klausurNurVorDemTagDerKlausurStornieren(KlausurDto klausurDto) {
+    Klausur klausur = KlausurDto.toKlausur(klausurDto);
+    boolean ergebnis = klausur.datum().toLocalDate().isAfter(LocalDate.now());
+    if (!ergebnis) {
+      fehlgeschlagen.add(KlausurFehler.STORNIERUNG_RECHTZEITIG);
+    }
+    return ergebnis;
+  }
+
   public boolean keineKlausurUeberschneidung(List<Klausur> klausuren, Klausur klausur) {
     boolean ergebnis = true;
     for (Klausur k : klausuren) {
@@ -104,8 +106,9 @@ public class KlausurValidierung {
 
   boolean datumLiegtInPraktikumszeit(KlausurDto klausurDto) {
     LocalDate start = LocalDate.of(2022, 3, 6); // ein tag vorher
- //   LocalDate start = ps;
-
+    //LocalDate start = ;
+   //LocalDate datum = p.getDatumStart();
+   // System.out.println(datum);
     LocalDate ende = LocalDate.of(4000, 3, 26);
     Klausur klausur = KlausurDto.toKlausur(klausurDto);
     boolean ergebnis =
@@ -116,12 +119,11 @@ public class KlausurValidierung {
     return ergebnis;
   }
 
-  public void datumUngueltig(){
+  public void datumUngueltig() {
     fehlgeschlagen.add(KlausurFehler.DATUM_FALSCH);
   }
 
-  boolean lsfIDPasst(KlausurDto klausur) throws IOException {
-    String alsString = Long.toString(klausur.lsf());
+  boolean lsfIdPasst(KlausurDto klausur) throws IOException {
     boolean ergebnis = true;
     if (klausur.name().isBlank()) {
       fehlgeschlagen.add(KlausurFehler.NAME_NICHT_LEER);
@@ -132,14 +134,15 @@ public class KlausurValidierung {
       String nachricht;
       if (LsfIdValidierung.getName(klausur).isBlank()) {
         nachricht = KlausurFehler.UNGUELTIGE_LSFID;
-      } else
+      } else {
         nachricht =
             new String(
-                    ("Der angegebene Veranstaltungsname ist ungültig. "
-                            + "Der dazu bestehende Name ist ")
-                        .getBytes(),
-                    StandardCharsets.UTF_8)
+                ("Der angegebene Veranstaltungsname ist ungültig. "
+                    + "Der dazu bestehende Name ist ")
+                    .getBytes(),
+                StandardCharsets.UTF_8)
                 + LsfIdValidierung.getName(klausur);
+      }
       fehlgeschlagen.add(nachricht);
       ergebnis = false;
     }
@@ -158,7 +161,7 @@ public class KlausurValidierung {
 
   public boolean klausurIstValide(KlausurDto klausur) throws IOException {
     return datumLiegtInPraktikumszeit(klausur)
-        && lsfIDPasst(klausur)
+        && lsfIdPasst(klausur)
         && startzeitVorEndzeit(klausur)
         && startzeitVorEndzeit(klausur)
         && amWochenende(klausur)

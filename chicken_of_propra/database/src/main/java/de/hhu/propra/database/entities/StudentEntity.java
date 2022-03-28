@@ -3,65 +3,65 @@ package de.hhu.propra.database.entities;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.KlausurReferenz;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
-import org.springframework.data.annotation.Id;
-
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.data.annotation.Id;
 
 public class StudentEntity {
-    @Id
-    private Long id;
-    private String handle;
-    private int resturlaub;
-    private Set<Urlaub> urlaube = new HashSet<>();
-    private Set<KlausurReferenz> klausuren = new HashSet<>();
 
-    public StudentEntity(Long id, String handle) {
-        this.id = id;
-        this.handle = handle;
-    }
+  @Id
+  private Long id;
+  private String handle;
+  private int resturlaub;
+  private Set<Urlaub> urlaube = new HashSet<>();
+  private Set<KlausurReferenz> klausuren = new HashSet<>();
 
-    public Long getId() {
-        return id;
-    }
+  public StudentEntity(Long id, String handle) {
+    this.id = id;
+    this.handle = handle;
+  }
 
-    public String getHandle() {
-        return handle;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public int getResturlaub() {
-        return resturlaub;
-    }
+  public String getHandle() {
+    return handle;
+  }
 
-    public Set<Urlaub> getUrlaube() {
-        return urlaube;
-    }
+  public int getResturlaub() {
+    return resturlaub;
+  }
 
-    public Set<KlausurReferenz> getKlausuren() {
-        return klausuren;
-    }
+  public Set<Urlaub> getUrlaube() {
+    return urlaube;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public Set<KlausurReferenz> getKlausuren() {
+    return klausuren;
+  }
 
-    public void setHandle(String handle) {
-        this.handle = handle;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setResturlaub(int resturlaub) {
-        this.resturlaub = resturlaub;
-    }
+  public void setHandle(String handle) {
+    this.handle = handle;
+  }
 
-    public void addUrlaube(Urlaub urlaub) {
-        urlaube.add(urlaub);
-    }
+  public void setResturlaub(int resturlaub) {
+    this.resturlaub = resturlaub;
+  }
 
-    public void addKlausur(Klausur klausur) {
-        klausuren.add(new KlausurReferenz(klausur.id()));
-    }
+  public void addUrlaube(Urlaub urlaub) {
+    urlaube.add(urlaub);
+  }
 
-    public void addKlausurRef(KlausurReferenz referenz) {
-        klausuren.add(referenz);
-    }
+  public void addKlausur(Klausur klausur) {
+    klausuren.add(new KlausurReferenz(klausur.id()));
+  }
+
+  public void addKlausurRef(KlausurReferenz referenz) {
+    klausuren.add(referenz);
+  }
 }

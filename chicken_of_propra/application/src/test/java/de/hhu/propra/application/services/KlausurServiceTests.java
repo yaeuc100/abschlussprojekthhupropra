@@ -18,39 +18,38 @@ import static org.mockito.Mockito.when;
 
 public class KlausurServiceTests {
 
-    private KlausurRepository klausurRepository;
-    private KlausurService klausurService;
+  private KlausurRepository klausurRepository;
+  private KlausurService klausurService;
 
-    @BeforeEach
-    void vorbereiten() {
-        this.klausurRepository = mock(KlausurRepository.class);
-        this.klausurService = new KlausurService(klausurRepository);
+  @BeforeEach
+  void vorbereiten() {
+    this.klausurRepository = mock(KlausurRepository.class);
+    this.klausurService = new KlausurService(klausurRepository);
 
-    }
+  }
 
-    //TODO Datum zu String
-    @Test
-    @DisplayName("Alle Klausuren werden korrekt zurückgegeben")
-    void test1() {
-        Klausur klausur = new Klausur(1L,
-                "BS",
-                LocalDateTime.now(),
-                10,
-                123456,
-                true);
+  //TODO Datum zu String
+  @Test
+  @DisplayName("Alle Klausuren werden korrekt zurückgegeben")
+  void test1() {
+    Klausur klausur = new Klausur(1L,
+        "BS",
+        LocalDateTime.now(),
+        10,
+        123456,
+        true);
 
-        Klausur klausur1 = new Klausur(2L,
-                "RN",
-                LocalDateTime.now(),
-                100,
-                123456,
-                true);
+    Klausur klausur1 = new Klausur(2L,
+        "RN",
+        LocalDateTime.now(),
+        100,
+        123456,
+        true);
 
+    when(klausurRepository.alleKlausuren()).thenReturn(List.of(klausur, klausur1));
 
-        when(klausurRepository.alleKlausuren()).thenReturn(List.of(klausur, klausur1));
+    List<Klausur> klausurDtos = klausurService.alleKlausuren();
 
-        List<Klausur> klausurDtos = klausurService.alleKlausuren();
-
-        assertThat(klausurDtos).contains(klausur1, klausur);
-    }
+    assertThat(klausurDtos).contains(klausur1, klausur);
+  }
 }

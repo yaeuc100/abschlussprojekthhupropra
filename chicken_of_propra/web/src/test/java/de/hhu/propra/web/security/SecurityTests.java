@@ -40,18 +40,20 @@ SecurityTests {
     StudentService studentService;
 
     @Test
-    @DisplayName("Unangemeldet hat keinen Zugriff")
+    @DisplayName("Unangemeldet hat man keinen Zugriff")
     void test1() throws Exception {
         MockHttpSession session = AuthenticationTemplate.somebody();
         mockMvc.perform(get("/student").session(session))
                 .andExpect(status().isForbidden());
         mockMvc.perform(get("/logs/").session(session))
                 .andExpect(status().isForbidden());
+        mockMvc.perform(get("/tutor").session(session))
+            .andExpect(status().isForbidden());
     }
 
 
     @Test
-    @DisplayName("Student hat keinen Zugriff auf logs")
+    @DisplayName("Student hat keinen Zugriff auf Logs und Tutorenseite")
     void test2() throws Exception {
         MockHttpSession session = AuthenticationTemplate.studentSession();
         when(studentService.studentMitHandle("AlexStudent")).thenReturn(new Student(1L, "AlexStudent"));
@@ -59,16 +61,18 @@ SecurityTests {
                 .andExpect(status().isOk());
         mockMvc.perform(get("/logs/").session(session))
                 .andExpect(status().isForbidden());
+        mockMvc.perform(get("/tutor").session(session))
+            .andExpect(status().isForbidden());
     }
 
 
     @Test
-    @DisplayName("Tutor hat Zugriff auf alles")
+    @DisplayName("Tutor hat kein Zugriff auf die Logs, aber auf die Tutorenseite")
     void test3() throws Exception {
         MockHttpSession session = AuthenticationTemplate.tutorSession();
-        mockMvc.perform(get("/student").session(session))
-                .andExpect(status().isForbidden());
         mockMvc.perform(get("/logs/").session(session))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/tutor").session(session))
                 .andExpect(status().isOk());
     }
 }

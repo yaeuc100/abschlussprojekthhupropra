@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 @ApplicationService
 public class StudentService {
+
   private final StudentRepository studentRepository;
   private final KlausurRepository klausurRepository;
   private final AuditLogRepository auditLogRepository;
@@ -62,14 +63,14 @@ public class StudentService {
    * prueft ob der beantragter Urlaub valid ist. Falls ja dann Urlaub zu Student einfügen.
    *
    * @param studentHandle Student OAuth Handle
-   * @param urlaubDto beantragter Urlaub
+   * @param urlaubDto     beantragter Urlaub
    * @return ein Set mit alle Fehlermeldungen zurück
    */
   public Set<String> urlaubAnlegen(String studentHandle, UrlaubDto urlaubDto) {
     StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden();
     UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
     Urlaub urlaub = UrlaubDto.toUrlaub(urlaubDto);
-    if(urlaub == null){
+    if (urlaub == null) {
       urlaubValidierung.datumUngueltig();
       return urlaubValidierung.getFehlgeschlagen();
     }
@@ -99,7 +100,7 @@ public class StudentService {
    * gibt false zurück falls der Urlaub nicht eingefügt wird.
    *
    * @param student Der Student Database Objekt
-   * @param urlaub Beantragter Urlaub
+   * @param urlaub  Beantragter Urlaub
    * @return boolean
    */
   public boolean fuegeUrlaubHinzu(Student student, Urlaub urlaub) {
@@ -118,7 +119,7 @@ public class StudentService {
    * prueft ob der Klausur valid vor der Erstellung ist. Falls ja dann Klausur erstellen.
    *
    * @param studentHandle Student OAuth Handle
-   * @param klausurDto Klausur zu erstellen
+   * @param klausurDto    Klausur zu erstellen
    * @return ein Set mit alle Fehlermeldungen
    * @throws IOException falls der Url by LSF Validierung nicht richtig gebaut wird
    */
@@ -126,7 +127,7 @@ public class StudentService {
       throws IOException {
     KlausurValidierung klausurValidierung = new KlausurValidierung();
     Klausur klausur = KlausurDto.toKlausur(klausurDto);
-    if(klausur == null){
+    if (klausur == null) {
       klausurValidierung.datumUngueltig();
       return klausurValidierung.getFehlgeschlagen();
     }
@@ -143,10 +144,11 @@ public class StudentService {
   }
 
   /**
-   * prueft ob der Beantragte Klausur valid ist. Falls ja dann klausur referenz zu Student einfügen.
+   * prueft ob der Beantragte Klausur valide ist. Falls ja, dann Klausur Referenz zu Student
+   * einfügen.
    *
    * @param studentHandle Student OAuth Handle
-   * @param klausurId beantragte Klausurid
+   * @param klausurId     beantragte Klausurid
    * @return Set mit alle Fehlermeldungen
    */
   public synchronized Set<String> klausurAnmelden(String studentHandle, Long klausurId) {
@@ -176,7 +178,7 @@ public class StudentService {
    * prueft ob der Urlaub Valid ist vor Stornierung. Falls ja dann Urlaub stornieren.
    *
    * @param studentHandle Student OAuth Handle
-   * @param urlaubDto Urlaub zu Stornieren
+   * @param urlaubDto     Urlaub zu Stornieren
    * @return Set mit alle Fehlermeldungen
    */
   public Set<String> urlaubStornieren(String studentHandle, UrlaubDto urlaubDto) {
@@ -202,13 +204,16 @@ public class StudentService {
    * storniert Klausur.
    *
    * @param studentHandle Student OAuth Handle
-   * @param klausur Klausur zu Stornieren
+   * @param klausur       Klausur zu Stornieren
    */
   public void klausurStornieren(String studentHandle, Klausur klausur) {
-    Student student = studentRepository.studentMitHandle(studentHandle);
-    student.klausurStornieren(klausur);
-    auditLogRepository.save(AuditLogErzeugung.klausurStorniert(studentHandle, klausur));
-    studentRepository.save(student);
+    KlausurValidierung klausurValidierung = new KlausurValidierung();
+    if(klausurValidierung.klausurNurVorDemTagDerKlausurStornieren(KlausurDto.toKlausurDto(klausur))){
+      Student student = studentRepository.studentMitHandle(studentHandle);
+      student.klausurStornieren(klausur);
+      auditLogRepository.save(AuditLogErzeugung.klausurStorniert(studentHandle, klausur));
+      studentRepository.save(student);
+    }
   }
 
   private List<Klausur> holeAlleKlausurenMitId(Student student) {
@@ -230,7 +235,6 @@ public class StudentService {
     return dtos;
   }
 
-  // TODO urlaubExistiert schon prüfen
   private void urlaubHinzufuegenOhneKlausur(
       Urlaub urlaub,
       UrlaubValidierung urlaubValidierung,
@@ -249,7 +253,7 @@ public class StudentService {
    * ersetzt alle Studentenurlaube am Tag, nach urlaub/klausur Beantragen, mit eine bearbeitet Liste
    * von Urlaubsobjekte.
    *
-   * @param datum datum der beantragter Urlaub
+   * @param datum   datum der beantragter Urlaub
    * @param student Student Database Objekt
    * @param urlaube List von Urlaub Objekte
    */

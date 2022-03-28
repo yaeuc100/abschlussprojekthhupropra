@@ -1,24 +1,20 @@
 package de.hhu.propra.application.repositories;
 
-import de.hhu.propra.domain.aggregates.klausur.Klausur;
 import de.hhu.propra.domain.aggregates.student.Student;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 public interface StudentRepository {
 
-    Student studentMitId(Long id);
+  Student studentMitId(Long id);
 
-    Student studentMitHandle(String handle);
+  Student studentMitHandle(String handle);
 
-    List<Student> alleStudenten();
+  List<Student> alleStudenten();
 
-    void storniereUrlaub(Long studentId, Urlaub urlaub);
+  void storniereUrlaub(Long studentId, Urlaub urlaub);
 
-    void save(Student student);
+  void save(Student student);
 
 
 }
