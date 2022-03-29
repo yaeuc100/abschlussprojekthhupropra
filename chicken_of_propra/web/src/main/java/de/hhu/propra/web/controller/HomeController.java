@@ -14,7 +14,7 @@ public class HomeController {
     if (httpServletRequest.isUserInRole("ORGANISATOR")) {
       return "redirect://localhost:8080/logs";
     }
-    if(httpServletRequest.isUserInRole("TUTOR")){
+    if (httpServletRequest.isUserInRole("TUTOR")) {
       return "redirect://localhost:8080/tutor";
     }
     return "redirect://localhost:8080/student";

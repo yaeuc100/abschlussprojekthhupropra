@@ -85,6 +85,24 @@ public class KlausurValidierungTests {
     assertThat(ergebnis).isFalse();
   }
 
+  @Test
+  @DisplayName("Die Zeit der Klausur liegt nicht im Praktikumszeitraum")
+  void test0() {
+    //arrange
+    KlausurDto klausurDto = new KlausurDto("x",
+        LocalDate.of(2023, 10, 10).toString(),
+        LocalTime.of(22, 30).toString(),
+        LocalTime.of(23, 0).toString(),
+        123456,
+        true);
+
+    //act
+    boolean ergebnis = klausurValidierung.zeitLiegtInPraktikumszeit(klausurDto);
+
+    //assert
+    assertThat(ergebnis).isFalse();
+  }
+
 
   @Test
   @DisplayName("Erstellte Klausur darf nicht am Wochenende liegen")

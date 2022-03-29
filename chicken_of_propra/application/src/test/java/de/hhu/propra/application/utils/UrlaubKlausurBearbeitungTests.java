@@ -431,7 +431,7 @@ public class UrlaubKlausurBearbeitungTests {
     assertThat(ergebnis).isEqualTo(zusammengefassterUrlaub);
   }
 
-  //TODO andere Fälle
+
   @Test
   @DisplayName("5 Urlaubsblöcke werden richtig zu 3 Urlaubsblöcken zusammengefasst")
   void test20() {

@@ -9,16 +9,12 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-
-//     vielfaches von 15 min
-//     startzeit mod 15 min
-//     endezeit mod 15 min
-//     entweder 240 oder 150 max
-//     max 2 und falls 2 gibt dann mit 90 min abstand zwischen dauer der 2. und 1. urlaub
-//     urlaub bis 00.00 uhr anmelden
-//TODO Praktikumsstart
 public class UrlaubValidierung {
   DataParser globalData = DataParser.readFile();
 
@@ -166,6 +162,18 @@ public class UrlaubValidierung {
     return ergebnis;
   }
 
+  boolean zeitLiegtInPraktikumszeit(Urlaub urlaub) {
+    LocalTime start = globalData.getStartZeit(); //ein tag vorher
+    LocalTime ende = globalData.getEndZeit();
+
+    boolean ergebnis = (urlaub.startzeit().isAfter(start)||urlaub.startzeit().equals(start))
+        && (urlaub.endzeit().isBefore(ende)||urlaub.endzeit().equals(ende));
+    if (!ergebnis) {
+      fehlgeschlagen.add(UrlaubFehler.URLAUB_IN_ZEITRAUM);
+    }
+    return ergebnis;
+  }
+
   public boolean bisherMaxEinUrlaub(List<Urlaub> urlaube) {
     boolean ergebnis = urlaube.size() < 2;
     if (!ergebnis) {
@@ -175,9 +183,13 @@ public class UrlaubValidierung {
   }
 
   public boolean urlaubIstValide(Urlaub urlaub) {
-    return vielfachesVon15(urlaub) && dauerIstValide(urlaub)
-        && urlaubNurVorDemTagDesUrlaubs(urlaub) && startzeitVorEndzeit(urlaub)
-        && datumLiegtInPraktikumszeit(urlaub) && amWochenende(urlaub);
+    return vielfachesVon15(urlaub)
+        && dauerIstValide(urlaub)
+        && urlaubNurVorDemTagDesUrlaubs(urlaub)
+        && startzeitVorEndzeit(urlaub)
+        && datumLiegtInPraktikumszeit(urlaub)
+        && zeitLiegtInPraktikumszeit(urlaub)
+        && amWochenende(urlaub);
   }
 
 }

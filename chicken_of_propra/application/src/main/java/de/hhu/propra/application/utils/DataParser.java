@@ -65,14 +65,16 @@ public class DataParser {
     return local;
   }
 
-  private static LocalTime parseToTime(String time){
+  private static LocalTime parseToTime(String time) {
     LocalTime local = null;
-    time = time.replace("\r","");
-    try{
+    time = time.replace("\r", "");
+    try {
       local = LocalTime.parse(time);
-    }catch (Exception e){}
+    } catch (Exception e) {
+    }
     return local;
   }
+
   private static String replaceSlash(String path) {
     return path.substring(0, path.length() - 1).replace(Character.toString(92), "/");
   }
@@ -99,7 +101,7 @@ public class DataParser {
       LocalDate end = (parseToDate(parameters[1].split(" : ")[1]));
       LocalTime startZeit = (parseToTime(parameters[2].split(" : ")[1]));
       LocalTime endZeit = (parseToTime(parameters[3].split(" : ")[1]));
-      return new DataParser(start, end,startZeit,endZeit);
+      return new DataParser(start, end, startZeit, endZeit);
     } catch (Exception e) {
       return null;
     }

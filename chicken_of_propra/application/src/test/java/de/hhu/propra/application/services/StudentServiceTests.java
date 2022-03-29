@@ -119,9 +119,9 @@ public class StudentServiceTests {
   @DisplayName("Bei Hinzufuegen eines Urlaubs wird der Resturlaub angepasst")
   void test5() {
     //arrange
-    UrlaubDto urlaub = new UrlaubDto(LocalDate.of(3000, 1, 1).toString(),
-        LocalTime.of(10, 30).toString(),
-        LocalTime.of(14, 30).toString());
+    UrlaubDto urlaub = new UrlaubDto(LocalDate.of(2024, 1, 1).toString(),
+        LocalTime.of(8, 30).toString(),
+        LocalTime.of(12, 30).toString());
     Student student = new Student(1L, "x");
     when(studentRepository.studentMitHandle("x")).thenReturn(student);
 
@@ -557,12 +557,12 @@ public class StudentServiceTests {
   void test29() {
     //arrange
     Klausur klausur1 = new Klausur(1L, "Betriebssysteme und Systemprogrammierung",
-        LocalDateTime.of(2022, 3, 22, 9, 30),
+        LocalDateTime.of(2023, 3, 22, 9, 30),
         90,
         217480,
         true); // 09:00 - 11:00
     Klausur klausur2 = new Klausur(2L, "Einführung in die Computerlinguistik",
-        LocalDateTime.of(2022, 3, 22, 8, 30),
+        LocalDateTime.of(2023, 3, 22, 8, 30),
         90,
         222916,
         true); // 08:00 - 10:00

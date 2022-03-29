@@ -233,6 +233,24 @@ public class UrlaubValidierungTests {
   }
 
   @Test
+  @DisplayName("Urlaub liegt nicht in Praktikumszeit")
+  void test0() {
+    //arrange
+    Urlaub urlaub = new Urlaub(LocalDate.of(2023, 9, 11),
+        LocalTime.of(22, 30),
+        LocalTime.of(23, 0));
+
+    //act
+    boolean ergebnis = urlaubValidierung.zeitLiegtInPraktikumszeit(urlaub);
+    Set<String> fehler = urlaubValidierung.getFehlgeschlagen();
+
+    //assert
+    assertThat(ergebnis).isEqualTo(false);
+    assertThat(fehler).contains(UrlaubFehler.URLAUB_IN_ZEITRAUM);
+    assertThat(fehler).hasSize(1);
+  }
+
+  @Test
   @DisplayName("Die Anzahl der Urlaube ist 2, somit größer als max. 1 ")
   void test10() {
     //arrange

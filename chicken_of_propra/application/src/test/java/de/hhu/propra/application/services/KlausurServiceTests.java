@@ -28,7 +28,7 @@ public class KlausurServiceTests {
 
   }
 
-  //TODO Datum zu String
+
   @Test
   @DisplayName("Alle Klausuren werden korrekt zurückgegeben")
   void test1() {

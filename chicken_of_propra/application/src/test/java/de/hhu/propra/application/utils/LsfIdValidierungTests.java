@@ -22,8 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LsfIdValidierungTests {
 
-  //TODO Test getINhalt, startIndex
-
   @Test
   @DisplayName("Der Name der Klausur passt nicht zur LSF-ID")
   void test() throws IOException {

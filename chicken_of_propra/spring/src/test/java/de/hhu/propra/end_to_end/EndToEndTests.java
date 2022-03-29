@@ -339,8 +339,8 @@ public class EndToEndTests {
         true);
     KlausurDto klausurDto2 = new KlausurDto("Betriebssysteme und Systemprogrammierung",
         LocalDate.of(2022, 3, 29).toString(),
-        LocalTime.of(12, 30).toString(),
-        LocalTime.of(13, 0).toString(),
+        LocalTime.of(11, 30).toString(),
+        LocalTime.of(12, 0).toString(),
         217480,
         true);
     if (studentService.studentMitHandle("oogabooga") == null) {

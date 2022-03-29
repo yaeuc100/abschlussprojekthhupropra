@@ -107,13 +107,22 @@ public class KlausurValidierung {
 
   boolean datumLiegtInPraktikumszeit(KlausurDto klausurDto) {
     LocalDate start = globalData.getStart(); // ein tag vorher
-    //LocalDate start = ;
-   //LocalDate datum = p.getDatumStart();
-   // System.out.println(datum);
     LocalDate ende = globalData.getEnd();
     Klausur klausur = KlausurDto.toKlausur(klausurDto);
     boolean ergebnis =
         klausur.datum().toLocalDate().isAfter(start) && ende.isAfter(klausur.datum().toLocalDate());
+    if (!ergebnis) {
+      fehlgeschlagen.add(KlausurFehler.KLAUSUR_IN_ZEITRAUM);
+    }
+    return ergebnis;
+  }
+
+  boolean zeitLiegtInPraktikumszeit(KlausurDto klausurDto) {
+    LocalTime start = globalData.getStartZeit(); // ein tag vorher
+    LocalTime ende = globalData.getEndZeit();
+    Klausur klausur = KlausurDto.toKlausur(klausurDto);
+    boolean ergebnis =
+        klausur.datum().toLocalTime().plusMinutes(klausur.dauer()).isAfter(start) && ende.isAfter(klausur.datum().toLocalTime());
     if (!ergebnis) {
       fehlgeschlagen.add(KlausurFehler.KLAUSUR_IN_ZEITRAUM);
     }
@@ -162,6 +171,7 @@ public class KlausurValidierung {
 
   public boolean klausurIstValide(KlausurDto klausur) throws IOException {
     return datumLiegtInPraktikumszeit(klausur)
+        && zeitLiegtInPraktikumszeit(klausur)
         && lsfIdPasst(klausur)
         && startzeitVorEndzeit(klausur)
         && startzeitVorEndzeit(klausur)
