@@ -4,7 +4,7 @@
 [Application] <<..application..>>
 [Database] <<..database..>>
 [Domain] <<..domain..>>
-[Spring] <<..spring..>>
+[Spring] <<de.hhu.propra>>
 
 [Database] --> [Application]
 [Database] --> [Domain]

@@ -1,5 +1,7 @@
 package de.hhu.propra.web.security;
 
+import de.hhu.propra.application.services.AuditLogService;
+import de.hhu.propra.application.services.KlausurService;
 import de.hhu.propra.application.services.StudentService;
 import de.hhu.propra.application.stereotypes.ApplicationService;
 import de.hhu.propra.domain.aggregates.student.Student;
@@ -25,19 +27,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-
 @SpringBootTest
-@ComponentScan(basePackages = {"de.hhu.propra"}
-        , includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = {ApplicationService.class}))
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
-public class
-SecurityTests {
+@ActiveProfiles({ "web", "test" })
+public class SecurityTests {
 
     @Autowired
     MockMvc mockMvc;
     @MockBean
     StudentService studentService;
+    @MockBean
+    KlausurService klausurService;
+    @MockBean
+    AuditLogService auditLogService;
 
     @Test
     @DisplayName("Unangemeldet hat man keinen Zugriff")
@@ -45,7 +47,7 @@ SecurityTests {
         MockHttpSession session = AuthenticationTemplate.somebody();
         mockMvc.perform(get("/student").session(session))
                 .andExpect(status().isForbidden());
-        mockMvc.perform(get("/logs/").session(session))
+        mockMvc.perform(get("/logs").session(session))
                 .andExpect(status().isForbidden());
         mockMvc.perform(get("/tutor").session(session))
             .andExpect(status().isForbidden());
@@ -59,7 +61,7 @@ SecurityTests {
         when(studentService.studentMitHandle("AlexStudent")).thenReturn(new Student(1L, "AlexStudent"));
         mockMvc.perform(get("/student").session(session))
                 .andExpect(status().isOk());
-        mockMvc.perform(get("/logs/").session(session))
+        mockMvc.perform(get("/logs").session(session))
                 .andExpect(status().isForbidden());
         mockMvc.perform(get("/tutor").session(session))
             .andExpect(status().isForbidden());
@@ -70,7 +72,7 @@ SecurityTests {
     @DisplayName("Tutor hat kein Zugriff auf die Logs, aber auf die Tutorenseite")
     void test3() throws Exception {
         MockHttpSession session = AuthenticationTemplate.tutorSession();
-        mockMvc.perform(get("/logs/").session(session))
+        mockMvc.perform(get("/logs").session(session))
                 .andExpect(status().isForbidden());
         mockMvc.perform(get("/tutor").session(session))
                 .andExpect(status().isOk());

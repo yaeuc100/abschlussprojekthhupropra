@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 //     vielfaches von 15 min
@@ -28,19 +29,15 @@ import org.springframework.core.env.Environment;
 //     max 2 und falls 2 gibt dann mit 90 min abstand zwischen dauer der 2. und 1. urlaub
 //     urlaub bis 00.00 uhr anmelden
 //TODO Praktikumsstart
-@RequiredArgsConstructor
 public class UrlaubValidierung {
   DataParser globalData = DataParser.readFile();
 
-//  private final LocalTime praktikumsStart;
-//  private final LocalTime praktikumsEnd;
 
   private Set<String> fehlgeschlagen = new HashSet<>();
 
   public Set<String> getFehlgeschlagen() {
     return fehlgeschlagen;
   }
-
 
   boolean vielfachesVon15(Urlaub urlaub) {
     int startMinuten = urlaub.startzeit().getMinute();
