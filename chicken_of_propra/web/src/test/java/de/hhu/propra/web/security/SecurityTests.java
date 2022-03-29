@@ -45,7 +45,7 @@ SecurityTests {
         MockHttpSession session = AuthenticationTemplate.somebody();
         mockMvc.perform(get("/student").session(session))
                 .andExpect(status().isForbidden());
-        mockMvc.perform(get("/logs/").session(session))
+        mockMvc.perform(get("/logs").session(session))
                 .andExpect(status().isForbidden());
         mockMvc.perform(get("/tutor").session(session))
             .andExpect(status().isForbidden());
@@ -59,7 +59,7 @@ SecurityTests {
         when(studentService.studentMitHandle("AlexStudent")).thenReturn(new Student(1L, "AlexStudent"));
         mockMvc.perform(get("/student").session(session))
                 .andExpect(status().isOk());
-        mockMvc.perform(get("/logs/").session(session))
+        mockMvc.perform(get("/logs").session(session))
                 .andExpect(status().isForbidden());
         mockMvc.perform(get("/tutor").session(session))
             .andExpect(status().isForbidden());
@@ -70,7 +70,7 @@ SecurityTests {
     @DisplayName("Tutor hat kein Zugriff auf die Logs, aber auf die Tutorenseite")
     void test3() throws Exception {
         MockHttpSession session = AuthenticationTemplate.tutorSession();
-        mockMvc.perform(get("/logs/").session(session))
+        mockMvc.perform(get("/logs").session(session))
                 .andExpect(status().isForbidden());
         mockMvc.perform(get("/tutor").session(session))
                 .andExpect(status().isOk());
