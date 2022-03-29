@@ -1,0 +1,74 @@
+// header file for arc42-template,
+// including all help texts
+//
+// ====================================
+
+= Template
+// toc-title definition MUST follow document title without blank line!
+:toc-title: Inhaltsverzeichnis
+
+//additional style for arc42 help callouts
+ifdef::backend-html5[]
+++++
+<style>
+.arc42help {font-size:small; width: 14px; height: 16px; overflow: hidden; position: absolute; right: 0; padding: 2px 0 3px 2px;}
+.arc42help::before {content: "?";}
+.arc42help:hover {width:auto; height: auto; z-index: 100; padding: 10px;}
+.arc42help:hover::before {content: "";}
+@media print {
+	.arc42help {display:none;}
+}
+</style>
+++++
+endif::backend-html5[]
+***
+<<<<
+
+
+
+
+= Dokumentation des Projekts "Chicken of the Propra" mit ARC42
+
+== Anforderungen und Ziele
+
+Das Team implementiert unter Beachtung der Qualitätsanforderungen eine Spring-Boot Webanwendung, welche für Studenten, Tutoren und Organisatoren die Anmeldung und Verwaltung bei einem äquivalenten Praktikum zu dem unsrigen modelliert.
+
+== Randbedingungen
+
+- Das Subsystem wird in SpringBoot entwickelt
+- Das Team operiert nach eigenen Regeln mit festgelegten Workflows
+- Ein Team besteht aus drei bis fünf Personen
+- Der Zeitraum der Entwicklung beträgt min.60 Stunden
+- Das Praktikum beginnt am 07.03.22 und endet am 25.03.2022
+
+=== Kontextabgrenzung
+
+Die Kontextabgrenzung haben wir in einem Diagramm festgehalten.
+Sie ist möglichst abstrakt gestaltet, um grundlegende Interaktionen zu fixieren.
+
+
+=== Qualitätsanforderungen
+
+1. Funktionalität: Die Anwendung deckt die gewünschte Funktionalität vollständig ab und ist hinreichend getestet.
+2. Sicherheit: Die Anwendung kann nur von Personen verwendet werden, die sich zuvor per GitHub OAuth2 authentifiziert haben. Es gibt drei unterschiedliche Sicherheitsstufen: Studierende, Tutor:innen und Organisator:innen.
+3. Benutzerfreundlichkeit: Die Anwendung ist leicht zu bedienen und kann auch von sehbehinderten Menschen benutzt werden.
+
+
+== Entscheidungen
+
+-  Um die Onion Architektur und damit verbunden eine bessere Abgrenzung der einzelnen Schichten gewährleisten zu können, haben wir uns dazu entschieden, Gradle Submodule zu verwenden.
+-  Wir wollten zunächst, um redundante Daten zu vermeiden, jeden Urlaub als Wertobjekt in der Datenbank speichern und mit Referenzen arbeiten. Letztendlich haben wir uns aber für die Sichtweise entschieden, dass der Lebenszyklus eines jeden einzelnen Urlaubs stets vom jeweiligen Studenten abhängig ist.
+
+== Kurze Anleitung zur Konfiguration
+
+1.  docker-compose up
+2.  Environment Variablen CLIENT_ID und CLIENT_SECRET als Konfiguration setzen
+3.  Application im Spring Submodul starten
+
+== Kurze Beschreibung der wesentlichen Komponenten
+
+-  Die Komponentenstruktur haben wir in einem UML-Diagramm festgehalten.
+
+-  Wahl der Aggregate: Aufgrund der verschiedenen Lebenszyklen haben wir uns für die Aggregate "klausur" und "student" entschieden. Zudem existieren außerhalb dieser beiden Aggregate die Auditlogs.
+
+-  In der Application werden die Anwendungsfälle des Informationssystems validiert. In den utils existieren sowohl nur für die LSF ID von Klausuren, einzeln für Urlaube und Klausuren und auch für Überschneidungen von Urlauben und Klausuren Validierungsklassen. Hier wird die Main Logik unserer Anwendung abgedeckt und ihre Funktionalität sichergestellt.
