@@ -11,7 +11,7 @@ public class UrlaubKlausurBearbeitung {
 
   UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
 
-
+  // fügt je nachdem, ob die Klausur online oder offline stattfindet, den jeweiligen Freistellungszuschlag hinzu
   public Urlaub freieZeitDurchKlausur(Klausur klausur) {
     if (klausur.online()) {
       return new Urlaub(klausur.datum().toLocalDate(),
@@ -33,7 +33,6 @@ public class UrlaubKlausurBearbeitung {
     LocalTime urlaubsEnde = urlaub.endzeit();                     // xmax1
     LocalTime klausurEnde = freieZeitDurchKlausur.endzeit();      // xmax2
 
-    //schaut ob Überschneidung
     if (ueberschneidet(urlaubsStart, klausurStart, urlaubsEnde, klausurEnde)) {
       // Gibt es einen Urlaubsblock vor der Klausur?
       if (urlaubStartetZuerst(urlaubsStart, klausurStart)) {
@@ -66,7 +65,7 @@ public class UrlaubKlausurBearbeitung {
     return urlaubs;
   }
 
-  public List<Urlaub> urlaubKlausurValidierung(Urlaub urlaub, List<Klausur> klausuren) {
+  public List<Urlaub> urlaubKlausurBearbeitung(Urlaub urlaub, List<Klausur> klausuren) {
     List<Urlaub> urlaubs = new ArrayList<>();
     for (Klausur klausur : klausuren) {
       urlaubs.addAll(reduziereUrlaubDurchKlausur(urlaub, freieZeitDurchKlausur(klausur)));

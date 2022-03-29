@@ -59,7 +59,7 @@ public class StudentControllerTests {
     when(klausurService.alleKlausuren()).thenReturn(klausuren());
     when(klausurService.klausurMitId(1L)).thenReturn(klausuren().get(0));
     when(studentService.studentMitHandle("AlexStudent")).thenReturn(student);
-    when(studentService.holealleklausurdtosmitid(student)).thenReturn(map);
+    when(studentService.holeAlleKlausurdtosMitId(student)).thenReturn(map);
 
     mockMvc.perform(get("/student").principal(principal))
         .andExpect(status().isOk())

@@ -836,7 +836,7 @@ public class StudentServiceTests {
     when(klausurRepository.klausurMitId(2L)).thenReturn(klausur1);
 
     //act
-    HashMap<Long, KlausurDto> map = studentService.holealleklausurdtosmitid(student);
+    HashMap<Long, KlausurDto> map = studentService.holeAlleKlausurdtosMitId(student);
 
     //assert
     assertThat(map.keySet()).containsExactly(1L, 2L);

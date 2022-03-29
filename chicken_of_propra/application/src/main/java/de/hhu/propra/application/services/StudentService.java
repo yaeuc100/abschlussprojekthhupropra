@@ -29,6 +29,7 @@ public class StudentService {
   private final AuditLogRepository auditLogRepository;
 
   private UrlaubKlausurBearbeitung urlaubKlausurBearbeitung = new UrlaubKlausurBearbeitung();
+  private StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden();
 
   public StudentService(
       StudentRepository studentRepository,
@@ -39,35 +40,17 @@ public class StudentService {
     this.auditLogRepository = auditLogRepository;
   }
 
-  /**
-   * sucht nach der Student durch ein github-handle und liefert der Student zurück.
-   *
-   * @param handle Student OAuth Handle
-   * @return Student Objekt
-   */
   public Student studentMitHandle(String handle) {
     return studentRepository.studentMitHandle(handle);
   }
-
-  /**
-   * erstellt ein neues Student Objekt (ausgeführt beim ersten Einloggen).
-   *
-   * @param handle Student OAuth Handle
-   */
-  public void createStudent(String handle) {
+  
+  public void erstelleStudent(String handle) {
     Student student = new Student(null, handle);
     studentRepository.save(student);
   }
 
-  /**
-   * prueft ob der beantragter Urlaub valid ist. Falls ja dann Urlaub zu Student einfügen.
-   *
-   * @param studentHandle Student OAuth Handle
-   * @param urlaubDto     beantragter Urlaub
-   * @return ein Set mit alle Fehlermeldungen zurück
-   */
+// legt Urlaub an und gibt anschließend (ggf. leeres) Set mit potentiellen Fehlermeldungen zurück
   public Set<String> urlaubAnlegen(String studentHandle, UrlaubDto urlaubDto) {
-    StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden();
     UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
     Urlaub urlaub = UrlaubDto.toUrlaub(urlaubDto);
     if (urlaub == null) {
@@ -76,33 +59,39 @@ public class StudentService {
     }
     Student student = studentRepository.studentMitHandle(studentHandle);
     List<Urlaub> urlaubeAnTag = hilfsMethoden.findeUrlaubeAmSelbenTag(student, urlaub.datum());
-    List<Klausur> klausurenVonStudent = holeAlleKlausurenMitId(student);
-    List<Klausur> klausurenVonStudentAnTag =
-        hilfsMethoden.studentHatKlausurAnTag(klausurenVonStudent, urlaub.datum());
+    List<Klausur> klausurenVonStudentAnTag = holeKlausurenVonStudentAnTag(urlaub, student);
 
-    if (!klausurenVonStudentAnTag.isEmpty()
-        && urlaubValidierung.genugUrlaub(student, urlaub)
-        && urlaubValidierung.urlaubIstValide(urlaub)) {
-      List<Urlaub> resultierendeUrlaube =
-          urlaubKlausurBearbeitung.urlaubKlausurValidierung(urlaub, klausurenVonStudentAnTag);
-      resultierendeUrlaube.addAll(urlaubeAnTag);
-      resultierendeUrlaube = urlaubValidierung.urlaubeZusammenfuegen(resultierendeUrlaube);
-      fuegeUrlaubeZusammen(urlaub.datum(), student, resultierendeUrlaube);
-    } else if (urlaubValidierung.urlaubIstValide(urlaub)
-        && urlaubValidierung.bisherMaxEinUrlaub(urlaubeAnTag)) {
-      urlaubValidierung.genugUrlaub(student, urlaub);
-      urlaubHinzufuegenOhneKlausur(urlaub, urlaubValidierung, student, urlaubeAnTag);
+    if(pruefeUrlaubMoeglich(urlaub, student, urlaubValidierung)) {
+      if (!klausurenVonStudentAnTag.isEmpty()) {
+        urlaubHinzufuegenMitKlausuren(urlaubValidierung, urlaub, student, urlaubeAnTag, klausurenVonStudentAnTag);
+      } else if (urlaubValidierung.bisherMaxEinUrlaub(urlaubeAnTag)) {
+        urlaubHinzufuegenOhneKlausur(urlaub, urlaubValidierung, student, urlaubeAnTag);
+      }
     }
     return urlaubValidierung.getFehlgeschlagen();
   }
 
-  /**
-   * gibt false zurück falls der Urlaub nicht eingefügt wird.
-   *
-   * @param student Der Student Database Objekt
-   * @param urlaub  Beantragter Urlaub
-   * @return boolean
-   */
+  private void urlaubHinzufuegenMitKlausuren(UrlaubValidierung urlaubValidierung, Urlaub urlaub, Student student,
+      List<Urlaub> urlaubeAnTag, List<Klausur> klausurenVonStudentAnTag) {
+    List<Urlaub> resultierendeUrlaube =
+        urlaubKlausurBearbeitung.urlaubKlausurBearbeitung(urlaub, klausurenVonStudentAnTag);
+    resultierendeUrlaube.addAll(urlaubeAnTag);
+    resultierendeUrlaube = urlaubValidierung.urlaubeZusammenfuegen(resultierendeUrlaube);
+    fuegeUrlaubeZusammen(urlaub.datum(), student, resultierendeUrlaube);
+  }
+
+
+  private List<Klausur> holeKlausurenVonStudentAnTag(Urlaub urlaub, Student student) {
+    List<Klausur> klausurenVonStudent = holeAlleKlausurenMitId(student);
+    return hilfsMethoden.studentHatKlausurAnTag(klausurenVonStudent, urlaub.datum());
+  }
+
+
+  private boolean pruefeUrlaubMoeglich(Urlaub urlaub, Student student, UrlaubValidierung urlaubValidierung){
+    return urlaubValidierung.urlaubIstValide(urlaub) && urlaubValidierung.genugUrlaub(student, urlaub);
+  }
+
+
   public boolean fuegeUrlaubHinzu(Student student, Urlaub urlaub) {
     UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
     if (urlaubValidierung.genugUrlaub(student, urlaub)) {
@@ -115,14 +104,7 @@ public class StudentService {
     return false;
   }
 
-  /**
-   * prueft ob der Klausur valid vor der Erstellung ist. Falls ja dann Klausur erstellen.
-   *
-   * @param studentHandle Student OAuth Handle
-   * @param klausurDto    Klausur zu erstellen
-   * @return ein Set mit alle Fehlermeldungen
-   * @throws IOException falls der Url by LSF Validierung nicht richtig gebaut wird
-   */
+
   public synchronized Set<String> klausurErstellen(String studentHandle, KlausurDto klausurDto)
       throws IOException {
     KlausurValidierung klausurValidierung = new KlausurValidierung();
@@ -143,16 +125,9 @@ public class StudentService {
     return klausurValidierung.getFehlgeschlagen();
   }
 
-  /**
-   * prueft ob der Beantragte Klausur valide ist. Falls ja, dann Klausur Referenz zu Student
-   * einfügen.
-   *
-   * @param studentHandle Student OAuth Handle
-   * @param klausurId     beantragte Klausurid
-   * @return Set mit alle Fehlermeldungen
-   */
+  
+   // prueft, ob die beantragte Klausur valide ist. Falls ja, wird eine Klausurreferenz beim Studenten eingefügt
   public synchronized Set<String> klausurAnmelden(String studentHandle, Long klausurId) {
-    StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden();
     KlausurValidierung klausurValidierung = new KlausurValidierung();
     Student student = studentRepository.studentMitHandle(studentHandle);
     Klausur klausurAusDb = klausurRepository.klausurMitId(klausurId);
@@ -173,14 +148,8 @@ public class StudentService {
     }
     return klausurValidierung.getFehlgeschlagen();
   }
-
-  /**
-   * prueft ob der Urlaub Valid ist vor Stornierung. Falls ja dann Urlaub stornieren.
-   *
-   * @param studentHandle Student OAuth Handle
-   * @param urlaubDto     Urlaub zu Stornieren
-   * @return Set mit alle Fehlermeldungen
-   */
+  
+   // wenn der Urlaub existent ist und der Antrag rechtzeitig, wird der Urlaub storniert
   public Set<String> urlaubStornieren(String studentHandle, UrlaubDto urlaubDto) {
     UrlaubValidierung urlaubValidierung = new UrlaubValidierung();
     Urlaub urlaub = UrlaubDto.toUrlaub(urlaubDto);
@@ -199,16 +168,12 @@ public class StudentService {
     }
     return fehlermeldungen;
   }
-
-  /**
-   * storniert Klausur.
-   *
-   * @param studentHandle Student OAuth Handle
-   * @param klausur       Klausur zu Stornieren
-   */
+  
+  
   public void klausurStornieren(String studentHandle, Klausur klausur) {
     KlausurValidierung klausurValidierung = new KlausurValidierung();
-    if(klausurValidierung.klausurNurVorDemTagDerKlausurStornieren(KlausurDto.toKlausurDto(klausur))){
+    if (klausurValidierung
+        .klausurNurVorDemTagDerKlausurStornieren(KlausurDto.toKlausurDto(klausur))) {
       Student student = studentRepository.studentMitHandle(studentHandle);
       student.klausurStornieren(klausur);
       auditLogRepository.save(AuditLogErzeugung.klausurStorniert(studentHandle, klausur));
@@ -216,25 +181,22 @@ public class StudentService {
     }
   }
 
+
   private List<Klausur> holeAlleKlausurenMitId(Student student) {
     return student.getKlausuren().stream()
         .map(klausurRepository::klausurMitId)
         .collect(Collectors.toList());
   }
-
-  /**
-   * Mappt alle KlausurDtos zu den dazugehörigen Klausur ids.
-   *
-   * @param student Der Student Database Objekt
-   * @return HashMap
-   */
-  public HashMap<Long, KlausurDto> holealleklausurdtosmitid(Student student) {
+  
+  
+  public HashMap<Long, KlausurDto> holeAlleKlausurdtosMitId(Student student) {
     HashMap<Long, KlausurDto> dtos = new HashMap<>();
-    holeAlleKlausurenMitId(student).stream()
+    holeAlleKlausurenMitId(student)
         .forEach(k -> dtos.put(k.id(), KlausurDto.toKlausurDto(k)));
     return dtos;
   }
 
+   
   private void urlaubHinzufuegenOhneKlausur(
       Urlaub urlaub,
       UrlaubValidierung urlaubValidierung,
@@ -249,16 +211,9 @@ public class StudentService {
     }
   }
 
-  /**
-   * ersetzt alle Studentenurlaube am Tag, nach urlaub/klausur Beantragen, mit eine bearbeitet Liste
-   * von Urlaubsobjekte.
-   *
-   * @param datum   datum der beantragter Urlaub
-   * @param student Student Database Objekt
-   * @param urlaube List von Urlaub Objekte
-   */
+  
+   // fügt alle beantragten Urlaube eines Studenten zu einer Liste mit disjunkten Urlaubsobjekten zusammen
   public void fuegeUrlaubeZusammen(LocalDate datum, Student student, List<Urlaub> urlaube) {
-    StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden();
     logsZufuegeUrlaubeZusammen(datum, student, urlaube);
     hilfsMethoden.storniereAlleUrlaubeAnTag(student, datum);
     for (Urlaub urlaub : urlaube) {
@@ -269,7 +224,6 @@ public class StudentService {
   }
 
   private void logsZufuegeUrlaubeZusammen(LocalDate datum, Student student, List<Urlaub> urlaube) {
-    StudentServiceHilfsMethoden hilfsMethoden = new StudentServiceHilfsMethoden();
     List<Urlaub> stornierte =
         hilfsMethoden.stornierteUrlaube(
             hilfsMethoden.findeUrlaubeAmSelbenTag(student, datum), urlaube);

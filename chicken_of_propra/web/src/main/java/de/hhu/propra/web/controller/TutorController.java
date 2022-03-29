@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class TutorController {
 
   @GetMapping("/tutor")
-  public String tutor(){
+  public String tutor() {
     return "tutor";
   }
 

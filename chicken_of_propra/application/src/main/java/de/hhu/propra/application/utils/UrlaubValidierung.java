@@ -16,9 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 public class UrlaubValidierung {
-  DataParser globalData = DataParser.readFile();
 
-
+  DataParser globalData = DataParser.leseDatei();
   private Set<String> fehlgeschlagen = new HashSet<>();
 
   public Set<String> getFehlgeschlagen() {
@@ -166,8 +165,8 @@ public class UrlaubValidierung {
     LocalTime start = globalData.getStartZeit(); //ein tag vorher
     LocalTime ende = globalData.getEndZeit();
 
-    boolean ergebnis = (urlaub.startzeit().isAfter(start)||urlaub.startzeit().equals(start))
-        && (urlaub.endzeit().isBefore(ende)||urlaub.endzeit().equals(ende));
+    boolean ergebnis = (urlaub.startzeit().isAfter(start) || urlaub.startzeit().equals(start))
+        && (urlaub.endzeit().isBefore(ende) || urlaub.endzeit().equals(ende));
     if (!ergebnis) {
       fehlgeschlagen.add(UrlaubFehler.URLAUB_IN_ZEITRAUM);
     }

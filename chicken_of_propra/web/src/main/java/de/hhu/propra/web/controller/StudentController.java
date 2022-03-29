@@ -38,21 +38,21 @@ public class StudentController {
 
     String handle = principal.getName();
     if (studentService.studentMitHandle(handle) == null) {
-      studentService.createStudent(handle);
+      studentService.erstelleStudent(handle);
     }
     if (fehler != null && !fehler.isEmpty()) {
       model.addAttribute("fehler", fehler);
     }
 
     HashMap<Long, KlausurDto> klausuren =
-        studentService.holealleklausurdtosmitid(studentService.studentMitHandle(handle));
+        studentService.holeAlleKlausurdtosMitId(studentService.studentMitHandle(handle));
     model.addAttribute("student", studentService.studentMitHandle(handle));
     model.addAttribute("klausuren", klausuren);
     return "studentSeite";
   }
 
   @GetMapping("student/klausuranmeldung")
-  public String klausurAnmeldung(Model model) throws IOException {
+  public String klausurAnmeldung(Model model) {
     model.addAttribute("klausuren", klausurService.alleKlausuren());
     if (klausurService.alleKlausuren().isEmpty()) {
       model.addAttribute("keinKlausuren", true);
@@ -132,7 +132,6 @@ public class StudentController {
 
   @PostMapping("student/urlaubstornieren")
   public String urlaubStorniren(
-      Model model,
       Principal principal,
       @ModelAttribute("datum") String datum,
       @ModelAttribute("startzeit") String startzeit,

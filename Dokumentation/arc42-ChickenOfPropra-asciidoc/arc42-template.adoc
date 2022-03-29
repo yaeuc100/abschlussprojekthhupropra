@@ -59,6 +59,14 @@ Sie ist möglichst abstrakt gestaltet, um grundlegende Interaktionen zu fixieren
 -  Um die Onion Architektur und damit verbunden eine bessere Abgrenzung der einzelnen Schichten gewährleisten zu können, haben wir uns dazu entschieden, Gradle Submodule zu verwenden.
 -  Wir wollten zunächst, um redundante Daten zu vermeiden, jeden Urlaub als Wertobjekt in der Datenbank speichern und mit Referenzen arbeiten. Letztendlich haben wir uns aber für die Sichtweise entschieden, dass der Lebenszyklus eines jeden einzelnen Urlaubs stets vom jeweiligen Studenten abhängig ist.
 
+== Technologieentscheidungen
+- Checkstyle
+- Spring Data JDBC
+- MariaDB
+- Thymeleaf
+
+Alle Technologieentscheidungen wurden aufgrund unserer Erfahrungen durch die praktischen Übungen gewählt
+
 == Kurze Anleitung zur Konfiguration
 
 1.  docker-compose up

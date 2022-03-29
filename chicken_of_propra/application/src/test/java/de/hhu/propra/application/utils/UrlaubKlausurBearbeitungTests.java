@@ -348,7 +348,7 @@ public class UrlaubKlausurBearbeitungTests {
 
     //act
     List<Urlaub> ergebnis = urlaubKlausurBearbeitung
-        .urlaubKlausurValidierung(urlaub, List.of(klausur));
+        .urlaubKlausurBearbeitung(urlaub, List.of(klausur));
 
     //assert
     assertThat(ergebnis).isEqualTo(List.of(reduzierterUrlaub, reduzierterUrlaub2));
@@ -385,7 +385,7 @@ public class UrlaubKlausurBearbeitungTests {
 
     //act
     List<Urlaub> ergebnis = urlaubKlausurBearbeitung
-        .urlaubKlausurValidierung(beantragterUrlaub, List.of(klausur, zweiteKlausur));
+        .urlaubKlausurBearbeitung(beantragterUrlaub, List.of(klausur, zweiteKlausur));
 
     //assert
     assertThat(ergebnis)
@@ -568,7 +568,7 @@ public class UrlaubKlausurBearbeitungTests {
         LocalTime.of(14, 30));
 
     //act
-    List<Urlaub> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,
+    List<Urlaub> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurBearbeitung(beantragterUrlaub,
         List.of(klausur, zweiteKlausur, dritteKlausur));
 
     //assert
@@ -613,7 +613,7 @@ public class UrlaubKlausurBearbeitungTests {
         LocalTime.of(13, 0));
 
     //act
-    List<Urlaub> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,
+    List<Urlaub> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurBearbeitung(beantragterUrlaub,
         List.of(klausur, zweiteKlausur, dritteKlausur));
 
     //assert
@@ -656,7 +656,7 @@ public class UrlaubKlausurBearbeitungTests {
         LocalTime.of(13, 0));
 
     //act
-    List<Urlaub> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurValidierung(beantragterUrlaub,
+    List<Urlaub> ergebnis = urlaubKlausurBearbeitung.urlaubKlausurBearbeitung(beantragterUrlaub,
         List.of(klausur, zweiteKlausur, dritteKlausur));
 
     //assert

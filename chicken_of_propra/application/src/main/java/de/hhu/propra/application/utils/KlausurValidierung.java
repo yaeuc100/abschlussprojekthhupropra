@@ -4,13 +4,10 @@ import static java.util.Calendar.getInstance;
 
 import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.fehler.KlausurFehler;
-import de.hhu.propra.application.fehler.UrlaubFehler;
 import de.hhu.propra.domain.aggregates.klausur.Klausur;
-import de.hhu.propra.domain.aggregates.student.Urlaub;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -18,12 +15,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 
 public class KlausurValidierung {
   private Set<String> fehlgeschlagen = new HashSet<>();
-  DataParser globalData = DataParser.readFile();
+  DataParser globalData = DataParser.leseDatei();
 
   public Set<String> getFehlgeschlagen() {
     return fehlgeschlagen;
@@ -122,7 +117,8 @@ public class KlausurValidierung {
     LocalTime ende = globalData.getEndZeit();
     Klausur klausur = KlausurDto.toKlausur(klausurDto);
     boolean ergebnis =
-        klausur.datum().toLocalTime().plusMinutes(klausur.dauer()).isAfter(start) && ende.isAfter(klausur.datum().toLocalTime());
+        klausur.datum().toLocalTime().plusMinutes(klausur.dauer()).isAfter(start)
+            && ende.isAfter(klausur.datum().toLocalTime());
     if (!ergebnis) {
       fehlgeschlagen.add(KlausurFehler.KLAUSUR_IN_ZEITRAUM);
     }

@@ -1,13 +1,10 @@
 package de.hhu.propra.application.utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 
 public class DataParser {
 
@@ -51,11 +48,7 @@ public class DataParser {
     return end;
   }
 
-  public void setEnd(LocalDate end) {
-    this.end = end;
-  }
-
-  private static LocalDate parseToDate(String date) {
+  private static LocalDate uebersetzeDatum(String date) {
     LocalDate local = null;
     date = date.replace("\r", "");
     try {
@@ -65,7 +58,7 @@ public class DataParser {
     return local;
   }
 
-  private static LocalTime parseToTime(String time) {
+  private static LocalTime uebersetzeZeit(String time) {
     LocalTime local = null;
     time = time.replace("\r", "");
     try {
@@ -79,28 +72,28 @@ public class DataParser {
     return path.substring(0, path.length() - 1).replace(Character.toString(92), "/");
   }
 
-  private static String buildPath() {
+  private static String erstellePfad() {
     String path = new File(".").getAbsolutePath();
-    // build from main app
+    // erstelle Pfad von Main Application
     if (!path.contains("chicken")) {
       path = replaceSlash(path) + "chicken_of_propra/application/src/main/resources/config.txt";
     } else {
-      // build from tests
+      // erstelle von Tests
       path = replaceSlash(path).replace("spring", "application") + "/src/main/resources/config.txt";
     }
     return path;
   }
 
-  public static DataParser readFile() {
+  public static DataParser leseDatei() {
     try {
-      String path = buildPath();
+      String path = erstellePfad();
       byte[] InhaltArray = Files.readAllBytes(Path.of(path));
       String Inhalt = new String(InhaltArray);
       String[] parameters = Inhalt.split("\n");
-      LocalDate start = (parseToDate(parameters[0].split(" : ")[1]));
-      LocalDate end = (parseToDate(parameters[1].split(" : ")[1]));
-      LocalTime startZeit = (parseToTime(parameters[2].split(" : ")[1]));
-      LocalTime endZeit = (parseToTime(parameters[3].split(" : ")[1]));
+      LocalDate start = (uebersetzeDatum(parameters[0].split(" : ")[1]));
+      LocalDate end = (uebersetzeDatum(parameters[1].split(" : ")[1]));
+      LocalTime startZeit = (uebersetzeZeit(parameters[2].split(" : ")[1]));
+      LocalTime endZeit = (uebersetzeZeit(parameters[3].split(" : ")[1]));
       return new DataParser(start, end, startZeit, endZeit);
     } catch (Exception e) {
       return null;

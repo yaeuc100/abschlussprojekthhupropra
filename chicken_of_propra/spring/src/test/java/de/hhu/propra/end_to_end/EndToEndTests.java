@@ -10,7 +10,6 @@ import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.fehler.KlausurFehler;
 import de.hhu.propra.application.fehler.UrlaubFehler;
-import de.hhu.propra.application.services.AuditLogService;
 import de.hhu.propra.application.services.KlausurService;
 import de.hhu.propra.application.services.StudentService;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +78,7 @@ public class EndToEndTests {
         217480,
         true);
     if (studentService.studentMitHandle("oogabooga") == null) {
-      studentService.createStudent("oogabooga");
+      studentService.erstelleStudent("oogabooga");
     }
     studentService.klausurErstellen("oogabooga", klausurDto);
     studentService.klausurAnmelden("oogabooga", 1L);
@@ -125,7 +124,7 @@ public class EndToEndTests {
         LocalTime.of(10, 15).toString(),
         LocalTime.of(11, 0).toString());
     if (studentService.studentMitHandle("oogabooga") == null) {
-      studentService.createStudent("oogabooga");
+      studentService.erstelleStudent("oogabooga");
     }
     HtmlPage page = webClient.getPage("http://localhost:8080/student");
     HtmlAnchor link = page.getAnchorByHref("student/urlaubanmeldung");
@@ -161,7 +160,7 @@ public class EndToEndTests {
         LocalTime.of(10, 15).toString(),
         LocalTime.of(10, 0).toString());
     if (studentService.studentMitHandle("oogabooga") == null) {
-      studentService.createStudent("oogabooga");
+      studentService.erstelleStudent("oogabooga");
     }
     HtmlPage page = webClient.getPage("http://localhost:8080/student");
     HtmlAnchor link = page.getAnchorByHref("student/urlaubanmeldung");
@@ -198,7 +197,7 @@ public class EndToEndTests {
         217480,
         true);
     if (studentService.studentMitHandle("oogabooga") == null) {
-      studentService.createStudent("oogabooga");
+      studentService.erstelleStudent("oogabooga");
     }
 
     HtmlPage page = webClient.getPage("http://localhost:8080/student");
@@ -253,7 +252,7 @@ public class EndToEndTests {
         217480,
         true);
     if (studentService.studentMitHandle("oogabooga") == null) {
-      studentService.createStudent("oogabooga");
+      studentService.erstelleStudent("oogabooga");
     }
 
     HtmlPage page = webClient.getPage("http://localhost:8080/student");
@@ -301,7 +300,7 @@ public class EndToEndTests {
         217480,
         true);
     if (studentService.studentMitHandle("oogabooga") == null) {
-      studentService.createStudent("oogabooga");
+      studentService.erstelleStudent("oogabooga");
     }
     studentService.klausurErstellen("oogabooga", klausurDto);
 
@@ -344,7 +343,7 @@ public class EndToEndTests {
         217480,
         true);
     if (studentService.studentMitHandle("oogabooga") == null) {
-      studentService.createStudent("oogabooga");
+      studentService.erstelleStudent("oogabooga");
     }
     studentService.klausurErstellen("oogabooga", klausurDto);
     studentService.klausurErstellen("oogabooga", klausurDto2);
@@ -386,7 +385,7 @@ public class EndToEndTests {
         LocalTime.of(11, 30).toString());
 
     if (studentService.studentMitHandle("oogabooga") == null) {
-      studentService.createStudent("oogabooga");
+      studentService.erstelleStudent("oogabooga");
     }
     studentService.urlaubAnlegen("oogabooga", urlaubDto);
     studentService.urlaubAnlegen("oogabooga", urlaubDto1);
