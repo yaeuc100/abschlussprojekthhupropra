@@ -29,3 +29,9 @@ jobs:
         with:
           arguments: build
           build-root-directory: chicken_of_propra
+      - name: Save Test Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-reports
+          path: chicken_of_propra/*/build/reports
