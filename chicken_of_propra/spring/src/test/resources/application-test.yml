@@ -9,3 +9,11 @@ spring:
   test:
     database:
       replace: none
+
+praktikum:
+  datum:
+    start: 2022-03-07
+    ende: 2022-04-25
+  zeit:
+    start: "09:30"
+    ende: "13:30"
