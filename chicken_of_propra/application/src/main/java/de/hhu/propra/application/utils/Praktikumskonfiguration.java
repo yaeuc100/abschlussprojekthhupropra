@@ -2,19 +2,22 @@ package de.hhu.propra.application.utils;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@RequiredArgsConstructor
 public class Praktikumskonfiguration{
 
-  LocalDate datumStart;
-  LocalDate datumEnde;
   LocalTime zeitStart;
   LocalTime zeitEnde;
-/*
+
+
+
+  /*
   public Praktikumskonfiguration(@Value("#{T(java.time.LocalDate).parse('${praktikum.datum.start}')}") LocalDate datumStart,
       @Value("#{T(java.time.LocalDate).parse('${praktikum.datum.ende}')}") LocalDate datumEnde,
       @Value("#{T(java.time.LocalTime).parse('${praktikum.zeit.start}')}") LocalTime zeitStart,
@@ -34,23 +37,23 @@ public Praktikumskonfiguration konfiguration(@Value("#{T(java.time.LocalDate).pa
   return new Praktikumskonfiguration();
 }
 */
-
-
-  public LocalDate getDatumStart() {
-    return datumStart;
-  }
-
-  public void setDatumStart(LocalDate datumStart) {
-    this.datumStart = datumStart;
-  }
-
-  public LocalDate getDatumEnde() {
-    return datumEnde;
-  }
-
-  public void setDatumEnde(LocalDate datumEnde) {
-    this.datumEnde = datumEnde;
-  }
+//
+//
+//  public LocalDate getDatumStart() {
+//    return datumStart;
+//  }
+//
+//  public void setDatumStart(LocalDate datumStart) {
+//    this.datumStart = datumStart;
+//  }
+//
+//  public LocalDate getDatumEnde() {
+//    return datumEnde;
+//  }
+//
+//  public void setDatumEnde(LocalDate datumEnde) {
+//    this.datumEnde = datumEnde;
+//  }
 
   public LocalTime getZeitStart() {
     return zeitStart;

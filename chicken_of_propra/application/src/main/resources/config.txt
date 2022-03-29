@@ -1,0 +1,4 @@
+startDatum : 2022-03-06
+endDatum : 4000-03-17
+startZeit : 06:00
+endZeit : 16:00

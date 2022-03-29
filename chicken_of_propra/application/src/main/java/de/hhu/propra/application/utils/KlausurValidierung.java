@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Bean;
 
 public class KlausurValidierung {
   private Set<String> fehlgeschlagen = new HashSet<>();
+  DataParser globalData = DataParser.readFile();
 
   public Set<String> getFehlgeschlagen() {
     return fehlgeschlagen;
@@ -105,11 +106,11 @@ public class KlausurValidierung {
   }
 
   boolean datumLiegtInPraktikumszeit(KlausurDto klausurDto) {
-    LocalDate start = LocalDate.of(2022, 3, 6); // ein tag vorher
+    LocalDate start = globalData.getStart(); // ein tag vorher
     //LocalDate start = ;
    //LocalDate datum = p.getDatumStart();
    // System.out.println(datum);
-    LocalDate ende = LocalDate.of(4000, 3, 26);
+    LocalDate ende = globalData.getEnd();
     Klausur klausur = KlausurDto.toKlausur(klausurDto);
     boolean ergebnis =
         klausur.datum().toLocalDate().isAfter(start) && ende.isAfter(klausur.datum().toLocalDate());

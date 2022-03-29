@@ -6,6 +6,6 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 
 @Configuration
 @EnableJdbcRepositories
-public class DbConfig {
+public class Db_Config {
 
 }

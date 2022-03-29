@@ -11,6 +11,7 @@ import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.fehler.KlausurFehler;
 import de.hhu.propra.application.fehler.UrlaubFehler;
+import de.hhu.propra.application.services.AuditLogService;
 import de.hhu.propra.application.services.KlausurService;
 import de.hhu.propra.application.services.StudentService;
 

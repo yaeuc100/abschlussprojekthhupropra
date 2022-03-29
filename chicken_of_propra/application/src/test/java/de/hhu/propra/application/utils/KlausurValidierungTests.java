@@ -407,7 +407,6 @@ public class KlausurValidierungTests {
     //act
     boolean ergebnis = klausurValidierung.klausurIstValide(klausurDto);
     Set<String> fehler = klausurValidierung.getFehlgeschlagen();
-    fehler.forEach(System.out::println);
     //assert
     assertThat(ergebnis).isTrue();
     assertThat(fehler).isEmpty();

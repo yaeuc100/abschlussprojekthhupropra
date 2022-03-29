@@ -1,4 +1,4 @@
-package de.hhu.propra.database.repositoryImplementation;
+package de.hhu.propra.database.repository_implementation;
 
 import de.hhu.propra.database.dao.AuditDao;
 import de.hhu.propra.domain.auditlog.AuditLog;

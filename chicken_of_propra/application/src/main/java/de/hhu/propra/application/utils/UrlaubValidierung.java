@@ -2,6 +2,7 @@ package de.hhu.propra.application.utils;
 
 import static java.util.Calendar.getInstance;
 
+import de.hhu.propra.application.PraktikumsZeitConfig;
 import de.hhu.propra.application.fehler.UrlaubFehler;
 import de.hhu.propra.domain.aggregates.student.Student;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
@@ -9,11 +10,9 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,21 +28,18 @@ import org.springframework.core.env.Environment;
 //     max 2 und falls 2 gibt dann mit 90 min abstand zwischen dauer der 2. und 1. urlaub
 //     urlaub bis 00.00 uhr anmelden
 //TODO Praktikumsstart
-@Configuration
+@RequiredArgsConstructor
 public class UrlaubValidierung {
+  DataParser globalData = DataParser.readFile();
+
+//  private final LocalTime praktikumsStart;
+//  private final LocalTime praktikumsEnd;
 
   private Set<String> fehlgeschlagen = new HashSet<>();
 
   public Set<String> getFehlgeschlagen() {
     return fehlgeschlagen;
   }
-/*
-  @Bean
-  public String bla(@Value("${datum.start}") String datum){
-    return datum;
-  }
-*/
-
 
 
   boolean vielfachesVon15(Urlaub urlaub) {
@@ -85,7 +81,7 @@ public class UrlaubValidierung {
 
   public boolean zweiUrlaubeAnEinemTag(Urlaub ersterUrlaub, Urlaub zweiterUrlaub) {
     boolean valide = true;
-    LocalTime startZeit = LocalTime.of(8, 30);
+    LocalTime startZeit = globalData.getStartZeit();
     if (ersterUrlaub.startzeit().isAfter(zweiterUrlaub.startzeit())) {
       Urlaub hilf = ersterUrlaub;
       ersterUrlaub = zweiterUrlaub;
@@ -107,6 +103,7 @@ public class UrlaubValidierung {
   }
 
   boolean urlaubNurVorDemTagDesUrlaubs(Urlaub urlaub) {
+
     boolean ergebnis = urlaub.datum().isAfter(LocalDate.now());
     if (!ergebnis) {
       fehlgeschlagen.add(UrlaubFehler.ANTRAG_RECHTZEITIG);
@@ -172,11 +169,8 @@ public class UrlaubValidierung {
   }
 
   boolean datumLiegtInPraktikumszeit(Urlaub urlaub) {
-    LocalDate start = LocalDate.of(2022, 3, 6); //ein tag vorher
-    LocalDate ende = LocalDate.of(4000, 3, 26);
-    //LocalDate start = LocalDate.parse(startdatum);
-    //LocalDate ende = LocalDate.parse(enddatum);
-   // System.out.println(bla);
+    LocalDate start = globalData.getStart(); //ein tag vorher
+    LocalDate ende = globalData.getEnd();
 
     boolean ergebnis = urlaub.datum().isAfter(start) && ende.isAfter(urlaub.datum());
     if (!ergebnis) {
@@ -184,7 +178,6 @@ public class UrlaubValidierung {
     }
     return ergebnis;
   }
-
 
   public boolean bisherMaxEinUrlaub(List<Urlaub> urlaube) {
     boolean ergebnis = urlaube.size() < 2;
