@@ -3,7 +3,6 @@ chicken:
   tutoren: donald, daisy, minnie, mickey, gundel, dagobert, FaroukBelghith, yaeuc100
 
 spring:
-
   security:
     oauth2:
       client:

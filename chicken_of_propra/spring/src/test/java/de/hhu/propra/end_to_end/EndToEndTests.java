@@ -6,15 +6,12 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.javascript.SilentJavaScriptErrorListener;
-import com.gargoylesoftware.htmlunit.javascript.host.dom.Node;
 import de.hhu.propra.application.dto.KlausurDto;
 import de.hhu.propra.application.dto.UrlaubDto;
 import de.hhu.propra.application.fehler.KlausurFehler;
 import de.hhu.propra.application.fehler.UrlaubFehler;
 import de.hhu.propra.application.services.KlausurService;
 import de.hhu.propra.application.services.StudentService;
-
-import de.hhu.propra.spring.Application;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,15 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = Application.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @WithMockUser(username = "oogabooga", roles = {"STUDENT"})
 @AutoConfigureMockMvc
-public class EndToEnd {
+public class EndToEndTests {
 
   @Autowired
   MockMvc mockMvc;
