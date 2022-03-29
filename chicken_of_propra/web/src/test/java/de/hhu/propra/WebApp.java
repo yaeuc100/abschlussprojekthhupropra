@@ -1,8 +1,7 @@
-package de.hhu.propra.application;
+package de.hhu.propra;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApplicationSpring {
-
+public class WebApp {
 }

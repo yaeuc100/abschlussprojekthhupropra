@@ -28,7 +28,7 @@ public class ArchUnitTests {
       .applicationServices("..application..")
       .adapter("Web", "..web..")
       .adapter("Database", "..database..")
-      .adapter("Spring", "..spring..")
+      .adapter("Spring", "de.hhu.propra")
       .allowEmptyShould(true);
 
 

@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 @WebMvcTest(OrganisatorController.class)
 @AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("test")
+@ActiveProfiles({ "web", "test" })
 public class OrganisatorControllerTests {
 
   @Autowired
@@ -38,7 +38,6 @@ public class OrganisatorControllerTests {
   @Test
   @DisplayName("Logs sind vollständig angezeigt")
   void test() throws Exception {
-
     List<AuditDto> logs = audits();
     logs.sort(Comparator.comparing(AuditDto::datum));
     when(auditLogService.alle()).thenReturn(audits());
