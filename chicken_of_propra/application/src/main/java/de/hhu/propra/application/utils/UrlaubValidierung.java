@@ -2,7 +2,6 @@ package de.hhu.propra.application.utils;
 
 import static java.util.Calendar.getInstance;
 
-import de.hhu.propra.application.PraktikumsZeitConfig;
 import de.hhu.propra.application.fehler.UrlaubFehler;
 import de.hhu.propra.domain.aggregates.student.Student;
 import de.hhu.propra.domain.aggregates.student.Urlaub;
@@ -11,15 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.*;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.format.annotation.DateTimeFormat;
 
 
 //     vielfaches von 15 min

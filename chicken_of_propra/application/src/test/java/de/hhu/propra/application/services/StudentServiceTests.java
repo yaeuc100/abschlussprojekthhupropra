@@ -289,6 +289,7 @@ public class StudentServiceTests {
     Set<String> ergebnis = studentService.urlaubAnlegen(student.getHandle(), urlaub3);
 
     //assert
+
     assertThat(student.getUrlaube()).hasSize(2);
     assertThat(ergebnis).contains(UrlaubFehler.MAX_ZWEI_URLAUBE);
   }
